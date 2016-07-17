@@ -3,17 +3,13 @@
   "version": "0.0.1",
   "description": "Map scanner for Pokemon GO to find wild pokemon, gyms, stops etc.",
   "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://cypherix93@github.com/cypherix93/Pokemon-GO-Scanner.git"
   },
   "author": "cypherix93",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cypherix93/Pokemon-GO-Scanner/issues"
-  },
-  "homepage": "https://github.com/cypherix93/Pokemon-GO-Scanner#readme"
+  "dependencies": {
+    "pokemon-go-node-api": "^1.2.0"
+  }
 }
