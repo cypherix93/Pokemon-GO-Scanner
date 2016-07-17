@@ -3,48 +3,25 @@ import {ApiHandler} from "../io/ApiHandler";
 import {Logger} from "../helpers/Logger";
 import q = require("q");
 
-var api_url = 'https://pgorelease.nianticlabs.com/plfe/rpc';
-var login_url = 'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize';
-var login_oauth = 'https://sso.pokemon.com/sso/oauth2.0/accessToken';
+const login_url = "https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize";
+const login_oauth = "https://sso.pokemon.com/sso/oauth2.0/accessToken";
 
-export class PokemonClubHandler
+export class PokemonClubAuthHandler
 {
-    public async authenticate(user, pass)
+    public static async authenticate(user:string, pass:string)
     {
-        var def = q.defer();
+        var data = await PokemonClubAuthHandler.makeLoginGetRequest();
 
-        var loginGetResult = await this.makeLoginGetRequest();
+        var ticket = await PokemonClubAuthHandler.getAuthTicket(data, user, pass);
 
-        var data = JSON.parse(loginGetResult.body);
-
-        var loginPostResult = await this.makeLoginPostRequest(data, user, pass);
-
-        //Parse body if any exists, callback with errors if any.
-        if (loginPostResult.body)
-        {
-            var parsedBody = JSON.parse(loginPostResult.body);
-            if (parsedBody.errors && parsedBody.errors.length !== 0)
-            {
-                throw new Error('Error logging in: ' + parsedBody.errors[0]);
-            }
-        }
-
-        var ticket = loginPostResult.response.headers["location"].split("ticket=")[1];
-
-        var oauthResult = await this.makeOAuthPostRequest(ticket);
-
-        var token = oauthResult.body.split("token=")[1];
-        token = token.split("&")[0];
-
-        if (!token)
-            throw new Error("Login failed");
+        var token = await PokemonClubAuthHandler.getOAuthToken(ticket);
 
         Logger.info("Session token: " + token);
 
         return token;
     }
 
-    private makeLoginGetRequest()
+    private static makeLoginGetRequest()
     {
         var def = q.defer();
 
@@ -60,13 +37,13 @@ export class PokemonClubHandler
             if (err)
                 throw err;
 
-            def.resolve({response, body});
+            def.resolve(JSON.parse(body));
         });
 
         return def.promise;
     }
 
-    private makeLoginPostRequest(data, user, pass)
+    private static getAuthTicket(data, user, pass)
     {
         var def = q.defer();
 
@@ -89,13 +66,25 @@ export class PokemonClubHandler
             if (err)
                 throw err;
 
-            def.resolve({response, body});
+            //Parse body if any exists, callback with errors if any.
+            if (body)
+            {
+                var parsedBody = JSON.parse(body);
+                if (parsedBody.errors && parsedBody.errors.length !== 0)
+                {
+                    throw new Error('Error logging in: ' + parsedBody.errors[0]);
+                }
+            }
+
+            var ticket = response.headers["location"].split("ticket=")[1];
+
+            def.resolve(ticket);
         });
 
         return def.promise;
     }
 
-    private makeOAuthPostRequest(ticket)
+    private static getOAuthToken(ticket)
     {
         var def = q.defer();
 
@@ -118,7 +107,13 @@ export class PokemonClubHandler
             if (err)
                 throw err;
 
-            def.resolve({response, body});
+            var token = body.split("token=")[1];
+            token = token.split("&")[0];
+
+            if (!token)
+                throw new Error("Login failed");
+
+            def.resolve(token);
         });
 
         return def.promise;
