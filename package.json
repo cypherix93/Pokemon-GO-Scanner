@@ -10,6 +10,18 @@
   "author": "cypherix93",
   "license": "ISC",
   "dependencies": {
-    "pokemon-go-node-api": "^1.2.0"
+    "pokemon-go-node-api": "^1.2.0",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-debug": "^2.1.2",
+    "gulp-filter": "^4.0.0",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-typescript": "^2.13.6",
+    "gulp-watch": "^4.3.8",
+    "run-sequence": "^1.2.2",
+    "typescript": "^1.8.10"
   }
 }

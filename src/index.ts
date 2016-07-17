@@ -1,4 +1,6 @@
-var Pokeio = require("./PokeIO/poke.io");
+/// <reference path="../typings/index.d.ts" />
+
+import {PokeIO} from "./PokeIO/pokeio";
 
 //Set environment variables or replace placeholder text
 var location = {
@@ -10,14 +12,14 @@ var username = process.env.PGO_USERNAME || "cypherix93";
 var password = process.env.PGO_PASSWORD || "asdfghjkl";
 var provider = process.env.PGO_PROVIDER || "ptc";
 
-Pokeio.init(username, password, location, provider, function (err)
+PokeIO.init(username, password, location, provider, function (err)
 {
     if (err) throw err;
     
-    console.log("[i] Current location: " + Pokeio.playerInfo.locationName);
-    console.log("[i] lat/long/alt: : " + Pokeio.playerInfo.latitude + " " + Pokeio.playerInfo.longitude + " " + Pokeio.playerInfo.altitude);
+    console.log("[i] Current location: " + PokeIO.playerInfo.locationName);
+    console.log("[i] lat/long/alt: : " + PokeIO.playerInfo.latitude + " " + PokeIO.playerInfo.longitude + " " + PokeIO.playerInfo.altitude);
     
-    Pokeio.GetProfile(function (err, profile)
+    PokeIO.GetProfile(function (err, profile)
     {
         if (err) throw err;
         
