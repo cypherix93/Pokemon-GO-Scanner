@@ -1,39 +1,23 @@
 /// <reference path="../typings/index.d.ts" />
 
-import {PokeIO} from "./PokeIO/pokeio";
+import yargs = require("yargs");
+import {Application} from "./core/Application";
 
-//Set environment variables or replace placeholder text
-var location = {
-    type: "name",
-    name: process.env.PGO_LOCATION || "Stony Brook, NY"
-};
-
-var username = process.env.PGO_USERNAME || "cypherix93";
-var password = process.env.PGO_PASSWORD || "asdfghjkl";
-var provider = process.env.PGO_PROVIDER || "ptc";
-
-PokeIO.init(username, password, location, provider, function (err)
+class PokemonGoScanner
 {
-    if (err) throw err;
-    
-    console.log("[i] Current location: " + PokeIO.playerInfo.locationName);
-    console.log("[i] lat/long/alt: : " + PokeIO.playerInfo.latitude + " " + PokeIO.playerInfo.longitude + " " + PokeIO.playerInfo.altitude);
-    
-    PokeIO.GetProfile(function (err, profile)
+    public static main()
     {
-        if (err) throw err;
+
+    }
+
+    private static processArgs()
+    {
+        var args = yargs.argv;
         
-        console.log("[i] Username: " + profile.username);
-        console.log("[i] Poke Storage: " + profile.poke_storage);
-        console.log("[i] Item Storage: " + profile.item_storage);
-        
-        var poke = 0;
-        if (profile.currency[0].amount)
-        {
-            poke = profile.currency[0].amount;
-        }
-        
-        console.log("[i] Pokecoin: " + poke);
-        console.log("[i] Stardust: " + profile.currency[1].amount);
-    });
-});
+        Application.args.location = args.l || args.location || "Stony Brook, NY";
+
+        Application.args.username = args.u || args.user || "cypherix93";
+        Application.args.password = args.p || args.password || "asdfghjkl";
+        Application.args.provider = args.r || args.provider || "ptc";
+    }
+}

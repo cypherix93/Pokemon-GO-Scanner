@@ -3,6 +3,11 @@
     "node": "registry:dt/node#6.0.0+20160709114037"
   },
   "globalDependencies": {
-    "node": "registry:dt/node#6.0.0+20160709114037"
+    "node": "registry:dt/node#6.0.0+20160709114037",
+    "protobufjs": "registry:dt/protobufjs#0.0.0+20160317120654",
+    "q": "registry:dt/q#0.0.0+20160613154756",
+    "request": "registry:dt/request#0.0.0+20160524135346",
+    "winston": "registry:dt/winston#0.0.0+20160417152829",
+    "yargs": "registry:dt/yargs#0.0.0+20160619033636"
   }
 }
