@@ -14,16 +14,18 @@ var googleOAuth = new GoogleOAuth();
 
 export class GoogleAuthHandler
 {
-    public static async authenticate(user, pass)
+    public static async authenticate(user:string, pass:string):Promise<string>
     {
         var loginResult = await GoogleAuthHandler.makeLoginRequest(user, pass) as any;
         
         var oauthResult = await GoogleAuthHandler.makeOAuthRequest(user, loginResult.masterToken, loginResult.androidId);
 
-        return oauthResult;
+        Logger.info("Session token: " + oauthResult);
+
+        return oauthResult.toString();
     }
 
-    private static async makeLoginRequest(user, pass)
+    private static makeLoginRequest(user, pass)
     {
         var def = q.defer();
 
@@ -38,7 +40,7 @@ export class GoogleAuthHandler
         return def.promise;
     }
 
-    private static async makeOAuthRequest(user, masterToken, androidId)
+    private static makeOAuthRequest(user, masterToken, androidId)
     {
         var def = q.defer();
 

@@ -8,7 +8,7 @@ const login_oauth = "https://sso.pokemon.com/sso/oauth2.0/accessToken";
 
 export class PokemonClubAuthHandler
 {
-    public static async authenticate(user:string, pass:string)
+    public static async authenticate(user:string, pass:string):Promise<string>
     {
         var data = await PokemonClubAuthHandler.makeLoginGetRequest();
 
