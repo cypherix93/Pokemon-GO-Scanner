@@ -4,12 +4,15 @@ var request = require('request');
 var geocoder = require('geocoder');
 var events = require('events');
 var ProtoBuf = require('protobufjs');
+var path = require("path");
 
 var Logins = require('./logins');
 
 var GoogleOAuth = require('gpsoauthnode');
 
-var builder = ProtoBuf.loadProtoFile('pokemon.proto');
+const pathToProtoFile = path.join(__dirname + "/pokemon.proto");
+
+var builder = ProtoBuf.loadProtoFile(pathToProtoFile);
 if (builder == null) {
     builder = ProtoBuf.loadProtoFile('./node_modules/pokemon-go-node-api/pokemon.proto');
 }

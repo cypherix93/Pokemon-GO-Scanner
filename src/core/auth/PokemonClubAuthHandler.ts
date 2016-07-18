@@ -32,10 +32,10 @@ export class PokemonClubAuthHandler
             }
         } as any;
 
-        ApiHandler.request.get(options, function (err, response, body)
+        ApiHandler.request.get(options, (err, response, body) =>
         {
             if (err)
-                def.reject(err);
+                throw err;
 
             def.resolve(JSON.parse(body));
         });
@@ -61,10 +61,10 @@ export class PokemonClubAuthHandler
             }
         } as any;
 
-        ApiHandler.request.get(options, function (err, response, body)
+        ApiHandler.request.post(options, (err, response, body) =>
         {
             if (err)
-                def.reject(err);
+                throw err;
 
             //Parse body if any exists, callback with errors if any.
             if (body)
@@ -72,10 +72,10 @@ export class PokemonClubAuthHandler
                 var parsedBody = JSON.parse(body);
                 if (parsedBody.errors && parsedBody.errors.length !== 0)
                 {
-                    def.reject(new Error(`Error logging in: ${parsedBody.errors[0]}`));
+                    throw new Error(`Error logging in: ${parsedBody.errors[0]}`);
                 }
             }
-
+            
             var ticket = response.headers["location"].split("ticket=")[1];
 
             def.resolve(ticket);
@@ -87,6 +87,8 @@ export class PokemonClubAuthHandler
     private static getOAuthToken(ticket)
     {
         var def = q.defer();
+
+        console.log(ticket);
 
         var options = {
             url: login_oauth,
@@ -102,16 +104,16 @@ export class PokemonClubAuthHandler
             }
         } as any;
 
-        ApiHandler.request.get(options, function (err, response, body)
+        ApiHandler.request.post(options, (err, response, body) =>
         {
             if (err)
-                def.reject(err);
+                throw err;
 
             var token = body.split("token=")[1];
             token = token.split("&")[0];
 
             if (!token)
-                def.reject(new Error("Login failed"));
+                throw new Error("Login failed");
 
             def.resolve(token);
         });

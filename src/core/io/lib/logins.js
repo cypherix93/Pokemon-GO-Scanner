@@ -44,6 +44,8 @@ module.exports = {
                         return callback(new Error('Error logging in: ' + parsedBody.errors[0]));
                     }
                 }
+                
+                console.log(response.headers);
 
                 var ticket = response.headers['location'].split('ticket=')[1];
 

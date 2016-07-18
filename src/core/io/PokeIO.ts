@@ -97,7 +97,7 @@ export class PokeIO
 
     public async getProfile()
     {
-        var request = this.protoRequestEnvelope.Requests(2);
+        var request = new this.protoRequestEnvelope.Requests(2);
 
         var apiResponse = await this.makeApiRequest(this.playerInfo.apiEndpoint, this.playerInfo.accessToken, request) as any;
 
@@ -113,14 +113,14 @@ export class PokeIO
     {
         var def = q.defer();
 
-        geocoder.reverseGeocode(this.playerInfo.latitude, this.playerInfo.longitude, function (err, data)
+        geocoder.reverseGeocode(this.playerInfo.latitude, this.playerInfo.longitude, (err, data) =>
         {
             Logger.info(`lat/long/alt: ${this.playerInfo.latitude} ${this.playerInfo.longitude} ${this.playerInfo.altitude}`);
 
             if (data.status == "ZERO_RESULTS")
             {
                 Logger.error("Location not found");
-                def.reject(new Error("Location not found"));
+                throw new Error("Location not found");
             }
 
             def.resolve(data.results[0].formatted_address);
@@ -135,22 +135,22 @@ export class PokeIO
 
         if (location.type != "name" && location.type != "coords")
         {
-            def.reject(new Error("Invalid location type"));
+            throw new Error("Invalid location type");
         }
 
         if (location.type === "name")
         {
             if (!location.name)
             {
-                def.reject(new Error("You should add a location name"));
+                throw new Error("You should add a location name");
             }
             var locationName = location.name;
 
-            geocoder.geocode(locationName, function (err, data)
+            geocoder.geocode(locationName, (err, data) =>
             {
                 if (err || data.status == "ZERO_RESULTS")
                 {
-                    def.reject(new Error("Location not found"));
+                    throw new Error("Location not found");
                 }
 
                 var latitude = data.results[0].geometry.location.lat;
@@ -169,13 +169,13 @@ export class PokeIO
         {
             if (!location.coords)
             {
-                def.reject(new Error("Coords object missing"));
+                throw new Error("Coords object missing");
             }
 
             var latitude = location.coords.latitude || this.playerInfo.latitude;
             var longitude = location.coords.longitude || this.playerInfo.longitude;
 
-            geocoder.reverseGeocode(latitude, longitude, function (err, data)
+            geocoder.reverseGeocode(latitude, longitude, (err, data) =>
             {
                 if (data.status != 'ZERO_RESULTS')
                 {
@@ -214,12 +214,12 @@ export class PokeIO
         var def = q.defer();
 
         // Auth
-        var auth = this.protoRequestEnvelope.AuthInfo({
+        var auth = new this.protoRequestEnvelope.AuthInfo({
             provider: this.playerInfo.provider,
-            token: this.protoRequestEnvelope.AuthInfo.JWT(access_token, 59)
+            token: new this.protoRequestEnvelope.AuthInfo.JWT(access_token, 59)
         });
 
-        var request = this.protoRequestEnvelope({
+        var request = new this.protoRequestEnvelope({
             unknown1: 2,
             rpc_id: 8145806132888207460,
 
@@ -244,13 +244,13 @@ export class PokeIO
             }
         } as any;
 
-        ApiHandler.request.post(options, function (err, response, body)
+        ApiHandler.request.post(options, (err, response, body) =>
         {
             if (!response || !body)
             {
                 Logger.error("RPC Server offline");
 
-                def.reject(new Error("RPC Server offline"));
+                throw new Error("RPC Server offline");
             }
 
             try

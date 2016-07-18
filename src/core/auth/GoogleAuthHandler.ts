@@ -29,7 +29,7 @@ export class GoogleAuthHandler
     {
         var def = q.defer();
 
-        googleOAuth.login(user, pass, android_id, function (err, data)
+        googleOAuth.login(user, pass, android_id, (err, data) =>
         {
             if (err)
                 throw err;
@@ -44,10 +44,10 @@ export class GoogleAuthHandler
     {
         var def = q.defer();
 
-        googleOAuth.oauth(user, masterToken, androidId, oauth_service, app, client_sig, function (err, data)
+        googleOAuth.oauth(user, masterToken, androidId, oauth_service, app, client_sig, (err, data) =>
         {
             if (err)
-                def.reject(err);
+                throw err;
 
             def.resolve(data.Auth);
         });
