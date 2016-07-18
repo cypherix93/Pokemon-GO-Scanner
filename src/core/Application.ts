@@ -6,6 +6,8 @@ export class Application
 {
     public static async init()
     {
+        Logger.info(`Initing App`);
+
         var args = Application.getArgs();
 
         var io = new PokeIO();

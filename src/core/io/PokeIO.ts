@@ -109,7 +109,7 @@ export class PokeIO
         return apiResponse.payload[0].profile;
     };
 
-    public async getLocation(callback)
+    public getLocation(callback)
     {
         var def = q.defer();
 
@@ -120,7 +120,7 @@ export class PokeIO
             if (data.status == "ZERO_RESULTS")
             {
                 Logger.error("Location not found");
-                throw new Error("Location not found");
+                def.reject(new Error("Location not found"));
             }
 
             def.resolve(data.results[0].formatted_address);
@@ -129,20 +129,20 @@ export class PokeIO
         return def.promise;
     };
 
-    public async setLocation(location)
+    public setLocation(location)
     {
         var def = q.defer();
 
         if (location.type != "name" && location.type != "coords")
         {
-            throw new Error('Invalid location type');
+            def.reject(new Error("Invalid location type"));
         }
 
         if (location.type === "name")
         {
             if (!location.name)
             {
-                throw new Error("You should add a location name");
+                def.reject(new Error("You should add a location name"));
             }
             var locationName = location.name;
 
@@ -150,7 +150,7 @@ export class PokeIO
             {
                 if (err || data.status == "ZERO_RESULTS")
                 {
-                    throw new Error("location not found");
+                    def.reject(new Error("Location not found"));
                 }
 
                 var latitude = data.results[0].geometry.location.lat;
@@ -169,7 +169,7 @@ export class PokeIO
         {
             if (!location.coords)
             {
-                throw new Error("Coords object missing");
+                def.reject(new Error("Coords object missing"));
             }
 
             var latitude = location.coords.latitude || this.playerInfo.latitude;
@@ -250,7 +250,7 @@ export class PokeIO
             {
                 Logger.error("RPC Server offline");
 
-                throw new Error("RPC Server offline");
+                def.reject(new Error("RPC Server offline"));
             }
 
             try

@@ -3,6 +3,7 @@
     "node": "registry:dt/node#6.0.0+20160709114037"
   },
   "globalDependencies": {
+    "form-data": "registry:dt/form-data#0.0.0+20160316155526",
     "node": "registry:dt/node#6.0.0+20160709114037",
     "protobufjs": "registry:dt/protobufjs#0.0.0+20160317120654",
     "q": "registry:dt/q#0.0.0+20160613154756",

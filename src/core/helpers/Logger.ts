@@ -1,3 +1,3 @@
 import winston = require("winston");
 
-export var Logger;
+export var Logger = winston;

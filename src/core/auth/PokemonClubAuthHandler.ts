@@ -14,9 +14,9 @@ export class PokemonClubAuthHandler
 
         var ticket = await PokemonClubAuthHandler.getAuthTicket(data, user, pass);
 
-        var token = await PokemonClubAuthHandler.getOAuthToken(ticket);
+        var token = await PokemonClubAuthHandler.getOAuthToken(ticket) as string;
 
-        Logger.info("Session token: " + token);
+        Logger.info(`Session token: ${token}`);
 
         return token;
     }
@@ -35,7 +35,7 @@ export class PokemonClubAuthHandler
         ApiHandler.request.get(options, function (err, response, body)
         {
             if (err)
-                throw err;
+                def.reject(err);
 
             def.resolve(JSON.parse(body));
         });
@@ -64,7 +64,7 @@ export class PokemonClubAuthHandler
         ApiHandler.request.get(options, function (err, response, body)
         {
             if (err)
-                throw err;
+                def.reject(err);
 
             //Parse body if any exists, callback with errors if any.
             if (body)
@@ -72,7 +72,7 @@ export class PokemonClubAuthHandler
                 var parsedBody = JSON.parse(body);
                 if (parsedBody.errors && parsedBody.errors.length !== 0)
                 {
-                    throw new Error('Error logging in: ' + parsedBody.errors[0]);
+                    def.reject(new Error(`Error logging in: ${parsedBody.errors[0]}`));
                 }
             }
 
@@ -105,13 +105,13 @@ export class PokemonClubAuthHandler
         ApiHandler.request.get(options, function (err, response, body)
         {
             if (err)
-                throw err;
+                def.reject(err);
 
             var token = body.split("token=")[1];
             token = token.split("&")[0];
 
             if (!token)
-                throw new Error("Login failed");
+                def.reject(new Error("Login failed"));
 
             def.resolve(token);
         });

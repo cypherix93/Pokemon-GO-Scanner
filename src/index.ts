@@ -1,11 +1,14 @@
 /// <reference path="../typings/index.d.ts" />
 import {Application} from "./core/Application";
+import {Logger} from "./core/helpers/Logger";
 
 class PokemonGoScanner
 {
-    public static async main()
+    public static main()
     {
-        await Application.init();
+        Application.init()
+            .then(() => process.exit(1))
+            .catch(err => err);
     }
 }
 
