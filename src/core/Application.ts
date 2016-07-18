@@ -31,9 +31,9 @@ export class Application
     {
         var args = yargs.argv;
 
-        var location = args.l || args.location || "Stony Brook, NY";
+        var location = args.l || args.location || "Times Square, NY";
 
-        var username = args.u || args.user || "cypherix93";
+        var username = args.u || args.user || "fakefakefaker";
         var password = args.p || args.password || "asdfghjkl";
         var provider = args.r || args.provider || "ptc";
 
