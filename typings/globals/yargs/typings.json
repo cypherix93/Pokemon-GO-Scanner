@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/27896d899dabccaa34fd392420ce95558ce61db7/yargs/yargs.d.ts",
+    "raw": "registry:dt/yargs#0.0.0+20160619033636",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/27896d899dabccaa34fd392420ce95558ce61db7/yargs/yargs.d.ts"
+  }
+}
