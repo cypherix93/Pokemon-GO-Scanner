@@ -37,7 +37,17 @@ export class PokemonClubAuthHandler
             if (err)
                 throw err;
 
-            def.resolve(JSON.parse(body));
+            //Parse body if any exists, callback with errors if any.
+            if (body)
+            {
+                var parsedBody = JSON.parse(body);
+                if (parsedBody.errors && parsedBody.errors.length !== 0)
+                {
+                    throw new Error(`Error logging in: ${parsedBody.errors[0]}`);
+                }
+
+                def.resolve(parsedBody);
+            }
         });
 
         return def.promise;
