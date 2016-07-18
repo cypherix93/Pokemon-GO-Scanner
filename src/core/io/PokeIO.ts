@@ -9,13 +9,9 @@ import {ApiHandler} from "./ApiHandler";
 const geocoder = require("geocoder");
 const events = require("events");
 
-const GoogleOAuth = require("gpsoauthnode");
-
 var EventEmitter = events.EventEmitter;
 
 var api_url = 'https://pgorelease.nianticlabs.com/plfe/rpc';
-var login_url = 'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize';
-var login_oauth = 'https://sso.pokemon.com/sso/oauth2.0/accessToken';
 
 export class PokeIO
 {
@@ -51,23 +47,13 @@ export class PokeIO
         this.protoResponseEnvelope = proto.response;
 
         // Updating location
-        self.SetLocation(location, function (err, loc)
-        {
-            if (err)
-                throw err;
+        this.setLocation(location);
 
-            // Getting access token
-            this.playerInfo.accessToken = this.getAccessToken(username, password);
+        // Getting access token
+        this.playerInfo.accessToken = await this.getAccessToken(username, password);
 
-            // Getting api endpoint
-            this.getApiEndpoint(function (err, api_endpoint)
-            {
-                if (err)
-                    throw err;
-
-                callback(null)
-            });
-        });
+        // Getting api endpoint
+        this.playerInfo.apiEndpoint = await this.getApiEndpoint();
     }
 
     public async getAccessToken(user, pass):Promise<string>
@@ -87,7 +73,7 @@ export class PokeIO
     };
 
 
-    public async getApiEndpoint()
+    public async getApiEndpoint():Promise<string>
     {
         var requestEnvelope = this.protoRequestEnvelope;
 
@@ -100,16 +86,129 @@ export class PokeIO
             new requestEnvelope.Requests(5, new requestEnvelope.Unknown3('4a2e9bc330dae60e7b74fc85b98868ab4700802e'))
         );
 
-        var f_ret = await this.makeApiRequest(api_url, this.playerInfo.accessToken, req) as any;
+        var apiResponse = await this.makeApiRequest(api_url, this.playerInfo.accessToken, req) as any;
 
-        var endpoint = `https://${f_ret.api_url}/rpc`;
+        var endpoint = `https://${apiResponse.api_url}/rpc`;
 
-        this.playerInfo.apiEndpoint = endpoint;
         Logger.info("Received API Endpoint: " + endpoint);
 
         return endpoint;
     };
-    
+
+    public async getProfile(callback)
+    {
+        var request = this.protoRequestEnvelope.Requests(2);
+
+        var apiResponse = await this.makeApiRequest(this.playerInfo.apiEndpoint, this.playerInfo.accessToken, request) as any;
+
+        if (apiResponse.payload[0].profile)
+        {
+            Logger.info("Logged in!");
+        }
+
+        return apiResponse.payload[0].profile;
+    };
+
+    public async getLocation(callback)
+    {
+        var def = q.defer();
+
+        geocoder.reverseGeocode(this.playerInfo.latitude, this.playerInfo.longitude, function (err, data)
+        {
+            Logger.info(`lat/long/alt: ${this.playerInfo.latitude} ${this.playerInfo.longitude} ${this.playerInfo.altitude}`);
+
+            if (data.status == "ZERO_RESULTS")
+            {
+                Logger.error("Location not found");
+                throw new Error("Location not found");
+            }
+
+            def.resolve(data.results[0].formatted_address);
+        });
+
+        return def.promise;
+    };
+
+    public async setLocation(location)
+    {
+        var def = q.defer();
+
+        if (location.type != "name" && location.type != "coords")
+        {
+            throw new Error('Invalid location type');
+        }
+
+        if (location.type === "name")
+        {
+            if (!location.name)
+            {
+                throw new Error("You should add a location name");
+            }
+            var locationName = location.name;
+
+            geocoder.geocode(locationName, function (err, data)
+            {
+                if (err || data.status == "ZERO_RESULTS")
+                {
+                    throw new Error("location not found");
+                }
+
+                var latitude = data.results[0].geometry.location.lat;
+                var longitude = data.results[0].geometry.location.lng;
+
+                this.setLocationCoords(latitude, longitude, locationName);
+
+                def.resolve({
+                    latitude,
+                    longitude,
+                    locationName
+                });
+            });
+        }
+        else if (location.type === "coords")
+        {
+            if (!location.coords)
+            {
+                throw new Error("Coords object missing");
+            }
+
+            var latitude = location.coords.latitude || this.playerInfo.latitude;
+            var longitude = location.coords.longitude || this.playerInfo.longitude;
+
+            geocoder.reverseGeocode(latitude, longitude, function (err, data)
+            {
+                if (data.status != 'ZERO_RESULTS')
+                {
+                    var locationName = data.results[0].formatted_address;
+
+                    this.setLocationCoords(latitude, longitude, locationName);
+                }
+
+                def.resolve({
+                    latitude,
+                    longitude,
+                    locationName
+                });
+            });
+        }
+    };
+
+    public getLocationCoords()
+    {
+        return {
+            latitude: this.playerInfo.latitude,
+            longitude: this.playerInfo.longitude,
+            locationName: this.playerInfo.locationName
+        };
+    };
+
+    public setLocationCoords(latitude, longitude, locationName)
+    {
+        this.playerInfo.latitude = latitude;
+        this.playerInfo.longitude = longitude;
+        this.playerInfo.locationName = locationName;
+    };
+
     private makeApiRequest(endpoint, access_token, requests)
     {
         var def = q.defer();
@@ -157,138 +256,19 @@ export class PokeIO
             try
             {
                 var response = this.protoResponseEnvelope.decode(body);
+
+                def.resolve(response);
             }
             catch (e)
             {
                 if (e.decoded)
                 {
                     Logger.warn(e);
-                    response = e.decoded; // Decoded message with missing required fields
+                    def.resolve(e.decoded);
                 }
             }
-
-            def.resolve(response);
         });
 
         return def.promise;
     }
 }
-
-
-function Pokeio()
-{
-    var self = this;
-    self.events = new EventEmitter();
-    self.j = request.jar();
-    self.request = request.defaults({jar: self.j});
-
-    self.google = new GoogleOAuth();
-
-    self.GetProfile = function (callback)
-    {
-        var req = new RequestEnvelop.Requests(2);
-        api_req(self.playerInfo.apiEndpoint, self.playerInfo.accessToken, req, function (err, f_ret)
-        {
-            if (err)
-            {
-                return callback(err);
-            }
-
-            if (f_ret.payload[0].profile)
-            {
-                self.DebugPrint('[i] Logged in!');
-            }
-            callback(null, f_ret.payload[0].profile);
-        });
-    };
-
-    self.GetLocation = function (callback)
-    {
-        geocoder.reverseGeocode(self.playerInfo.latitude, self.playerInfo.longitude, function (err, data)
-        {
-            console.log('[i] lat/long/alt: ' + self.playerInfo.latitude + ' ' + self.playerInfo.longitude + ' ' + self.playerInfo.altitude);
-            if (data.status == 'ZERO_RESULTS')
-            {
-                return callback(new Error('location not found'));
-            }
-
-            callback(null, data.results[0].formatted_address);
-        });
-    };
-
-    self.GetLocationCoords = function ()
-    {
-        var coords = {
-            latitude: self.playerInfo.latitude,
-            longitude: self.playerInfo.longitude,
-            altitude: self.playerInfo.altitude,
-        };
-
-        return coords;
-    };
-
-    self.SetLocation = function (location, callback)
-    {
-        if (location.type != "name" && location.type != "coords")
-        {
-            throw new Error('Invalid location type');
-        }
-
-        if (location.type == "name")
-        {
-            if (!location.name)
-            {
-                throw new Error('You should add a location name');
-            }
-            var locationName = location.name;
-            geocoder.geocode(locationName, function (err, data)
-            {
-                if (err || data.status == 'ZERO_RESULTS')
-                {
-                    return callback(new Error('location not found'));
-                }
-
-                self.playerInfo.latitude = data.results[0].geometry.location.lat;
-                self.playerInfo.longitude = data.results[0].geometry.location.lng;
-                self.playerInfo.locationName = locationName;
-
-                var coords = {
-                    latitude: self.playerInfo.latitude,
-                    longitude: self.playerInfo.longitude,
-                    altitude: self.playerInfo.altitude,
-                };
-
-                callback(null, coords);
-            });
-        }
-        else if (location.type == "coords")
-        {
-            if (!location.coords)
-            {
-                throw new Error('Coords object missing');
-            }
-
-            self.playerInfo.latitude = coords.latitude ? coords.latitude : self.playerInfo.latitude;
-            self.playerInfo.longitude = coords.longitude ? coords.longitude : self.playerInfo.longitude;
-            self.playerInfo.altitude = coords.altitude ? coords.altitude : self.playerInfo.altitude;
-
-            var coords = {
-                latitude: self.playerInfo.latitude,
-                longitude: self.playerInfo.longitude,
-                altitude: self.playerInfo.altitude,
-            };
-
-            geocoder.reverseGeocode(self.playerInfo.latitude, self.playerInfo.longitude, function (err, data)
-            {
-                if (data.status != 'ZERO_RESULTS')
-                {
-                    self.playerInfo.locationName = data.results[0].formatted_address;
-                }
-                callback(null, coords);
-            });
-        }
-    };
-}
-
-module.exports = new Pokeio();
-module.exports.Pokeio = Pokeio;
