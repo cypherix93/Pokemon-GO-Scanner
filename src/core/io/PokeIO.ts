@@ -31,7 +31,7 @@ export class PokeIO
     public protoRequestEnvelope;
     public protoResponseEnvelope;
 
-    public async init(username, password, location, provider, callback)
+    public async init(username, password, location, provider)
     {
         if (provider !== "ptc" && provider !== "google")
         {
@@ -95,7 +95,7 @@ export class PokeIO
         return endpoint;
     };
 
-    public async getProfile(callback)
+    public async getProfile()
     {
         var request = this.protoRequestEnvelope.Requests(2);
 
