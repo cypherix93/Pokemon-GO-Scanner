@@ -8,7 +8,7 @@ export class GeocoderHelper
 {
     public static async resolveLocationByName(locationName:string):Promise<Location>
     {
-        var def = q.defer();
+        var def = q.defer<Location>();
 
         geocoder.geocode(locationName, (err, data) =>
         {
@@ -20,7 +20,7 @@ export class GeocoderHelper
             var location = new Location();
             location.latitude = data.results[0].geometry.location.lat;
             location.longitude = data.results[0].geometry.location.lng;
-            location.locationName = locationName;
+            location.name = locationName;
 
             def.resolve(location);
         });
@@ -30,7 +30,7 @@ export class GeocoderHelper
 
     public static async resolveLocationByCoordinates(latitude:number, longitude:number):Promise<Location>
     {
-        var def = q.defer();
+        var def = q.defer<Location>();
 
         geocoder.reverseGeocode(latitude, longitude, (err, data) =>
         {
@@ -42,7 +42,7 @@ export class GeocoderHelper
             var location = new Location();
             location.latitude = longitude;
             location.longitude = longitude;
-            location.locationName = data.results[0].formatted_address;
+            location.name = data.results[0].formatted_address;
 
             def.resolve(location);
         });

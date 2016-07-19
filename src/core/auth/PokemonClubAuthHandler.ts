@@ -1,7 +1,7 @@
-import {ApiHandler} from "../io/ApiHandler";
-
 import {Logger} from "../helpers/Logger";
 import q = require("q");
+
+import {ApiHandler} from "../io/handlers/ApiHandler";
 
 const login_url = "https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize";
 const login_oauth = "https://sso.pokemon.com/sso/oauth2.0/accessToken";

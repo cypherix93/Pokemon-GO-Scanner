@@ -14,8 +14,8 @@ export class Application
 
         await io.init(args.username, args.password, args.location, args.provider);
 
-        Logger.info(`Current location: ${io.playerInfo.locationName}`);
-        Logger.info(`[i] lat/long/alt: : ${io.playerInfo.latitude} ${io.playerInfo.longitude}`);
+        Logger.info(`Current location: ${io.player.location.name}`);
+        Logger.info(`[i] lat/long: ${io.player.location.latitude} ${io.player.location.longitude}`);
 
         var profile = await io.getProfile();
 
@@ -37,11 +37,13 @@ export class Application
         var password = args.p || args.password || "asdfghjkl";
         var provider = args.r || args.provider || "ptc";
 
+        if (provider !== "ptc" && provider !== "google")
+        {
+            throw new Error("Invalid provider");
+        }
+
         return {
-            location: {
-                type: "name",
-                name: location
-            },
+            location: location,
             username: username,
             password: password,
             provider: provider,

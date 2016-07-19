@@ -3,71 +3,86 @@ import q = require("q");
 
 import {Logger} from "../helpers/Logger";
 import {ProtoBuilder} from "../proto/ProtoBuilder";
-import {ApiHandler} from "./ApiHandler";
 import {Player} from "../models/Player";
 import {EventEmitter} from "events";
+import {Auth} from "../auth/Auth";
+import {Constants} from "./Constants";
+import {ApiHandler} from "./handlers/ApiHandler";
+import {GeocoderHelper} from "../helpers/GeocoderHelper";
 
 var api_url = "https://pgorelease.nianticlabs.com/plfe/rpc";
 
 export abstract class PokeIOBase
 {
-    public events:EventEmitter;
+    public player:Player;
 
-    public playerInfo:Player;
-
-    public protoRequestEnvelope;
-    public protoResponseEnvelope;
+    public requestEnvelope;
+    public responseEnvelope;
 
     constructor()
     {
-        this.playerInfo = new Player();
-
-        this.events = new EventEmitter();
-    }
-
-    public async init(username, password, location, provider)
-    {
-        if (provider !== "ptc" && provider !== "google")
-        {
-            throw new Error('Invalid provider');
-        }
-
-        // Set provider
-        this.playerInfo.provider = provider;
+        this.player = new Player();
 
         // Build proto
         var proto = ProtoBuilder.buildPokemonProto();
-        this.protoRequestEnvelope = proto.request;
-        this.protoResponseEnvelope = proto.response;
-
-        // Updating location
-        this.setLocation(location);
-
-        // Getting access token
-        this.playerInfo.accessToken = await this.getAccessToken(username, password);
-
-        // Getting api endpoint
-        this.playerInfo.apiEndpoint = await this.getApiEndpoint();
+        this.requestEnvelope = proto.request;
+        this.responseEnvelope = proto.response;
     }
 
-    protected makeApiRequest(endpoint, access_token, requests)
+    public async init(username:string, password:string, location:string, provider:string)
+    {
+        // Set provider
+        this.player.provider = provider;
+
+        // Updating location
+        this.player.location = await GeocoderHelper.resolveLocationByName(location);
+
+        // Getting access token
+        this.player.accessToken = await Auth.getAccessToken(username, password, provider);
+
+        // Getting api endpoint
+        this.player.apiEndpoint = await this.getApiEndpoint();
+    }
+
+    public async getApiEndpoint():Promise<string>
+    {
+        var requestEnvelope = this.requestEnvelope;
+
+        var requests = [
+            new requestEnvelope.Requests(2),
+            new requestEnvelope.Requests(126),
+            new requestEnvelope.Requests(4),
+            new requestEnvelope.Requests(129),
+            new requestEnvelope.Requests(5, new requestEnvelope.Unknown3('4a2e9bc330dae60e7b74fc85b98868ab4700802e'))
+        ];
+
+        var apiResponse = await this.makeApiRequest(Constants.API_URL, requests) as any;
+
+        var endpoint = `https://${apiResponse.api_url}/rpc`;
+
+        Logger.info("Received API Endpoint: " + endpoint);
+
+        return endpoint;
+    };
+
+    public makeApiRequest(endpoint:string, requests:any[])
     {
         var def = q.defer();
 
         // Auth
-        var auth = new this.protoRequestEnvelope.AuthInfo({
-            provider: this.playerInfo.provider,
-            token: new this.protoRequestEnvelope.AuthInfo.JWT(access_token, 59)
+        var auth = new this.requestEnvelope.AuthInfo({
+            provider: this.player.provider,
+            token: new this.responseEnvelope.AuthInfo.JWT(this.player.accessToken, 59)
         });
 
-        var request = new this.protoRequestEnvelope({
+        var request = new this.requestEnvelope({
             unknown1: 2,
             rpc_id: 8145806132888207460,
 
             requests: requests,
 
-            latitude: this.playerInfo.location.latitude,
-            longitude: this.playerInfo.location.longitude,
+            latitude: this.player.location.latitude,
+            longitude: this.player.location.longitude,
 
             auth: auth,
             unknown12: 989
@@ -95,7 +110,7 @@ export abstract class PokeIOBase
 
             try
             {
-                var response = this.protoResponseEnvelope.decode(body);
+                var response = this.responseEnvelope.decode(body);
 
                 def.resolve(response);
             }
@@ -111,10 +126,6 @@ export abstract class PokeIOBase
 
         return def.promise;
     }
-
-    public abstract async getAccessToken(user, pass):Promise<string>;
-
-    public abstract async getApiEndpoint():Promise<string>;
 
     public abstract async getProfile();
 }
