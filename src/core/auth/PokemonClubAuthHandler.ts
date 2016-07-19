@@ -98,8 +98,6 @@ export class PokemonClubAuthHandler
     {
         var def = q.defer();
 
-        console.log(ticket);
-
         var options = {
             url: login_oauth,
             form: {
