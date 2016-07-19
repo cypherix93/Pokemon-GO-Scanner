@@ -27,10 +27,6 @@ export class Application
 
         Logger.info(`Pokecoin: ${profile.pokecoins}`);
         Logger.info(`Stardust: ${profile.stardust}`);
-
-        var heartbeat = await io.getHeartbeat();
-
-        console.log(heartbeat);
     }
 
     private static getArgs()

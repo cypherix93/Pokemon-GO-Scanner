@@ -33,45 +33,4 @@ export class PokeIO extends PokeIOBase
 
         return profile;
     };
-
-    public async getHeartbeat()
-    {
-        var requestEnvelope = this.requestEnvelope;
-
-        // var m;
-        //
-        // var m4 = new requestEnvelope.Requests();
-        // m = requestEnvelope.MessageSingleInt();
-        // m.f1 = new Date().getTime();
-        // m4.message = m.SerializeToString();
-        //
-        // var m5 = requestEnvelope.Requests();
-        // m = requestEnvelope.MessageSingleString();
-        // m.bytes = "05daf51635c82611d1aac95c0b051d3ec088a930";
-        // m5.message = m.SerializeToString();
-        //
-        // var requests = [
-        //     new requestEnvelope.Requests(106),
-        //     new requestEnvelope.Requests(),
-        //     m4,
-        //     new requestEnvelope.Requests(),
-        //     m5
-        // ];
-
-        var requests = [
-            new this.requestEnvelope.Requests(2)
-        ];
-
-        var apiResponse = await this.makeApiRequest(this.player.apiEndpoint, requests) as any;
-
-        var payload = apiResponse.payload[0];
-
-        console.log(JSON.stringify(apiResponse.payload));
-
-        Logger.info("Heartbeat");
-
-        var heartbeat = this.responseEnvelope.HeartbeatPayload();
-        heartbeat.ParseFromString(payload);
-        return heartbeat;
-    }
 }
