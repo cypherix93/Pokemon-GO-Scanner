@@ -19,4 +19,10 @@ export class PlayerProfile
         nextCollectTimestamp:number,
         nextDefenderBonusCollectTimestamp:number
     };
+
+    constructor()
+    {
+        this.storage = {} as any;
+        this.dailyBonus = {} as any;
+    }
 }

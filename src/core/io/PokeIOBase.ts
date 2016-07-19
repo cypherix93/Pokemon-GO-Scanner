@@ -53,7 +53,7 @@ export abstract class PokeIOBase
             new requestEnvelope.Requests(126),
             new requestEnvelope.Requests(4),
             new requestEnvelope.Requests(129),
-            new requestEnvelope.Requests(5, new requestEnvelope.Unknown3("4a2e9bc330dae60e7b74fc85b98868ab4700802e"))
+            new requestEnvelope.Requests(5)
         ];
 
         var apiResponse = await this.makeApiRequest(Constants.API_URL, requests) as any;
@@ -76,13 +76,13 @@ export abstract class PokeIOBase
         });
 
         var request = new this.requestEnvelope({
-            unknown1: 2,
-            rpc_id: 8145806132888207460,
-
             requests: requests,
 
             latitude: this.player.location.latitude,
             longitude: this.player.location.longitude,
+
+            unknown1: 2,
+            rpc_id: 1469378659230941192,
 
             auth: auth,
             unknown12: 989

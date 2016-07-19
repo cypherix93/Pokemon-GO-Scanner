@@ -7,7 +7,7 @@ import {PlayerProfile} from "../models/PlayerProfile";
 
 export class PokeIO extends PokeIOBase
 {
-    public async getProfile():PlayerProfile
+    public async getProfile():Promise<PlayerProfile>
     {
         var request = [
             new this.requestEnvelope.Requests(2)
@@ -15,7 +15,7 @@ export class PokeIO extends PokeIOBase
 
         var apiResponse = await this.makeApiRequest(this.player.apiEndpoint, request) as any;
 
-        var responseProfile = apiResponse.payload[0].profile;
+        var responseProfile = this.responseEnvelope.ProfilePayload.decode(apiResponse.payload[0]).profile;
 
         Logger.info("Logged in!");
 
@@ -30,9 +30,6 @@ export class PokeIO extends PokeIOBase
         profile.storage.items = responseProfile.item_storage;
         profile.pokecoins = responseProfile.currency[0].amount;
         profile.stardust = responseProfile.currency[1].amount;
-
-        profile.dailyBonus.nextCollectTimestamp = responseProfile.daily_bonus.NextCollectTimestampMs;
-        profile.dailyBonus.nextDefenderBonusCollectTimestamp = responseProfile.daily_bonus.NextDefenderBonusCollectTimestampMs;
 
         return profile;
     };
