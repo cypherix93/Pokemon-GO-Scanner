@@ -1,7 +1,7 @@
-import {ApiHandler} from "../io/ApiHandler";
-
 import {Logger} from "../helpers/Logger";
 import q = require("q");
+
+import {ApiHandler} from "../io/handlers/ApiHandler";
 
 const login_url = "https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize";
 const login_oauth = "https://sso.pokemon.com/sso/oauth2.0/accessToken";
@@ -37,7 +37,17 @@ export class PokemonClubAuthHandler
             if (err)
                 throw err;
 
-            def.resolve(JSON.parse(body));
+            //Parse body if any exists, callback with errors if any.
+            if (body)
+            {
+                var parsedBody = JSON.parse(body);
+                if (parsedBody.errors && parsedBody.errors.length !== 0)
+                {
+                    throw new Error(`Error logging in: ${parsedBody.errors[0]}`);
+                }
+
+                def.resolve(parsedBody);
+            }
         });
 
         return def.promise;
@@ -87,8 +97,6 @@ export class PokemonClubAuthHandler
     private static getOAuthToken(ticket)
     {
         var def = q.defer();
-
-        console.log(ticket);
 
         var options = {
             url: login_oauth,

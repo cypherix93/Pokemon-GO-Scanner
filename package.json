@@ -1,6 +1,6 @@
 {
   "name": "pokemon-go-scanner",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Map scanner for Pokemon GO to find wild pokemon, gyms, stops etc.",
   "main": "src/index.js",
   "repository": {
