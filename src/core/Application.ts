@@ -20,11 +20,17 @@ export class Application
         var profile = await io.getProfile();
 
         Logger.info(`Username: ${profile.username}`);
-        Logger.info(`Poke Storage: ${profile.poke_storage}`);
-        Logger.info(`Item Storage: ${profile.item_storage}`);
+        Logger.info(`Team: ${profile.team}`);
 
-        Logger.info(`Pokecoin: ${profile.currency[0].amount}`);
-        Logger.info(`Stardust: ${profile.currency[1].amount}`);
+        Logger.info(`Poke Storage: ${profile.storage.pokemon}`);
+        Logger.info(`Item Storage: ${profile.storage.items}`);
+
+        Logger.info(`Pokecoin: ${profile.pokecoins}`);
+        Logger.info(`Stardust: ${profile.stardust}`);
+
+        var heartbeat = await io.getHeartbeat();
+
+        console.log(heartbeat);
     }
 
     private static getArgs()

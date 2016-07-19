@@ -53,7 +53,7 @@ export abstract class PokeIOBase
             new requestEnvelope.Requests(126),
             new requestEnvelope.Requests(4),
             new requestEnvelope.Requests(129),
-            new requestEnvelope.Requests(5, new requestEnvelope.Unknown3('4a2e9bc330dae60e7b74fc85b98868ab4700802e'))
+            new requestEnvelope.Requests(5, new requestEnvelope.Unknown3("4a2e9bc330dae60e7b74fc85b98868ab4700802e"))
         ];
 
         var apiResponse = await this.makeApiRequest(Constants.API_URL, requests) as any;
