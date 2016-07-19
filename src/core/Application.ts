@@ -15,7 +15,7 @@ export class Application
         await io.init(args.username, args.password, args.location, args.provider);
 
         Logger.info(`Current location: ${io.player.location.name}`);
-        Logger.info(`[i] lat/long: ${io.player.location.latitude} ${io.player.location.longitude}`);
+        Logger.info(`Latitude / Longitude: ${io.player.location.latitude} ${io.player.location.longitude}`);
 
         var profile = await io.getProfile();
 
