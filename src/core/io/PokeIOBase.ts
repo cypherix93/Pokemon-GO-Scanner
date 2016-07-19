@@ -72,7 +72,7 @@ export abstract class PokeIOBase
         // Auth
         var auth = new this.requestEnvelope.AuthInfo({
             provider: this.player.provider,
-            token: new this.responseEnvelope.AuthInfo.JWT(this.player.accessToken, 59)
+            token: new this.requestEnvelope.AuthInfo.JWT(this.player.accessToken, 59)
         });
 
         var request = new this.requestEnvelope({
