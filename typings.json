@@ -3,7 +3,9 @@
     "node": "registry:dt/node#6.0.0+20160709114037"
   },
   "globalDependencies": {
+    "bytebuffer": "registry:dt/bytebuffer#5.0.0+20160624071349",
     "form-data": "registry:dt/form-data#0.0.0+20160316155526",
+    "long": "registry:dt/long#3.0.2+20160602144319",
     "node": "registry:dt/node#6.0.0+20160709114037",
     "protobufjs": "registry:dt/protobufjs#0.0.0+20160317120654",
     "q": "registry:dt/q#0.0.0+20160613154756",
