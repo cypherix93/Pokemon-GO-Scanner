@@ -25,7 +25,7 @@ module.exports = function(gulp, plugins, paths)
             }))
             .pipe(plugins.debug({title: "[app] compiled:"}))
             .pipe(tsFilter.restore)
-            .pipe(gulp.dest(paths.build));
+            .pipe(gulp.dest(paths.build + "app/"));
     });
         
     // Compile Client files
@@ -42,14 +42,14 @@ module.exports = function(gulp, plugins, paths)
     gulp.task("copy-ui-files", function ()
     {
         var filesToCopy = [
-            paths.client + "assets/**",
-            paths.client + "views/**",
-            paths.client + "index.html"
+            paths.ui + "assets/**",
+            paths.ui + "views/**",
+            paths.ui + "index.html"
         ];
         
-        return gulp.src(filesToCopy, {base: paths.client})
+        return gulp.src(filesToCopy, {base: paths.ui})
             .pipe(plugins.debug({title: "[ui] copied:"}))
-            .pipe(gulp.dest(paths.build + "client/"));
+            .pipe(gulp.dest(paths.build + "ui/"));
     });
     
     // Bundle AngularJS files

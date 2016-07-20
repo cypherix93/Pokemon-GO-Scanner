@@ -7,7 +7,7 @@ export class Bootstrapper
 {
     public static bootstrap()
     {
-        var controllerPath = path.join(Config.current.rootPath, "app/app/controllers");
+        var controllerPath = path.join(Config.current.rootPath, "app/client/controllers");
         var controllerFiles = recursiveReaddirSync(controllerPath);
 
         for (let file of controllerFiles)

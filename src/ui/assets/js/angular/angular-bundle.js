@@ -19,23 +19,6 @@ AngularApp.config(["toastrConfig", function (toastrConfig)
 AngularApp.config(["$stateProvider", "$urlRouterProvider", "$locationProvider", function ($stateProvider, $urlRouterProvider, $locationProvider)
 {
     $locationProvider.html5Mode(false);
-
-    // Home page routes
-    $stateProvider.state("home",
-        {
-            url: "/",
-            templateUrl: "views/home/index.html"
-        });
-
-    // Error routes
-    $stateProvider.state("error",
-        {
-            url: "/error/:status",
-            templateUrl: function (urlattr)
-            {
-                return "views/error/" + urlattr.status + ".html";
-            }
-        });
 }]);
 // Configure Angular App Initialization
 AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
@@ -54,6 +37,24 @@ AngularApp.service("IPCService", function IPCService()
     {
         return client.send(channel, request);
     }
+});
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    const self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    const self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
 });
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
@@ -152,24 +153,6 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     {
     };
 }]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    const self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    const self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.component("homeComponent", {
     controller: "HomeController as Login",
     templateUrl: "templates/app/home/Home.template.html"
