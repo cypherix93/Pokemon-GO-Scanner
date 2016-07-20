@@ -7,11 +7,10 @@ AngularApp.controller("HomeController", function HomeController(uiGmapGoogleMapA
             latitude: 40.925493,
             longitude: -73.123182
         },
-        zoom: 16
+        zoom: 16,
+        options: {
+            disableDefaultUI: true,
+            zoomControl: true
+        }
     };
-    
-    uiGmapGoogleMapApi.then(function (maps)
-    {
-        console.log("READY");
-    });
 });

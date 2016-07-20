@@ -20,7 +20,7 @@ AngularApp.config(["toastrConfig", function (toastrConfig)
 AngularApp.config(["uiGmapGoogleMapApiProvider", function (uiGmapGoogleMapApiProvider)
 {
     uiGmapGoogleMapApiProvider.configure({
-        key: "AIzaSyCL-hcgc6BVBfs57dpNh8rwhhKqUXxer1k"
+        key: process.env.GOOGLE_MAPS_API_KEY
     });
 }]);
 // Configure Angular App Routes
@@ -33,19 +33,6 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
-AngularApp.service("IPCService", function IPCService()
-{
-    const self = this;
-    
-    const IpcClient = require("electron-ipc-tunnel/client").default;
-    
-    const client = new IpcClient();
-    
-    self.send = function (channel, request)
-    {
-        return client.send(channel, request);
-    }
-});
 AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     const self = this;
@@ -63,6 +50,19 @@ AngularApp.service("IdentityService", function ()
     {
         return !!self.currentUser;
     };
+});
+AngularApp.service("IPCService", function IPCService()
+{
+    const self = this;
+    
+    const IpcClient = require("electron-ipc-tunnel/client").default;
+    
+    const client = new IpcClient();
+    
+    self.send = function (channel, request)
+    {
+        return client.send(channel, request);
+    }
 });
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
@@ -174,13 +174,12 @@ AngularApp.controller("HomeController", ["uiGmapGoogleMapApi", function HomeCont
             latitude: 40.925493,
             longitude: -73.123182
         },
-        zoom: 16
+        zoom: 16,
+        options: {
+            disableDefaultUI: true,
+            zoomControl: true
+        }
     };
-    
-    uiGmapGoogleMapApi.then(function (maps)
-    {
-        console.log("READY");
-    });
 }]);
 AngularApp.config(["$stateProvider", function ($stateProvider)
 {
@@ -194,4 +193,4 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','{{Home.map}}\r\n\r\n<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom"></ui-gmap-google-map>');}]);
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','\r\n\r\n<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options"></ui-gmap-google-map>');}]);
