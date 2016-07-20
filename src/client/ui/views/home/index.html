@@ -1,0 +1,9 @@
+<h2>Home Page</h2>
+
+<hr>
+
+<div class="row" ng-controller="HomeController as home">
+    <div class="col-md-6" ng-repeat="game in home.games | orderBy: 'title'">
+        <game-info-widget game="game"></game-info-widget>
+    </div>
+</div>

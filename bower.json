@@ -1,0 +1,30 @@
+{
+  "name": "nlp-steam-reviews-analysis",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "1.x.x",
+    "angular-sanitize": "1.x.x",
+    "angular-animate": "1.x.x",
+    "angular-messages": "1.x.x",
+    "angular-bootstrap": "1.x.x",
+    "bootstrap-sass-official": "3.3.x",
+    "fontawesome": "4.x.x",
+    "jquery": "2.x.x",
+    "angular-toastr": "~1.6.0",
+    "angular-ui-router": "~0.2.17"
+  },
+  "overrides": {
+    "bootstrap-sass-official": {
+      "main": [
+        "assets/javascripts/bootstrap.js",
+        "assets/fonts/**/*"
+      ]
+    },
+    "fontawesome": {
+      "main": [
+        "css/*",
+        "fonts/*"
+      ]
+    }
+  }
+}

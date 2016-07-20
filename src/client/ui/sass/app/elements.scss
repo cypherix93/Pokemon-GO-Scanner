@@ -1,0 +1,112 @@
+﻿/*
+    Global General Elements
+--------------------------------------------------- */
+html, body
+{
+    height: 100%;
+    @include text-antialias();
+}
+a
+{
+    cursor: pointer;
+    text-decoration: none !important;
+
+    &:hover
+    {
+        color: $brand-info;
+    }
+}
+a, .btn, button
+{
+    @include transitions();
+    outline: none !important;
+}
+hr
+{
+    float: none;
+    clear: both;
+    margin: 10px 0;
+}
+h1, h2, h3, h4, h5, h6
+{
+    margin-top: 0;
+    //text-shadow: $gray-dark 0 0 4px;
+}
+/*
+    Layout Objects
+--------------------------------------------------- */
+#content-container
+{
+    background: white;
+    padding: 65px 30px 30px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 90px;
+
+    overflow: hidden;
+
+    @include box-shadow($gray-light 0 0 3px);
+}
+div[ng-view]
+{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+#footer-container
+{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 15px;
+}
+/*
+    Form validation classes
+--------------------------------------------------- */
+.control-label.required::after
+{
+    content: " *";
+    color: $brand-danger;
+}
+textarea
+{
+    resize: vertical;
+}
+.has-error .control-label
+{
+    color: $text-color;
+}
+.has-error .control-error
+{
+    color: $brand-danger;
+
+    & > *
+    {
+        display: block;
+    }
+}
+/*
+    Bootstrap Elements
+--------------------------------------------------- */
+.well, .jumbotron
+{
+    background: transparentize($gray-base, 0.5);
+}
+/*
+    Custom Classes
+--------------------------------------------------- */
+.border-top-radius-none
+{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.border-bottom-radius-none
+{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+

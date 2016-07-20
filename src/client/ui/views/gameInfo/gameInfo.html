@@ -1,0 +1,56 @@
+<div ng-controller="GameInfoController as gameInfo" class="col-md-12">
+    <div class="panel-body row">
+        <div class="col-xs-2">
+            <img src="" alt="Some Image" class="img-thumbnail img-responsive">
+        </div>
+        <div class="col-xs-10">
+            <h4>
+                {{gameInfo.game.title}}
+            </h4>
+            <pos-neg-bar pos="gameInfo.positive" neg="gameInfo.negative"></pos-neg-bar>
+            <hr>
+            <div class="pull-left">
+                App ID: {{gameInfo.game.appId}}
+            </div>
+            <div class="pull-right">
+                {{gameInfo.reviewsCount | number: 0}} Reviews
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="col-md-6">
+                <h3 class="pull right">Top 5 Bad Things</h3>
+                <ol>
+                    <div ng-repeat="n in gameInfo.goodFeatures track by $index">
+                        <li>{{n}}</li>
+                    </div>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="pull right">Top 5 Bad Things</h3>
+            <ol>
+                <div ng-repeat="n in gameInfo.badFeatures track by $index">
+                    <li>{{n}}</li>
+                </div>
+            </ol>
+        </div>
+
+    </div>
+    <hr>
+    <div>
+        <h3 class="text-center">Top Reviews</h3>
+        <hr>
+        <div class="row" ng-repeat="n in gameInfo.topReviews track by $index">
+            <div class="col-md-2">
+                <p class="text-center">%</p>
+            </div>
+            <div class="col-md-10">
+                <p>{{n}}</p>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>

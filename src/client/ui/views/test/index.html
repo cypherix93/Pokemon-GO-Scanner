@@ -1,0 +1,20 @@
+<div ng-controller="TestController as test">
+    <form ng-submit="test.analyze()">
+        <div class="form-group">
+            <label for="test">Test Sequence Here</label>
+            <textarea name="test" id="test" cols="30" rows="10" class="form-control" ng-model="test.sequence"></textarea>
+        </div>
+
+        <div class="pull-right">
+            <button type="submit" class="btn btn-success">
+                <span class="fa fa-send"></span>
+                Analyze
+            </button>
+        </div>
+
+    </form>
+
+    <hr>
+
+    <pre>{{test.phrases | json}}</pre>
+</div>
