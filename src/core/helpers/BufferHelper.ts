@@ -1,11 +1,9 @@
 import ByteBuffer = require("bytebuffer");
-const Long = require("long");
+
+import bignum = require("bignum");
+import Long = require("long");
 
 const s2 = require("../io/lib/s2");
-
-Long.fromBignum = function(b, signed) {
-    return new Long(b.toNumber(), b.shiftRight(32).toNumber(), signed ? false : true);
-};
 
 export class BufferHelper
 {
@@ -13,9 +11,11 @@ export class BufferHelper
     {
         var origin = s2.CellId.from_lat_lng(s2.LatLng.from_degrees(latitude, longitude)).parent(15);
         var walk = [origin.id()];
+
         // 10 before and 10 after
         var next = origin.next();
         var prev = origin.prev();
+
         for (var i = 0; i < 10; i++)
         {
             // in range(10):
@@ -27,13 +27,24 @@ export class BufferHelper
 
         // Generating walk data using s2 geometry
         var buffer = new ByteBuffer(21 * 10).LE();
+
         walk
             .sort((a, b) => a.cmp(b))
-            .forEach(elem => buffer.writeVarint64(Long.fromBignum(elem)));
+            .forEach(elem => buffer.writeVarint64(BufferHelper.convertBigNumToLong(elem)));
 
         // Creating MessageQuad for Requests type=106
         buffer.flip();
 
         return buffer.toBuffer();
+    }
+
+    private static convertBigNumToLong(b, signed?):Long
+    {
+        const lowMask = new bignum("ffffffff", 16);
+
+        var low = b.and(lowMask).toNumber();
+        var high = b.shiftRight(32).and(lowMask).toNumber();
+
+        return new Long(low, high, !signed);
     }
 }
