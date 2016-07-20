@@ -31,7 +31,6 @@ export class Application
         var heartbeat = await io.getHeartbeat();
 
         console.log(heartbeat);
-
     }
 
     private static getArgs()
