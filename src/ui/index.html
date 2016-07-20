@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
 
-        <title>{{ PageName }} | PokéRadar</title>
+        <title>PokéRadar</title>
 
         <!-- Stylesheets -->
         <link rel="stylesheet" href="assets/lib/fontawesome/css/font-awesome.min.css"/>
@@ -17,6 +17,8 @@
                 window.$ = window.jQuery = require("./assets/lib/jquery/js/jquery.min.js");
         </script>
         <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/lib/lodash/js/lodash.min.js"></script>
+
         <script src="assets/lib/angular/js/angular.min.js"></script>
         <script src="assets/lib/angular/js/angular-animate.min.js"></script>
         <script src="assets/lib/angular/js/angular-sanitize.min.js"></script>
@@ -24,13 +26,15 @@
         <script src="assets/lib/angular/js/angular-ui-router.min.js"></script>
         <script src="assets/lib/angular/js/ui-bootstrap-tpls.min.js"></script>
         <script src="assets/lib/angular/js/angular-toastr.tpls.min.js"></script>
+        <script src="assets/lib/angular/js/angular-simple-logger.min.js"></script>
+        <script src="assets/lib/angular/js/angular-google-maps.min.js"></script>
 
         <!-- App Angular Bundle -->
         <script src="assets/js/angular/angular-bundle.js"></script>
     </head>
     <body>
         <!-- Dynamic view -->
-        <div class="container-fluid">
+        <div class="container-fluid" id="content-container">
             <div ui-view></div>
         </div>
     </body>

@@ -6,5 +6,6 @@ var AngularApp = angular.module("AngularApp",
         "ngMessages",
         "ui.router",
         "ui.bootstrap",
-        "toastr"
+        "toastr",
+        "uiGmapgoogle-maps"
     ]);

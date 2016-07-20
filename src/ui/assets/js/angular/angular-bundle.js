@@ -6,7 +6,8 @@ var AngularApp = angular.module("AngularApp",
         "ngMessages",
         "ui.router",
         "ui.bootstrap",
-        "toastr"
+        "toastr",
+        "uiGmapgoogle-maps"
     ]);
 // Configure Angular App Preferences
 AngularApp.config(["toastrConfig", function (toastrConfig)
@@ -14,6 +15,13 @@ AngularApp.config(["toastrConfig", function (toastrConfig)
     toastrConfig.autoDismiss = true;
     toastrConfig.positionClass = "toast-bottom-center";
     toastrConfig.preventOpenDuplicates = true;
+}]);
+
+AngularApp.config(["uiGmapGoogleMapApiProvider", function (uiGmapGoogleMapApiProvider)
+{
+    uiGmapGoogleMapApiProvider.configure({
+        key: "AIzaSyCL-hcgc6BVBfs57dpNh8rwhhKqUXxer1k"
+    });
 }]);
 // Configure Angular App Routes
 AngularApp.config(["$stateProvider", "$urlRouterProvider", "$locationProvider", function ($stateProvider, $urlRouterProvider, $locationProvider)
@@ -154,14 +162,26 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     };
 }]);
 AngularApp.component("homeComponent", {
-    controller: "HomeController as Login",
+    controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
 });
-AngularApp.controller("HomeController", function HomeController()
+AngularApp.controller("HomeController", ["uiGmapGoogleMapApi", function HomeController(uiGmapGoogleMapApi)
 {
     const self = this;
     
-});
+    self.map = {
+        center: {
+            latitude: 40.925493,
+            longitude: -73.123182
+        },
+        zoom: 16
+    };
+    
+    uiGmapGoogleMapApi.then(function (maps)
+    {
+        console.log("READY");
+    });
+}]);
 AngularApp.config(["$stateProvider", function ($stateProvider)
 {
     $stateProvider.state("home",
@@ -174,4 +194,4 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<div class="clearfix">\r\n    <h2 class="page-header">Log In</h2>\r\n\r\n    <form class="form-horizontal clearfix col-xs-10 col-xs-offset-1" ng-submit="Login.login()" novalidate>\r\n        <div class="form-group">\r\n            <label for="email" class="required">Email</label>\r\n            <input type="email" class="form-control" id="email" ng-model="Login.email" required>\r\n        </div>\r\n        <div class="form-group">\r\n            <label for="password" class="required">Password</label>\r\n            <input type="password" class="form-control" id="password" ng-model="Login.password" required>\r\n        </div>\r\n        <div class="form-group">\r\n            <button type="submit" class="btn btn-block btn-primary">\r\n                <span class="fa fa-sign-in"></span>\r\n                Login\r\n            </button>\r\n        </div>\r\n        <div class="form-group">\r\n            <div class="text-center">\r\n                <h4>\r\n                    <a ui-sref="register">Don\'t have an account? Sign up.</a>\r\n                </h4>\r\n            </div>\r\n            <div class="text-center">\r\n                <a>Forgot Password?</a>\r\n            </div>\r\n        </div>\r\n        <br>\r\n    </form>\r\n</div>');}]);
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','{{Home.map}}\r\n\r\n<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom"></ui-gmap-google-map>');}]);

@@ -1,14 +1,14 @@
 ﻿// Variables
 @import "app/theme";
 @import "app/mixins";
-@import "themes/cyborg/_variables";
+@import "themes/paper/_variables";
 @import "app/variables";
 
 // Bootstrap
 @import "bootstrap/_bootstrap";
 
 // Bootswatch Style
-@import "themes/cyborg/_bootswatch";
+@import "themes/paper/_bootswatch";
 
 // App Specific Styles
 @import "app/elements";
