@@ -6,36 +6,32 @@
         <title>Steam Reviews Analysis</title>
 
         <!-- Stylesheets -->
-        <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.min.css"/>
-        <link rel="stylesheet" href="css/main.min.css"/>
+        <link rel="stylesheet" href="assets/lib/fontawesome/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="assets/css/main.css"/>
 
         <!-- Scripts -->
-        <script src="lib/jquery/js/jquery.min.js"></script>
+        <script src="assets/lib/jquery/js/jquery.min.js"></script>
         <script>
             // If jquery isn't loaded by the script tag, we need to require it
             if(!window.$ && !window.jQuery)
-                window.$ = window.jQuery = require("./lib/jquery/js/jquery.min.js");
+                window.$ = window.jQuery = require("./assets/lib/jquery/js/jquery.min.js");
         </script>
-        <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-        <script src="lib/angular/js/angular.min.js"></script>
-        <script src="lib/angular/js/angular-animate.min.js"></script>
-        <script src="lib/angular/js/angular-sanitize.min.js"></script>
-        <script src="lib/angular/js/angular-messages.min.js"></script>
-        <script src="lib/angular/js/angular-ui-router.min.js"></script>
-        <script src="lib/angular/js/ui-bootstrap-tpls.min.js"></script>
-        <script src="lib/angular/js/angular-toastr.tpls.min.js"></script>
+        <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/lib/angular/js/angular.min.js"></script>
+        <script src="assets/lib/angular/js/angular-animate.min.js"></script>
+        <script src="assets/lib/angular/js/angular-sanitize.min.js"></script>
+        <script src="assets/lib/angular/js/angular-messages.min.js"></script>
+        <script src="assets/lib/angular/js/angular-ui-router.min.js"></script>
+        <script src="assets/lib/angular/js/ui-bootstrap-tpls.min.js"></script>
+        <script src="assets/lib/angular/js/angular-toastr.tpls.min.js"></script>
 
         <!-- App Angular Bundle -->
-        <script src="js/angular/angular-bundle.js"></script>
+        <script src="assets/js/angular/angular-bundle.js"></script>
     </head>
     <body>
-        <!-- Navigation Bar -->
-        <div ng-include="'./views/_shared/navigation.html'"></div>
-
         <!-- Dynamic view -->
         <div class="container-fluid">
             <div ui-view></div>
         </div>
-
     </body>
 </html>
