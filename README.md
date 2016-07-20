@@ -11,7 +11,7 @@ Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for P
 
 ### Thanks to:
 
-- [Armax's](https://github.com/Armax) project [Poké.io](https://github.com/Armax/Pokemon-GO-node-api), which is the core of my project. I copied over most of the functionality to clean, organize, and port to Typescript for ease of extension.
+- [Armax's](https://github.com/Armax) project [Poké.io](https://github.com/Armax/Pokemon-GO-node-api), which is almost entirely the core of my project. I copied over most of the functionality to clean, organize, and port to Typescript for ease of extension.
 - [tejado](https://github.com/tejado) for the [Pokemon GO API library / demo](https://github.com/tejado/pgoapi).
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/) for providing his [proof of conept](https://github.com/AHAAAAAAA/PokemonGo-Map/).
 
