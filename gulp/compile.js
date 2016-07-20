@@ -90,11 +90,6 @@ module.exports = function(gulp, plugins, paths)
             .queue(templates)
             .done()
             .pipe(plugins.concat("angular-bundle.js"))
-            .pipe(gulp.dest(angularDest))
-            .pipe(plugins.uglify())
-            .pipe(plugins.rename({
-                suffix: ".min"
-            }))
             .pipe(gulp.dest(angularDest));
         
         return bundle;
@@ -111,10 +106,6 @@ module.exports = function(gulp, plugins, paths)
             .pipe(plugins.sassGlob())
             .pipe(plugins.sass())
             .pipe(plugins.plumber.stop())
-            .pipe(gulp.dest(cssDir))
-            
-            .pipe(plugins.cleanCss())
-            .pipe(plugins.rename({suffix: ".min"}))
             .pipe(gulp.dest(cssDir));
     });
 };
