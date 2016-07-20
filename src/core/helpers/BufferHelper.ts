@@ -3,7 +3,7 @@ import ByteBuffer = require("bytebuffer");
 import bignum = require("bignum");
 import Long = require("long");
 
-const s2 = require("../io/lib/s2");
+const s2 = require("simple-s2-node");
 
 export class BufferHelper
 {
