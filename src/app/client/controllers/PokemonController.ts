@@ -11,7 +11,7 @@ export class PokemonController extends Controller
         this.initSelf(this);
     }
 
-    public async getMapPokemons(latitude:number, longitude:number):MapPokemon[]
+    public async getMapPokemons(latitude:number, longitude:number):Promise<MapPokemon[]>
     {
 
     }

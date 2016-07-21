@@ -4,7 +4,6 @@ import q = require("q");
 import {Logger} from "../helpers/Logger";
 import {ProtoBuilder} from "../proto/ProtoBuilder";
 import {Player} from "../models/Player";
-import {EventEmitter} from "events";
 import {Auth} from "../auth/Auth";
 import {Constants} from "./Constants";
 import {ApiHandler} from "./handlers/ApiHandler";

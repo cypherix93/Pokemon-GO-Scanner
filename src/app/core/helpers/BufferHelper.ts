@@ -9,7 +9,7 @@ export class BufferHelper
 {
     public static getWalkBuffer(latitude, longitude)
     {
-        var origin = s2.CellId.from_lat_lng(s2.LatLng.from_degrees(latitude, longitude)).parent(15);
+        var origin = s2.S2CellId.from_lat_lng(s2.S2LatLng.from_degrees(latitude, longitude)).parent(15);
         var walk = [origin.id()];
 
         // 10 before and 10 after
