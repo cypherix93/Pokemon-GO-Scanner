@@ -1,4 +1,5 @@
 import {Config} from "./Config";
+import {Application} from "../Application";
 import path = require("path");
 
 const recursiveReaddirSync = require("recursive-readdir-sync");
@@ -6,6 +7,18 @@ const recursiveReaddirSync = require("recursive-readdir-sync");
 export class Bootstrapper
 {
     public static bootstrap()
+    {
+        Bootstrapper.configControllers();
+
+        Application.init()
+            .then(() => process.exit(0))
+            .catch(err =>
+            {
+                console.error(err);
+            });
+    }
+
+    private static configControllers()
     {
         var controllerPath = path.join(Config.current.rootPath, "app/client/controllers");
         var controllerFiles = recursiveReaddirSync(controllerPath);

@@ -1,7 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import {Config} from "./core/config/Config";
-import {Bootstrapper} from "./core/config/Bootstrap";
+import {Bootstrapper} from "./core/config/Bootstrapper";
 
 export class ElectronApp
 {

@@ -33,6 +33,19 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
+AngularApp.service("IPCService", function IPCService()
+{
+    const self = this;
+    
+    const IpcClient = require("electron-ipc-tunnel/client").default;
+    
+    const client = new IpcClient();
+    
+    self.send = function (channel, request)
+    {
+        return client.send(channel, request);
+    }
+});
 AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     const self = this;
@@ -50,19 +63,6 @@ AngularApp.service("IdentityService", function ()
     {
         return !!self.currentUser;
     };
-});
-AngularApp.service("IPCService", function IPCService()
-{
-    const self = this;
-    
-    const IpcClient = require("electron-ipc-tunnel/client").default;
-    
-    const client = new IpcClient();
-    
-    self.send = function (channel, request)
-    {
-        return client.send(channel, request);
-    }
 });
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
@@ -193,4 +193,4 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','\r\n\r\n<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options"></ui-gmap-google-map>');}]);
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">\r\n\r\n</ui-gmap-google-map>');}]);
