@@ -1,4 +1,4 @@
 <ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">
-    <ui-gmap-marker ng-repeat="pokemon in Home.pokemonMarkers" idKey="pokemon.id" coords="pokemon.coords" options="{icon: pokemon.pokemon.iconPath}">
+    <ui-gmap-marker ng-repeat="pokemon in Home.pokemonMarkers" idKey="pokemon.id" coords="pokemon.coords" options="{icon: pokemon.pokemon.icons.small}">
     </ui-gmap-marker>
 </ui-gmap-google-map>

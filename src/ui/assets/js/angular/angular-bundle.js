@@ -40,19 +40,6 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
-AngularApp.service("IPCService", function IPCService()
-{
-    const self = this;
-    
-    const IpcClient = require("electron-ipc-tunnel/client").default;
-    
-    const client = new IpcClient();
-    
-    self.send = function (channel, request)
-    {
-        return client.send(channel, request);
-    }
-});
 AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     const self = this;
@@ -70,6 +57,19 @@ AngularApp.service("IdentityService", function ()
     {
         return !!self.currentUser;
     };
+});
+AngularApp.service("IPCService", function IPCService()
+{
+    const self = this;
+    
+    const IpcClient = require("electron-ipc-tunnel/client").default;
+    
+    const client = new IpcClient();
+    
+    self.send = function (channel, request)
+    {
+        return client.send(channel, request);
+    }
 });
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
 {
@@ -1546,4 +1546,4 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">\r\n    <ui-gmap-marker ng-repeat="pokemon in Home.pokemonMarkers" idkey="pokemon.id" coords="pokemon.coords" options="{icon: pokemon.pokemon.iconPath}">\r\n    </ui-gmap-marker>\r\n</ui-gmap-google-map>');}]);
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">\r\n    <ui-gmap-marker ng-repeat="pokemon in Home.pokemonMarkers" idkey="pokemon.id" coords="pokemon.coords" options="{icon: pokemon.pokemon.icons.small}">\r\n    </ui-gmap-marker>\r\n</ui-gmap-google-map>');}]);

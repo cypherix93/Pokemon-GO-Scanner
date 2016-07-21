@@ -7,12 +7,18 @@ export class Pokemon
 {
     public pokedexId:number;
 
-    public iconPath:string;
+    public icons:{
+        big:string,
+        small:string
+    };
 
     constructor(pokedexId:number)
     {
         this.pokedexId = pokedexId;
 
-        this.iconPath = path.join(pokemonImagesPath, `${pokedexId}.png`);
+        this.icons = {
+            big: path.join(pokemonImagesPath, `big/${pokedexId}.png`),
+            small: path.join(pokemonImagesPath, `small/${pokedexId}.png`)
+        }
     }
 }
