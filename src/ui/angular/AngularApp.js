@@ -9,3 +9,10 @@ var AngularApp = angular.module("AngularApp",
         "toastr",
         "uiGmapgoogle-maps"
     ]);
+
+var apprequire = function(pathFromApp)
+{
+    const path = require("path");
+    
+    return require(path.join("../app/", pathFromApp));
+};

@@ -1,12 +1,23 @@
 export abstract class MapObject
 {
-    public latitude:number;
+    public id:string;
 
-    public longitude:number;
+    public coords:{
+        latitude:number,
+        longitude:number
+    };
 
     constructor(latitude:number, longitude:number)
     {
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.coords = {latitude, longitude};
+
+        this.id = this.generateMapId();
+    }
+
+    private generateMapId()
+    {
+        var stringToEncode = `LAT${this.coords.latitude}|LONG${this.coords.longitude}`;
+
+        return new Buffer(stringToEncode).toString("base64");
     }
 }

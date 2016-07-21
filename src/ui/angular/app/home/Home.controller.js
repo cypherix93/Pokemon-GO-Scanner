@@ -1,7 +1,9 @@
-AngularApp.controller("HomeController", function HomeController(uiGmapGoogleMapApi)
+AngularApp.controller("HomeController", function HomeController(HeartbeatTestService)
 {
-    const self = this;
+    const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
     
+    const self = this;
+        
     self.map = {
         center: {
             latitude: 40.925493,
@@ -13,4 +15,24 @@ AngularApp.controller("HomeController", function HomeController(uiGmapGoogleMapA
             zoomControl: true
         }
     };
+    
+    self.pokemonMarkers = [];
+    
+    var heartbeat = HeartbeatTestService.getMockHeartbeat();
+    
+    var pokemons = _.flatten(
+        heartbeat.cells
+        .map(x => x.MapPokemon)
+    );
+    
+    for (let pokemon of pokemons)
+    {
+        let latitude = pokemon.Latitude;
+        let longitude = pokemon.Longitude;
+        let pokemonId = pokemon.PokedexTypeId;
+        
+        self.pokemonMarkers.push(new MapPokemon(latitude, longitude, pokemonId));
+    }
+    
+    console.log(self.pokemonMarkers);
 });
