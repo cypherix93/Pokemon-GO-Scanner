@@ -9,7 +9,6 @@
   "author": "cypherix93",
   "license": "MIT",
   "dependencies": {
-    "bignum": "^0.12.5",
     "electron-ipc-tunnel": "^3.1.0",
     "events": "^1.1.1",
     "geocoder": "^0.2.2",
@@ -21,7 +20,6 @@
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.73.0",
     "serve-favicon": "^2.3.0",
-    "simple-s2-node": "0.0.2",
     "sleep-promise": "^1.0.0",
     "winston": "^2.2.0"
   },
