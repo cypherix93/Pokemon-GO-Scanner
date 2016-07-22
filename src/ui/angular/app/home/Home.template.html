@@ -1,12 +1,12 @@
 <info-panel>
     <h3>Latitude</h3>
-    <div>{{Home.map.center.latitude}}</div>
+    <div>{{Home.current.coords.latitude}}</div>
 
     <h3>Longitude</h3>
-    <div>{{Home.map.center.longitude}}</div>
+    <div>{{Home.current.coords.longitude}}</div>
 </info-panel>
 
-<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">
+<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">
     <ui-gmap-markers models="Home.pokemonMarkers" coords="'coords'" idKey="'id'" options="'options'">
     </ui-gmap-markers>
 </ui-gmap-google-map>

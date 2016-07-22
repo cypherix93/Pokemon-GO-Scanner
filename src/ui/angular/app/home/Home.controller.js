@@ -1,10 +1,10 @@
-AngularApp.controller("HomeController", function HomeController(HeartbeatTestService)
+AngularApp.controller("HomeController", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
 {
     const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
     
     const self = this;
-        
-    self.map = {
+    
+    self.mapOptions = {
         center: {
             latitude: 40.925493,
             longitude: -73.123182
@@ -16,13 +16,16 @@ AngularApp.controller("HomeController", function HomeController(HeartbeatTestSer
         }
     };
     
+    self.map = {};
+    self.current = {};
+    
     self.pokemonMarkers = [];
     
     var heartbeat = HeartbeatTestService.getMockHeartbeat();
     
     var pokemons = _.flatten(
         heartbeat.cells
-        .map(x => x.MapPokemon)
+            .map(x => x.MapPokemon)
     );
     
     for (let pokemon of pokemons)
@@ -40,9 +43,23 @@ AngularApp.controller("HomeController", function HomeController(HeartbeatTestSer
                 icon: mapPokemon.pokemon.icons.small
             }
         };
-    
+        
         self.pokemonMarkers.push(pokemonMarker);
     }
     
     console.log(self.pokemonMarkers);
+    
+    uiGmapGoogleMapApi.then(function(maps)
+    {
+        $scope.$watch(
+            () => self.map.getGMap().getCenter(),
+            (newVal, oldVal) =>
+            {
+                self.current.coords = {
+                    latitude: newVal.lat(),
+                    longitude: newVal.lng()
+                };
+            }
+        );
+    });
 });

@@ -53,24 +53,6 @@ AngularApp.service("IPCService", function IPCService()
         return client.send(channel, request);
     }
 });
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    const self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    const self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
 {
     const self = this;
@@ -67351,6 +67333,24 @@ AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
     
     }
 });
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    const self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    const self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
+});
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -67486,13 +67486,13 @@ AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
 });
-AngularApp.controller("HomeController", ["HeartbeatTestService", function HomeController(HeartbeatTestService)
+AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGmapGoogleMapApi", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
 {
     const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
     
     const self = this;
-        
-    self.map = {
+    
+    self.mapOptions = {
         center: {
             latitude: 40.925493,
             longitude: -73.123182
@@ -67504,13 +67504,16 @@ AngularApp.controller("HomeController", ["HeartbeatTestService", function HomeCo
         }
     };
     
+    self.map = {};
+    self.current = {};
+    
     self.pokemonMarkers = [];
     
     var heartbeat = HeartbeatTestService.getMockHeartbeat();
     
     var pokemons = _.flatten(
         heartbeat.cells
-        .map(x => x.MapPokemon)
+            .map(x => x.MapPokemon)
     );
     
     for (let pokemon of pokemons)
@@ -67528,11 +67531,28 @@ AngularApp.controller("HomeController", ["HeartbeatTestService", function HomeCo
                 icon: mapPokemon.pokemon.icons.small
             }
         };
-    
+        
         self.pokemonMarkers.push(pokemonMarker);
     }
     
     console.log(self.pokemonMarkers);
+    
+    uiGmapGoogleMapApi.then(function(maps)
+    {
+        console.log("READY");
+        
+        $scope.$watch(
+            () => self.map.getGMap().getCenter(),
+            (newVal, oldVal) =>
+            {
+                console.log(newVal);
+                self.current.coords = {
+                    latitude: newVal.lat(),
+                    longitude: newVal.lng()
+                };
+            }
+        );
+    });
 }]);
 AngularApp.config(["$stateProvider", function ($stateProvider)
 {
@@ -67546,5 +67566,5 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<info-panel>\r\n    <h3>Latitude</h3>\r\n    <div>{{Home.map.center.latitude}}</div>\r\n\r\n    <h3>Longitude</h3>\r\n    <div>{{Home.map.center.longitude}}</div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">\r\n    <ui-gmap-markers models="Home.pokemonMarkers" coords="\'coords\'" idkey="\'id\'" options="\'options\'">\r\n    </ui-gmap-markers>\r\n</ui-gmap-google-map>');
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<info-panel>\r\n    <h3>Latitude</h3>\r\n    <div>{{Home.current.coords.latitude}}</div>\r\n\r\n    <h3>Longitude</h3>\r\n    <div>{{Home.current.coords.longitude}}</div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n    <ui-gmap-markers models="Home.pokemonMarkers" coords="\'coords\'" idkey="\'id\'" options="\'options\'">\r\n    </ui-gmap-markers>\r\n</ui-gmap-google-map>');
 $templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');}]);
