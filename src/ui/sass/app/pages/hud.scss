@@ -1,0 +1,42 @@
+$searchPanelHeight: 50px;
+
+$infoPanelWidth: 200px;
+$infoPanelHideRange: 10px;
+
+$infoPanelButtonLeft: -52px;
+
+.info-panel
+{
+    position: absolute;
+    top: $searchPanelHeight;
+    right: -($infoPanelWidth + $infoPanelHideRange);
+    z-index: 999;
+
+    height: 400px;
+    width: 200px;
+    margin: 15px 0;
+
+    transition: right 0.25s ease;
+
+    .expand-arrow
+    {
+        position: absolute;
+        left: $infoPanelButtonLeft - $infoPanelHideRange;
+        top: 20px;
+
+        width: -($infoPanelButtonLeft) + 2px;
+        padding: 4px;
+
+        overflow: hidden;
+    }
+
+    &.shown
+    {
+        right: 0;
+
+        .expand-arrow
+        {
+            left: $infoPanelButtonLeft;
+        }
+    }
+}

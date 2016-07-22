@@ -1,3 +1,11 @@
+<info-panel>
+    <h3>Latitude</h3>
+    <div>{{Home.map.center.latitude}}</div>
+
+    <h3>Longitude</h3>
+    <div>{{Home.map.center.longitude}}</div>
+</info-panel>
+
 <ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">
     <ui-gmap-markers models="Home.pokemonMarkers" coords="'coords'" idKey="'id'" options="'options'">
     </ui-gmap-markers>

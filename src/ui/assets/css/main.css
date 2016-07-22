@@ -6631,3 +6631,24 @@ home-component .angular-google-map-container {
   left: 0;
   right: 0;
   bottom: 0; }
+
+.info-panel {
+  position: absolute;
+  top: 50px;
+  right: -210px;
+  z-index: 999;
+  height: 400px;
+  width: 200px;
+  margin: 15px 0;
+  transition: right 0.25s ease; }
+  .info-panel .expand-arrow {
+    position: absolute;
+    left: -62px;
+    top: 20px;
+    width: 54px;
+    padding: 4px;
+    overflow: hidden; }
+  .info-panel.shown {
+    right: 0; }
+    .info-panel.shown .expand-arrow {
+      left: -52px; }

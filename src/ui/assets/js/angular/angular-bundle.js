@@ -40,6 +40,19 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
+AngularApp.service("IPCService", function IPCService()
+{
+    const self = this;
+    
+    const IpcClient = require("electron-ipc-tunnel/client").default;
+    
+    const client = new IpcClient();
+    
+    self.send = function (channel, request)
+    {
+        return client.send(channel, request);
+    }
+});
 AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     const self = this;
@@ -67338,19 +67351,6 @@ AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
     
     }
 });
-AngularApp.service("IPCService", function IPCService()
-{
-    const self = this;
-    
-    const IpcClient = require("electron-ipc-tunnel/client").default;
-    
-    const client = new IpcClient();
-    
-    self.send = function (channel, request)
-    {
-        return client.send(channel, request);
-    }
-});
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -67448,6 +67448,40 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     {
     };
 }]);
+AngularApp.controller("InfoPanelController", function InfoPanelController()
+{
+    const self = this;
+    
+    self.showPanel = function()
+    {
+        
+    };
+    
+});
+AngularApp.directive("infoPanel", function ()
+{
+    return {
+        restrict: "EA",
+        scope: {},
+        transclude: true,
+        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
+        link: {
+            pre: function (scope, element, attrs)
+            {
+                scope.panelShown = true;
+                
+                scope.togglePanel = function()
+                {
+                    scope.panelShown = !scope.panelShown;
+                };
+            },
+            post: function (scope, element, attrs)
+            {
+                
+            }
+        }
+    }
+});
 AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
@@ -67512,4 +67546,5 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">\r\n    <ui-gmap-markers models="Home.pokemonMarkers" coords="\'coords\'" idkey="\'id\'" options="\'options\'">\r\n    </ui-gmap-markers>\r\n</ui-gmap-google-map>');}]);
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<info-panel>\r\n    <h3>Latitude</h3>\r\n    <div>{{Home.map.center.latitude}}</div>\r\n\r\n    <h3>Longitude</h3>\r\n    <div>{{Home.map.center.longitude}}</div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.map.center" zoom="Home.map.zoom" options="Home.map.options">\r\n    <ui-gmap-markers models="Home.pokemonMarkers" coords="\'coords\'" idkey="\'id\'" options="\'options\'">\r\n    </ui-gmap-markers>\r\n</ui-gmap-google-map>');
+$templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');}]);

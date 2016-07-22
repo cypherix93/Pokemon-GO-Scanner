@@ -10,7 +10,7 @@ export class PokemonRepository
 {
     public static getPokemon(pokedexId:number):Pokemon
     {
-        var pokemon = pokemonData.filter(p => p.id === pokedexId)[0];
+        var pokemon = pokemonData.filter(p => (p.id | 0) === pokedexId)[0];
 
         return pokemon || null;
     }
