@@ -1,27 +1,32 @@
 $searchPanelHeight: 50px;
 
-$infoPanelWidth: 200px;
-$infoPanelHideRange: 10px;
+$infoPanelWidth: 250px;
+$infoPanelPadding: 30px;
 
 $infoPanelButtonLeft: -52px;
+
 
 .info-panel
 {
     position: absolute;
     top: $searchPanelHeight;
-    right: -($infoPanelWidth + $infoPanelHideRange);
+    right: -($infoPanelWidth + $infoPanelPadding);
     z-index: 999;
 
-    height: 400px;
-    width: 200px;
+    width: $infoPanelWidth;
     margin: 15px 0;
 
     transition: right 0.25s ease;
 
+    .panel-body
+    {
+        padding: 15px $infoPanelPadding;
+    }
+
     .expand-arrow
     {
         position: absolute;
-        left: $infoPanelButtonLeft - $infoPanelHideRange;
+        left: $infoPanelButtonLeft - $infoPanelPadding;
         top: 20px;
 
         width: -($infoPanelButtonLeft) + 2px;

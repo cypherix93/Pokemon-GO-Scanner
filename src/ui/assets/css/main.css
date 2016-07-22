@@ -6635,15 +6635,16 @@ home-component .angular-google-map-container {
 .info-panel {
   position: absolute;
   top: 50px;
-  right: -210px;
+  right: -280px;
   z-index: 999;
-  height: 400px;
-  width: 200px;
+  width: 250px;
   margin: 15px 0;
   transition: right 0.25s ease; }
+  .info-panel .panel-body {
+    padding: 15px 30px; }
   .info-panel .expand-arrow {
     position: absolute;
-    left: -62px;
+    left: -82px;
     top: 20px;
     width: 54px;
     padding: 4px;

@@ -1,9 +1,14 @@
 <info-panel>
-    <h3>Latitude</h3>
-    <div>{{Home.current.coords.latitude}}</div>
-
-    <h3>Longitude</h3>
-    <div>{{Home.current.coords.longitude}}</div>
+    <div class="row">
+        <div class="col-xs-6">
+            <small class="text-muted">Latitude</small>
+            <div>{{Home.current.coords.latitude | number:6}}</div>
+        </div>
+        <div class="col-xs-6">
+            <small class="text-muted">Longitude</small>
+            <div>{{Home.current.coords.longitude | number:6}}</div>
+        </div>
+    </div>
 </info-panel>
 
 <ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">
