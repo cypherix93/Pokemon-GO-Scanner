@@ -31,7 +31,17 @@ AngularApp.controller("HomeController", function HomeController(HeartbeatTestSer
         let longitude = pokemon.Longitude;
         let pokemonId = pokemon.PokedexTypeId;
         
-        self.pokemonMarkers.push(new MapPokemon(latitude, longitude, pokemonId));
+        let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
+        
+        let pokemonMarker = {
+            id: mapPokemon.id,
+            coords: mapPokemon.coords,
+            options: {
+                icon: mapPokemon.pokemon.icons.small
+            }
+        };
+    
+        self.pokemonMarkers.push(pokemonMarker);
     }
     
     console.log(self.pokemonMarkers);
