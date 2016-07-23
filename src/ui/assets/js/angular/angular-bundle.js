@@ -53,24 +53,6 @@ AngularApp.service("IPCService", function IPCService()
         return client.send(channel, request);
     }
 });
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    const self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    const self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
 {
     const self = this;
@@ -67351,6 +67333,24 @@ AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
     
     }
 });
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    const self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    const self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
+});
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -67486,7 +67486,7 @@ AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
 });
-AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGmapGoogleMapApi", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
+AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGmapGoogleMapApi", "IPCService", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi, IPCService)
 {
     const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
     
@@ -67549,6 +67549,13 @@ AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGm
                 };
             }
         );
+        
+        IPCService.send("pokemon/initApp")
+            .then(() => console.log("INITED"))
+            .catch(err =>
+            {
+                console.error(err);
+            });
     });
 }]);
 AngularApp.config(["$stateProvider", function ($stateProvider)

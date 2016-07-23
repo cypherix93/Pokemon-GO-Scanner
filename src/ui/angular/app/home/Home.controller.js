@@ -1,4 +1,4 @@
-AngularApp.controller("HomeController", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
+AngularApp.controller("HomeController", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi, IPCService)
 {
     const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
     
@@ -61,5 +61,12 @@ AngularApp.controller("HomeController", function HomeController($scope, Heartbea
                 };
             }
         );
+        
+        IPCService.send("pokemon/initApp")
+            .then(() => console.log("INITED"))
+            .catch(err =>
+            {
+                console.error(err);
+            });
     });
 });

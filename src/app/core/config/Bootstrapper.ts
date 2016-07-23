@@ -9,13 +9,6 @@ export class Bootstrapper
     public static bootstrap()
     {
         Bootstrapper.configControllers();
-
-        Application.init()
-            .then(() => process.exit(0))
-            .catch(err =>
-            {
-                console.error(err);
-            });
     }
 
     private static configControllers()
