@@ -6,9 +6,9 @@ export class Config
 
     private static appConfig = {
         rootPath: Config.rootPath,
-        port: process.env.PORT || 31363,
+        port: process.env.PORT || 8080,
         cors: {
-            origin: "http://localhost:32363",
+            origin: process.env.CLIENT_URL || "http://localhost:9090",
             credentials: true
         }
     };

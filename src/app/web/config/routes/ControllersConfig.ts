@@ -11,7 +11,6 @@ export class ControllersConfig
     {
         // Register controllers routes in our express application
         useExpressServer(app, {
-            routePrefix: "/",
             controllerDirs: [path.join(Config.current.rootPath, "web/controllers")]
         });
     }

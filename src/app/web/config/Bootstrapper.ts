@@ -1,7 +1,6 @@
 import bodyParser = require("body-parser");
 
 import {RoutesConfig} from "./routes/RoutesConfig";
-import {Express} from "express";
 import {Config} from "./Config";
 
 import cookieParser = require("cookie-parser");
@@ -9,7 +8,7 @@ import cors = require("cors");
 
 export class Bootstrapper
 {
-    public static bootstrap(app:Express)
+    public static bootstrap(app)
     {
         console.log("=> Bootstrapping application...");
 

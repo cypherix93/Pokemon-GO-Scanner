@@ -9,13 +9,6 @@ var AngularApp = angular.module("AngularApp",
         "toastr",
         "uiGmapgoogle-maps"
     ]);
-
-var apprequire = function(pathFromApp)
-{
-    const path = require("path");
-    
-    return require(path.join("../app/", pathFromApp));
-};
 // Configure Angular App Preferences
 AngularApp.config(["toastrConfig", function (toastrConfig)
 {
@@ -24,12 +17,26 @@ AngularApp.config(["toastrConfig", function (toastrConfig)
     toastrConfig.preventOpenDuplicates = true;
 }]);
 
-AngularApp.config(["uiGmapGoogleMapApiProvider", function (uiGmapGoogleMapApiProvider)
+(function()
 {
-    uiGmapGoogleMapApiProvider.configure({
-        key: process.env.GOOGLE_MAPS_API_KEY
-    });
-}]);
+    var googleMapProvider;
+    
+    AngularApp.config(["uiGmapGoogleMapApiProvider", function (uiGmapGoogleMapApiProvider)
+    {
+        googleMapProvider = uiGmapGoogleMapApiProvider;
+    }]);
+    
+    AngularApp.run(["$http", function($http)
+    {
+        $http.get("http://localhost:32598/config/getGoogleMapsApiKey")
+            .success(function(response)
+            {
+                googleMapProvider.configure({
+                    key: response.data
+                });
+            })
+    }]);
+})();
 // Configure Angular App Routes
 AngularApp.config(["$stateProvider", "$urlRouterProvider", "$locationProvider", function ($stateProvider, $urlRouterProvider, $locationProvider)
 {
@@ -40,27 +47,14 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
-AngularApp.service("IPCService", function IPCService()
-{
-    const self = this;
-    
-    const IpcClient = require("electron-ipc-tunnel/client").default;
-    
-    const client = new IpcClient();
-    
-    self.send = function (channel, request)
-    {
-        return client.send(channel, request);
-    }
-});
 AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
-    const self = this;
+    var self = this;
 
 }]);
 AngularApp.service("IdentityService", function ()
 {
-    const self = this;
+    var self = this;
 
     // Current User Identity
     self.currentUser = undefined;
@@ -73,7 +67,7 @@ AngularApp.service("IdentityService", function ()
 });
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
 {
-    const self = this;
+    var self = this;
     
     self.getMockHeartbeat = function ()
     {
@@ -67448,16 +67442,6 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     {
     };
 }]);
-AngularApp.controller("InfoPanelController", function InfoPanelController()
-{
-    const self = this;
-    
-    self.showPanel = function()
-    {
-        
-    };
-    
-});
 AngularApp.directive("infoPanel", function ()
 {
     return {
@@ -67486,11 +67470,9 @@ AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
 });
-AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGmapGoogleMapApi", "IPCService", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi, IPCService)
+AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGmapGoogleMapApi", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
 {
-    const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
-    
-    const self = this;
+    var self = this;
     
     self.mapOptions = {
         center: {
@@ -67509,39 +67491,43 @@ AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGm
     
     self.pokemonMarkers = [];
     
-    var heartbeat = HeartbeatTestService.getMockHeartbeat();
-    
-    var pokemons = _.flatten(
-        heartbeat.cells
-            .map(x => x.MapPokemon)
-    );
-    
-    for (let pokemon of pokemons)
-    {
-        let latitude = pokemon.Latitude;
-        let longitude = pokemon.Longitude;
-        let pokemonId = pokemon.PokedexTypeId;
-        
-        let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
-        
-        let pokemonMarker = {
-            id: mapPokemon.id,
-            coords: mapPokemon.coords,
-            options: {
-                icon: mapPokemon.pokemon.icons.small
-            }
-        };
-        
-        self.pokemonMarkers.push(pokemonMarker);
-    }
+    // var heartbeat = HeartbeatTestService.getMockHeartbeat();
+    //
+    // var pokemons = _.flatten(
+    //     heartbeat.cells.map(function (x)
+    //     {
+    //         return x.MapPokemon
+    //     })
+    // );
+    //
+    // for (let pokemon of pokemons)
+    // {
+    //     let latitude = pokemon.Latitude;
+    //     let longitude = pokemon.Longitude;
+    //     let pokemonId = pokemon.PokedexTypeId;
+    //
+    //     let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
+    //
+    //     let pokemonMarker = {
+    //         id: mapPokemon.id,
+    //         coords: mapPokemon.coords,
+    //         options: {
+    //             icon: mapPokemon.pokemon.icons.small
+    //         }
+    //     };
+    //
+    //     self.pokemonMarkers.push(pokemonMarker);
+    // }
     
     console.log(self.pokemonMarkers);
     
-    uiGmapGoogleMapApi.then(function(maps)
+    uiGmapGoogleMapApi.then(function (maps)
     {
-        $scope.$watch(
-            () => self.map.getGMap().getCenter(),
-            (newVal, oldVal) =>
+        $scope.$watch(function ()
+            {
+                return self.map.getGMap().getCenter();
+            },
+            function (newVal, oldVal)
             {
                 self.current.coords = {
                     latitude: newVal.lat(),
@@ -67549,13 +67535,6 @@ AngularApp.controller("HomeController", ["$scope", "HeartbeatTestService", "uiGm
                 };
             }
         );
-        
-        IPCService.send("pokemon/initApp")
-            .then(() => console.log("INITED"))
-            .catch(err =>
-            {
-                console.error(err);
-            });
     });
 }]);
 AngularApp.config(["$stateProvider", function ($stateProvider)

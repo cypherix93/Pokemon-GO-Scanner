@@ -1,5 +1,5 @@
 AngularApp.service("AuthService", function ($q, $window)
 {
-    const self = this;
+    var self = this;
 
 });

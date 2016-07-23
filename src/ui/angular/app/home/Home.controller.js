@@ -1,8 +1,6 @@
-AngularApp.controller("HomeController", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi, IPCService)
+AngularApp.controller("HomeController", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
 {
-    const MapPokemon = apprequire("./core/models/map/MapPokemon").MapPokemon;
-    
-    const self = this;
+    var self = this;
     
     self.mapOptions = {
         center: {
@@ -21,39 +19,43 @@ AngularApp.controller("HomeController", function HomeController($scope, Heartbea
     
     self.pokemonMarkers = [];
     
-    var heartbeat = HeartbeatTestService.getMockHeartbeat();
-    
-    var pokemons = _.flatten(
-        heartbeat.cells
-            .map(x => x.MapPokemon)
-    );
-    
-    for (let pokemon of pokemons)
-    {
-        let latitude = pokemon.Latitude;
-        let longitude = pokemon.Longitude;
-        let pokemonId = pokemon.PokedexTypeId;
-        
-        let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
-        
-        let pokemonMarker = {
-            id: mapPokemon.id,
-            coords: mapPokemon.coords,
-            options: {
-                icon: mapPokemon.pokemon.icons.small
-            }
-        };
-        
-        self.pokemonMarkers.push(pokemonMarker);
-    }
+    // var heartbeat = HeartbeatTestService.getMockHeartbeat();
+    //
+    // var pokemons = _.flatten(
+    //     heartbeat.cells.map(function (x)
+    //     {
+    //         return x.MapPokemon
+    //     })
+    // );
+    //
+    // for (let pokemon of pokemons)
+    // {
+    //     let latitude = pokemon.Latitude;
+    //     let longitude = pokemon.Longitude;
+    //     let pokemonId = pokemon.PokedexTypeId;
+    //
+    //     let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
+    //
+    //     let pokemonMarker = {
+    //         id: mapPokemon.id,
+    //         coords: mapPokemon.coords,
+    //         options: {
+    //             icon: mapPokemon.pokemon.icons.small
+    //         }
+    //     };
+    //
+    //     self.pokemonMarkers.push(pokemonMarker);
+    // }
     
     console.log(self.pokemonMarkers);
     
-    uiGmapGoogleMapApi.then(function(maps)
+    uiGmapGoogleMapApi.then(function (maps)
     {
-        $scope.$watch(
-            () => self.map.getGMap().getCenter(),
-            (newVal, oldVal) =>
+        $scope.$watch(function ()
+            {
+                return self.map.getGMap().getCenter();
+            },
+            function (newVal, oldVal)
             {
                 self.current.coords = {
                     latitude: newVal.lat(),
@@ -61,12 +63,5 @@ AngularApp.controller("HomeController", function HomeController($scope, Heartbea
                 };
             }
         );
-        
-        IPCService.send("pokemon/initApp")
-            .then(() => console.log("INITED"))
-            .catch(err =>
-            {
-                console.error(err);
-            });
     });
 });

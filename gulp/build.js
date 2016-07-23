@@ -15,7 +15,6 @@ module.exports = function(gulp, plugins, paths)
     gulp.task("build", function (callback)
     {
         runSequence(
-            "clean",
             "compile",
             callback
         );

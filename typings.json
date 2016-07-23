@@ -10,6 +10,7 @@
     "express": "registry:dt/express#4.0.0+20160708185218",
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160715232503",
     "form-data": "registry:dt/form-data#0.0.0+20160316155526",
+    "lodash": "registry:dt/lodash#3.10.0+20160720001309",
     "long": "registry:dt/long#3.0.2+20160602144319",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "moment": "registry:dt/moment#2.8.0+20160316155526",
@@ -23,5 +24,6 @@
     "shortid": "registry:dt/shortid#0.0.0+20160316155526",
     "winston": "registry:dt/winston#0.0.0+20160417152829",
     "yargs": "registry:dt/yargs#0.0.0+20160619033636"
-  }
+  },
+  "dependencies": {}
 }

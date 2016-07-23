@@ -1,6 +1,6 @@
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
 {
-    const self = this;
+    var self = this;
     
     self.getMockHeartbeat = function ()
     {

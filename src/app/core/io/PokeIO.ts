@@ -38,18 +38,21 @@ export class PokeIO extends PokeIOBase
         return profile;
     };
 
-    public async getHeartbeat()
+    public async getHeartbeat(latitude:number, longitude:number)
     {
         var requestEnvelope = this.requestEnvelope;
 
-        var walk = BufferHelper.getWalkBuffer(this.player.location.latitude, this.player.location.longitude);
+        this.player.location.latitude = latitude;
+        this.player.location.longitude = longitude;
+
+        var walk = BufferHelper.getWalkBuffer(latitude, longitude);
 
         // Creating MessageQuad for Requests type=106
         var walkData = new requestEnvelope.MessageQuad({
             "f1": walk,
             "f2": new Array(21).fill(0),
-            "lat": this.player.location.latitude,
-            "long": this.player.location.longitude
+            "lat": latitude,
+            "long": longitude
         });
 
         var requests = [

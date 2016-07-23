@@ -1,36 +1,46 @@
 import yargs = require("yargs");
+import _ = require("lodash");
+
 import {PokeIO} from "./io/PokeIO";
 import {Logger} from "./helpers/Logger";
 
 export class Application
 {
-    public static async init()
-    {
-        Logger.info(`Initing App`);
+    private static _io:PokeIO;
 
+    public static async getIO():Promise<PokeIO>
+    {
+        if(Application._io)
+            return Application._io;
+
+        return await Application.init();
+    }
+
+    public static async init():Promise<PokeIO>
+    {
         var args = Application.getArgs();
 
         var io = new PokeIO();
 
         await io.init(args.username, args.password, args.location, args.provider);
 
-        Logger.info(`Current location: ${io.player.location.name}`);
-        Logger.info(`Latitude / Longitude: ${io.player.location.latitude} ${io.player.location.longitude}`);
+        Application._io = io;
 
-        var profile = await io.getProfile();
+        // Logger.info(`Current location: ${io.player.location.name}`);
+        // Logger.info(`Latitude / Longitude: ${io.player.location.latitude} ${io.player.location.longitude}`);
+        //
+        // var profile = await io.getProfile();
+        //
+        // Logger.info(`Username: ${profile.username}`);
+        // Logger.info(`Team: ${profile.team}`);
+        //
+        // Logger.info(`Poke Storage: ${profile.storage.pokemon}`);
+        // Logger.info(`Item Storage: ${profile.storage.items}`);
+        //
+        // Logger.info(`Pokecoin: ${profile.pokecoins}`);
+        // Logger.info(`Stardust: ${profile.stardust}`);
 
-        Logger.info(`Username: ${profile.username}`);
-        Logger.info(`Team: ${profile.team}`);
-
-        Logger.info(`Poke Storage: ${profile.storage.pokemon}`);
-        Logger.info(`Item Storage: ${profile.storage.items}`);
-
-        Logger.info(`Pokecoin: ${profile.pokecoins}`);
-        Logger.info(`Stardust: ${profile.stardust}`);
-
-        var heartbeat = await io.getHeartbeat();
-
-        console.log(heartbeat);
+        return io;
     }
 
     private static getArgs()

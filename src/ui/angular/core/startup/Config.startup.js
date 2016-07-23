@@ -6,9 +6,23 @@ AngularApp.config(function (toastrConfig)
     toastrConfig.preventOpenDuplicates = true;
 });
 
-AngularApp.config(function (uiGmapGoogleMapApiProvider)
+(function()
 {
-    uiGmapGoogleMapApiProvider.configure({
-        key: process.env.GOOGLE_MAPS_API_KEY
+    var googleMapProvider;
+    
+    AngularApp.config(function (uiGmapGoogleMapApiProvider)
+    {
+        googleMapProvider = uiGmapGoogleMapApiProvider;
     });
-});
+    
+    AngularApp.run(function($http)
+    {
+        $http.get("http://localhost:32598/config/getGoogleMapsApiKey")
+            .success(function(response)
+            {
+                googleMapProvider.configure({
+                    key: response.data
+                });
+            })
+    });
+})();

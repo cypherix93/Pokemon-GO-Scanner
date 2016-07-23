@@ -1,6 +1,6 @@
 AngularApp.service("IdentityService", function ()
 {
-    const self = this;
+    var self = this;
 
     // Current User Identity
     self.currentUser = undefined;

@@ -3,20 +3,21 @@ import {JsonController} from "routing-controllers/decorator/Controllers";
 import {Get, Post} from "routing-controllers/decorator/Methods";
 import {Req, Res} from "routing-controllers/decorator/Params";
 
-import {MapPokemon} from "../viewmodels/map/MapPokemon";
 import {Application} from "../../core/Application";
 
-@JsonController("/pokemon")
-export class PokemonController
+@JsonController("/player")
+export class PlayerController
 {
-    @Get("/getMapPokemons")
-    public async getMapPokemons(latitude:number, longitude:number):Promise<MapPokemon[]>
+    @Get("/getProfile")
+    public async getProfile()
     {
         var io = await Application.getIO();
 
+        var profile = await io.getProfile();
 
-
-
-        return null;
+        return {
+            success: true,
+            data: profile
+        };
     }
 }
