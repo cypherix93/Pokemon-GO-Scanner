@@ -6,4 +6,9 @@ export class MapPokestop extends MapObject
     {
         super(latitude, longitude);
     }
+
+    protected generateMapId():string
+    {
+        return "ABC";
+    }
 }

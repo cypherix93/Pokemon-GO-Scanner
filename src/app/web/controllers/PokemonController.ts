@@ -21,22 +21,29 @@ export class PokemonController
 
         var heartbeat = await io.getHeartbeat(latitude, longitude);
 
-        var pokemons = _.flatten(heartbeat.cells.map(x => x.MapPokemon)) as any[];
+        var mapPokemons = _.flatten(heartbeat.cells.map(x => x.MapPokemon)) as any[];
+        var wildPokemons = _.flatten(heartbeat.cells.map(x => x.WildPokemon)) as any[];
 
         var markers = [];
 
-        for (let pokemon of pokemons)
+        for (let pokemon of mapPokemons)
         {
             let latitude = pokemon.Latitude;
             let longitude = pokemon.Longitude;
             let pokemonId = pokemon.PokedexTypeId;
 
-            let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
+            let pokemonMarker = new MapPokemon(latitude, longitude, pokemonId);
 
-            let pokemonMarker = {
-                id: mapPokemon.id,
-                coords: mapPokemon.coords
-            };
+            markers.push(pokemonMarker);
+        }
+
+        for (let pokemon of wildPokemons)
+        {
+            let latitude = pokemon.Latitude;
+            let longitude = pokemon.Longitude;
+            let pokemonId = pokemon.pokemon.PokemonId;
+
+            let pokemonMarker = new MapPokemon(latitude, longitude, pokemonId);
 
             markers.push(pokemonMarker);
         }

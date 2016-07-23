@@ -18,8 +18,6 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
     self.current = {};
     
     self.pokemonMarkers = [];
-        
-    
     
     uiGmapGoogleMapApi.then(function (maps)
     {
