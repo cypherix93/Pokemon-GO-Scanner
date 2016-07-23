@@ -53,6 +53,24 @@ AngularApp.service("IPCService", function IPCService()
         return client.send(channel, request);
     }
 });
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    const self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    const self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
+});
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
 {
     const self = this;
@@ -67332,24 +67350,6 @@ AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
         }
     
     }
-});
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    const self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    const self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
 });
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {

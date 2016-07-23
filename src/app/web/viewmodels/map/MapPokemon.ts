@@ -1,14 +1,14 @@
-import {Pokemon} from "../Pokemon";
 import {MapObject} from "./MapObject";
+import {PokemonViewModel} from "../PokemonViewModel";
 
 export class MapPokemon extends MapObject
 {
-    public pokemon:Pokemon;
+    public pokemon:PokemonViewModel;
 
     constructor(latitude:number, longitude:number, pokemonId:number)
     {
         super(latitude, longitude);
 
-        this.pokemon = new Pokemon(pokemonId);
+        this.pokemon = new PokemonViewModel(pokemonId);
     }
 }
