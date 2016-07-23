@@ -9,11 +9,9 @@
   "author": "cypherix93",
   "license": "MIT",
   "dependencies": {
-    "electron-ipc-tunnel": "^3.1.0",
     "events": "^1.1.1",
     "geocoder": "^0.2.2",
     "gpsoauthnode": "0.0.5",
-    "is-electron-renderer": "^2.0.0",
     "pos": "^0.3.0",
     "protobufjs": "^5.0.1",
     "q": "^1.4.1",
@@ -27,8 +25,6 @@
   "devDependencies": {
     "bower": "^1.7.9",
     "del": "^2.2.1",
-    "electron-prebuilt": "^1.2.7",
-    "electron-rebuild": "^1.1.5",
     "gulp": "^3.9.1",
     "gulp-angular-templatecache": "^2.0.0",
     "gulp-clean-css": "^2.0.11",
@@ -57,8 +53,7 @@
     "typescript": "^1.8.10"
   },
   "scripts": {
-    "build": "gulp",
-    "install": "./node_modules/.bin/electron-rebuild"
+    "build": "./node_modules/.bin/gulp"
   },
   "copyright": "Copyright © 2016"
 }
