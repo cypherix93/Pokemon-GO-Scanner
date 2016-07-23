@@ -1,4 +1,4 @@
-AngularApp.controller("HomeController", function HomeController($scope, HeartbeatTestService, uiGmapGoogleMapApi)
+AngularApp.controller("HomeController", function HomeController($scope, uiGmapGoogleMapApi)
 {
     var self = this;
     
@@ -18,36 +18,8 @@ AngularApp.controller("HomeController", function HomeController($scope, Heartbea
     self.current = {};
     
     self.pokemonMarkers = [];
+        
     
-    // var heartbeat = HeartbeatTestService.getMockHeartbeat();
-    //
-    // var pokemons = _.flatten(
-    //     heartbeat.cells.map(function (x)
-    //     {
-    //         return x.MapPokemon
-    //     })
-    // );
-    //
-    // for (let pokemon of pokemons)
-    // {
-    //     let latitude = pokemon.Latitude;
-    //     let longitude = pokemon.Longitude;
-    //     let pokemonId = pokemon.PokedexTypeId;
-    //
-    //     let mapPokemon = new MapPokemon(latitude, longitude, pokemonId);
-    //
-    //     let pokemonMarker = {
-    //         id: mapPokemon.id,
-    //         coords: mapPokemon.coords,
-    //         options: {
-    //             icon: mapPokemon.pokemon.icons.small
-    //         }
-    //     };
-    //
-    //     self.pokemonMarkers.push(pokemonMarker);
-    // }
-    
-    console.log(self.pokemonMarkers);
     
     uiGmapGoogleMapApi.then(function (maps)
     {
