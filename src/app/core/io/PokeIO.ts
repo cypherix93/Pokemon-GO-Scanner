@@ -42,21 +42,22 @@ export class PokeIO extends PokeIOBase
     {
         var requestEnvelope = this.requestEnvelope;
 
-        var walkBuffer = BufferHelper.getWalkBuffer(this.player.location.latitude, this.player.location.longitude);
+        var walk = BufferHelper.getWalkBuffer(this.player.location.latitude, this.player.location.longitude);
 
+        // Creating MessageQuad for Requests type=106
         var walkData = new requestEnvelope.MessageQuad({
-            f1: walkBuffer,
-            f2: new Buffer(21).fill(0),
-            lat: this.player.location.latitude,
-            long: this.player.location.longitude
+            "f1": walk,
+            "f2": new Array(21).fill(0),
+            "lat": this.player.location.latitude,
+            "long": this.player.location.longitude
         });
 
         var requests = [
             new requestEnvelope.Requests(106, walkData.encode().toBuffer()),
             new requestEnvelope.Requests(126),
-            new requestEnvelope.Requests(4, (new requestEnvelope.Unknown3(Date.now().toString())).encode().toBuffer()),
+            new requestEnvelope.Requests(4, new requestEnvelope.Unknown3(Date.now().toString()).encode().toBuffer()),
             new requestEnvelope.Requests(129),
-            new requestEnvelope.Requests(5, (new requestEnvelope.Unknown3("05daf51635c82611d1aac95c0b051d3ec088a930")).encode().toBuffer())
+            new requestEnvelope.Requests(5, new requestEnvelope.Unknown3("05daf51635c82611d1aac95c0b051d3ec088a930").encode().toBuffer())
         ];
 
         var apiResponse = await this.makeApiRequest(this.player.apiEndpoint, requests) as any;

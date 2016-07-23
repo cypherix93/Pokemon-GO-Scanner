@@ -3,7 +3,6 @@
     "node": "registry:dt/node#6.0.0+20160709114037"
   },
   "globalDependencies": {
-    "bignum": "registry:dt/bignum#0.0.0+20151112040947",
     "bytebuffer": "registry:dt/bytebuffer#5.0.0+20160624071349",
     "form-data": "registry:dt/form-data#0.0.0+20160316155526",
     "long": "registry:dt/long#3.0.2+20160602144319",

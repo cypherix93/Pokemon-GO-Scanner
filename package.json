@@ -21,6 +21,7 @@
     "request": "^2.73.0",
     "serve-favicon": "^2.3.0",
     "sleep-promise": "^1.0.0",
+    "s2geometry-node": "^1.2.3",
     "winston": "^2.2.0"
   },
   "devDependencies": {

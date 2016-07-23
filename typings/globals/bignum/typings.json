@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/81295163e938b065e49285b1ba2d95afd6c74c1e/bignum/bignum.d.ts",
-    "raw": "registry:dt/bignum#0.0.0+20151112040947",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/81295163e938b065e49285b1ba2d95afd6c74c1e/bignum/bignum.d.ts"
-  }
-}

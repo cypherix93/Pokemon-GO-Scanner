@@ -1,4 +1,3 @@
-/// <reference path="globals/bignum/index.d.ts" />
 /// <reference path="globals/bytebuffer/index.d.ts" />
 /// <reference path="globals/form-data/index.d.ts" />
 /// <reference path="globals/long/index.d.ts" />
