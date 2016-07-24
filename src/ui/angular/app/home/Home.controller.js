@@ -19,22 +19,25 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
     
     self.pokemonMarkers = [];
     
-    var debouncedHeartbeat = _.debounce(function(latitude, longitude)
+    var debouncedHeartbeat = _.debounce(function (latitude, longitude)
     {
-        ApiService.post("/pokemon/getMapPokemons", {latitude:latitude, longitude:longitude})
-            .success(function(response)
+        ApiService.post("/pokemon/getMapPokemons", {
+            latitude: latitude,
+            longitude: longitude
+        })
+            .success(function (response)
             {
                 response.data
-                    .map(function(marker)
+                    .map(function (marker)
                     {
                         marker.options = {
                             icon: IconHelperService.getPokemonIconPath(marker.pokemon.pokedexId)
                         }
                     });
-    
+                
                 self.pokemonMarkers = response.data;
             });
-            
+        
     }, 500);
     
     uiGmapGoogleMapApi.then(function (maps)
@@ -49,8 +52,9 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
                     latitude: newVal.lat(),
                     longitude: newVal.lng()
                 };
-    
-                debouncedHeartbeat(self.current.coords.latitude, self.current.coords.longitude);
+                
+                if (self.current.coords.latitude && self.current.coords.longitude)
+                    debouncedHeartbeat(self.current.coords.latitude, self.current.coords.longitude);
             }
         );
     });

@@ -17,10 +17,11 @@ export class PokemonController
         var latitude = parseFloat(request.body.latitude);
         var longitude = parseFloat(request.body.longitude);
 
-        var heartbeat = await PokeIOWorker.getHeartbeatWithCoordinates(latitude, longitude);
+        var heartbeats = await PokeIOWorker.getHeartbeatMapWithCoordinates(latitude, longitude);
+        var cells = _.flatten(heartbeats.map(x => x.cells));
 
-        var mapPokemons = _.flatten(heartbeat.cells.map(x => x.MapPokemon)) as any[];
-        var wildPokemons = _.flatten(heartbeat.cells.map(x => x.WildPokemon)) as any[];
+        var mapPokemons = _.flatten(cells.map(x => x.MapPokemon)) as any[];
+        var wildPokemons = _.flatten(cells.map(x => x.WildPokemon)) as any[];
 
         var markers = [];
 

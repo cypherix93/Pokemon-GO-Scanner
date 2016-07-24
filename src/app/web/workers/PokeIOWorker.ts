@@ -12,6 +12,28 @@ export class PokeIOWorker
         return await PokeIOWorker.retryOnIllegalBuffer(() => io.getProfile());
     }
 
+    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 5):Promise<any>
+    {
+        var step = 0.0005;
+        var upperBound = (maxSteps / 2) * step;
+        var lowerBound = -upperBound;
+
+        var heartbeats = [];
+        for (let i = lowerBound; i <= upperBound; i += step)
+        {
+            for (let j = lowerBound; j <= upperBound; j += step)
+            {
+                let newLat = latitude + i;
+                let newLng = longitude + j;
+
+                let heartbeat = await PokeIOWorker.getHeartbeatWithCoordinates(newLat, newLng);
+                heartbeats.push(heartbeat);
+            }
+        }
+
+        return heartbeats;
+    }
+
     public static async getHeartbeatWithLocation(location:string):Promise<any>
     {
         var {latitude, longitude} = await GeocoderHelper.resolveLocationByName(location);
@@ -23,7 +45,7 @@ export class PokeIOWorker
     {
         var cacheKey = PokeIOWorker.getCacheKeyFromCoords(latitude, longitude);
 
-        var heartbeat = await CacheManager.resolve(cacheKey, async () =>
+        var heartbeat = await CacheManager.resolve(cacheKey, async() =>
         {
             var io = await Application.getIO();
 
