@@ -3,7 +3,7 @@ import {JsonController} from "routing-controllers/decorator/Controllers";
 import {Get, Post} from "routing-controllers/decorator/Methods";
 import {Req, Res} from "routing-controllers/decorator/Params";
 
-import {Application} from "../../core/Application";
+import {PokeIOWorker} from "../workers/PokeIOWorker";
 
 @JsonController("/player")
 export class PlayerController
@@ -11,7 +11,7 @@ export class PlayerController
     @Get("/getProfile")
     public async getProfile()
     {
-        var profile = await Application.getProfile();
+        var profile = await PokeIOWorker.getProfile();
 
         return {
             success: true,

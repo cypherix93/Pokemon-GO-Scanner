@@ -18,27 +18,9 @@ export class Application
         return await Application.init();
     }
 
-    public static async getProfile():Promise<PlayerProfile>
+    public static resetIO()
     {
-        var io = await Application.getIO();
-
-        return await Application.retryOnIllegalBuffer(() => io.getProfile());
-    }
-
-    public static async getHeartbeat(latitude:number, longitude:number):Promise<any>
-    {
-        var io = await Application.getIO();
-
-        return await Application.retryOnIllegalBuffer(() => io.getHeartbeat(latitude, longitude));
-    }
-
-    public static async getHeartbeat(location:string):Promise<any>
-    {
-        var io = await Application.getIO();
-
-        var {latitude, longitude} = await GeocoderHelper.resolveLocationByName(location);
-
-        return await Application.retryOnIllegalBuffer(() => io.getHeartbeat(latitude, longitude));
+        Application._io = undefined;
     }
 
     public static async init():Promise<PokeIO>
@@ -66,25 +48,5 @@ export class Application
         // Logger.info(`Stardust: ${profile.stardust}`);
 
         return io;
-    }
-
-    private static retryOnIllegalBuffer(action:Function, maxTries = 5)
-    {
-        var tries = 0;
-
-        while (tries < maxTries)
-        {
-            try
-            {
-                return action();
-            }
-            catch (err)
-            {
-                if (err.message == "Illegal buffer")
-                    Application._io = undefined;
-                else
-                    throw err;
-            }
-        }
     }
 }

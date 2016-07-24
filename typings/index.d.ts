@@ -7,6 +7,7 @@
 /// <reference path="globals/form-data/index.d.ts" />
 /// <reference path="globals/lodash/index.d.ts" />
 /// <reference path="globals/long/index.d.ts" />
+/// <reference path="globals/memory-cache/index.d.ts" />
 /// <reference path="globals/mime/index.d.ts" />
 /// <reference path="globals/moment-node/index.d.ts" />
 /// <reference path="globals/moment/index.d.ts" />

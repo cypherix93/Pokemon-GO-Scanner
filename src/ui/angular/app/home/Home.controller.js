@@ -24,14 +24,14 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
         ApiService.post("/pokemon/getMapPokemons", {latitude:latitude, longitude:longitude})
             .success(function(response)
             {
-                var markers = response.data
+                response.data
                     .map(function(marker)
                     {
                         marker.options = {
                             icon: IconHelperService.getPokemonIconPath(marker.pokemon.pokedexId)
                         }
                     });
-                
+    
                 self.pokemonMarkers = response.data;
             });
             

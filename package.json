@@ -17,6 +17,7 @@
     "geocoder": "^0.2.2",
     "gpsoauthnode": "0.0.5",
     "lodash": "^4.13.1",
+    "memory-cache": "^0.1.6",
     "pos": "^0.3.0",
     "protobufjs": "^5.0.1",
     "q": "^1.4.1",

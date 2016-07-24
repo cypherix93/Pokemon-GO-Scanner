@@ -12,6 +12,7 @@
     "form-data": "registry:dt/form-data#0.0.0+20160316155526",
     "lodash": "registry:dt/lodash#3.10.0+20160720001309",
     "long": "registry:dt/long#3.0.2+20160602144319",
+    "memory-cache": "registry:dt/memory-cache#0.0.0+20160316155526",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "moment": "registry:dt/moment#2.8.0+20160316155526",
     "moment-node": "registry:dt/moment-node#2.11.1+20160511043338",

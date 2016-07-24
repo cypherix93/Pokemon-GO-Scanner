@@ -6,7 +6,7 @@ import {Req, Res} from "routing-controllers/decorator/Params";
 import _ = require("lodash");
 
 import {MapPokemon} from "../viewmodels/map/MapPokemon";
-import {Application} from "../../core/Application";
+import {PokeIOWorker} from "../workers/PokeIOWorker";
 
 @JsonController("/pokemon")
 export class PokemonController
@@ -14,12 +14,10 @@ export class PokemonController
     @Post("/getMapPokemons")
     public async getMapPokemons(@Req() request: Request)
     {
-        var io = await Application.getIO();
-
         var latitude = parseFloat(request.body.latitude);
         var longitude = parseFloat(request.body.longitude);
 
-        var heartbeat = await io.getHeartbeat(latitude, longitude);
+        var heartbeat = await PokeIOWorker.getHeartbeatWithCoordinates(latitude, longitude);
 
         var mapPokemons = _.flatten(heartbeat.cells.map(x => x.MapPokemon)) as any[];
         var wildPokemons = _.flatten(heartbeat.cells.map(x => x.WildPokemon)) as any[];
