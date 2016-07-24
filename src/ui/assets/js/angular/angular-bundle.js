@@ -115,6 +115,32 @@ AngularApp.service("IdentityService", function ()
         return !!self.currentUser;
     };
 });
+AngularApp.service("IconHelperService", function IconHelperService()
+{
+    var self = this;
+    
+    self.getPokemonIconPath = function(pokedexId)
+    {
+        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
+    };
+});
+AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
+{
+    var self = this;
+    
+    self.reverseGeocode = function(locationName)
+    {
+        var def = $q.defer();
+        
+        ApiService.post("/location/reverseGeocode", {location:locationName})
+            .success(function(response)
+            {
+                def.resolve(response.data);
+            });
+        
+        return def.promise;
+    };
+}]);
 AngularApp.service("MapPokemonService", ["$q", "ApiService", "IconHelperService", function MapPokemonService($q, ApiService, IconHelperService)
 {
     var self = this;
@@ -139,32 +165,6 @@ AngularApp.service("MapPokemonService", ["$q", "ApiService", "IconHelperService"
         
         return def.promise;
     }
-}]);
-AngularApp.service("IconHelperService", function IconHelperService()
-{
-    var self = this;
-    
-    self.getPokemonIconPath = function(pokedexId)
-    {
-        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
-    };
-});
-AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
-{
-    var self = this;
-    
-    self.reverseGeocode = function(locationName)
-    {
-        var def = $q.defer();
-        
-        ApiService.post("/location/reverseGeocode", {location:locationName})
-            .success(function(response)
-            {
-                def.resolve(response);
-            });
-        
-        return def.promise;
-    };
 }]);
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
@@ -292,7 +292,7 @@ AngularApp.directive("locationSearch", ["LocationHelperService", function (Locat
     return {
         restrict: "EA",
         scope: {
-            coords: "<"
+            coords: "="
         },
         templateUrl: "templates/core/directives/location-search/LocationSearch.template.html",
         link: function (scope, element, attrs)
@@ -345,6 +345,8 @@ AngularApp.controller("HomeController", ["$scope", "uiGmapGoogleMapApi", "MapPok
         },
         function (newVal)
         {
+            console.log(newVal);
+            
             if(!newVal)
                 return;
         
@@ -406,5 +408,5 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
         });
 }]);
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search coords="Home.searchCoords"></location-search>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n    <ui-gmap-markers models="Home.pokemonMarkers" coords="\'coords\'" idkey="\'id\'" options="\'options\'">\r\n    </ui-gmap-markers>\r\n\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="123">\r\n    </ui-gmap-marker>\r\n</ui-gmap-google-map>');
-$templateCache.put('templates/core/directives/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top location-search-box">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
-$templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');}]);
+$templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');
+$templateCache.put('templates/core/directives/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top location-search-box">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');}]);

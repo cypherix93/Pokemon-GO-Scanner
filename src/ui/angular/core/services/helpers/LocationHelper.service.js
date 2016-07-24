@@ -9,7 +9,7 @@ AngularApp.service("LocationHelperService", function LocationHelperService($q, A
         ApiService.post("/location/reverseGeocode", {location:locationName})
             .success(function(response)
             {
-                def.resolve(response);
+                def.resolve(response.data);
             });
         
         return def.promise;

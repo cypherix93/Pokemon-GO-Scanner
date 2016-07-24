@@ -3,7 +3,7 @@ AngularApp.directive("locationSearch", function (LocationHelperService)
     return {
         restrict: "EA",
         scope: {
-            coords: "<"
+            coords: "="
         },
         templateUrl: "templates/core/directives/location-search/LocationSearch.template.html",
         link: function (scope, element, attrs)
