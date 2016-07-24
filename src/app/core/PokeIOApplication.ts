@@ -6,21 +6,21 @@ import {ArgsHelper} from "./helpers/ArgsHelper";
 import {PlayerProfile} from "./models/PlayerProfile";
 import {GeocoderHelper} from "./helpers/GeocoderHelper";
 
-export class Application
+export class PokeIOApplication
 {
     private static _io:PokeIO;
 
     public static async getIO():Promise<PokeIO>
     {
-        if (Application._io)
-            return Application._io;
+        if (PokeIOApplication._io)
+            return PokeIOApplication._io;
 
-        return await Application.init();
+        return await PokeIOApplication.init();
     }
 
     public static resetIO()
     {
-        Application._io = undefined;
+        PokeIOApplication._io = undefined;
     }
 
     public static async init():Promise<PokeIO>
@@ -31,7 +31,7 @@ export class Application
 
         await io.init(args.username, args.password, args.location, args.provider);
 
-        Application._io = io;
+        PokeIOApplication._io = io;
 
         // Logger.info(`Current location: ${io.player.location.name}`);
         // Logger.info(`Latitude / Longitude: ${io.player.location.latitude} ${io.player.location.longitude}`);

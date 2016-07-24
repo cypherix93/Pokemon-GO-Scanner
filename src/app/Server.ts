@@ -12,16 +12,18 @@ export class Server
         const app = express();
 
         // Bootstrap the application and couple the middlewares
-        Bootstrapper.bootstrap(app);
+        Bootstrapper.bootstrap(app)
+            .then(() =>
+            {
+                // Start up the server
+                console.log("=> Starting Server...");
 
-        // Start up the server
-        console.log("=> Starting Server...");
-
-        var port = Config.current.port;
-        app.listen(port, function ()
-        {
-            console.log("\nMagic is happening at http://localhost:" + port);
-        });
+                var port = Config.current.port;
+                app.listen(port, function ()
+                {
+                    console.log("\nMagic is happening at http://localhost:" + port);
+                });
+            });
     }
 }
 // Start app

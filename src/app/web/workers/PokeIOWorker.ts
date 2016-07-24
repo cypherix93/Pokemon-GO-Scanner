@@ -1,5 +1,5 @@
 import {PlayerProfile} from "../../core/models/PlayerProfile";
-import {Application} from "../../core/Application";
+import {PokeIOApplication} from "../../core/PokeIOApplication";
 import {GeocoderHelper} from "../../core/helpers/GeocoderHelper";
 import {CacheManager} from "../cache/CacheManager";
 
@@ -7,7 +7,7 @@ export class PokeIOWorker
 {
     public static async getProfile():Promise<PlayerProfile>
     {
-        var io = await Application.getIO();
+        var io = await PokeIOApplication.getIO();
 
         return await PokeIOWorker.retryOnIllegalBuffer(() => io.getProfile());
     }
@@ -18,7 +18,7 @@ export class PokeIOWorker
         var upperBound = (maxSteps / 2) * step;
         var lowerBound = -upperBound;
 
-        var heartbeats = [];
+        var heartbeatPromises = [];
         for (let i = lowerBound; i <= upperBound; i += step)
         {
             for (let j = lowerBound; j <= upperBound; j += step)
@@ -26,30 +26,26 @@ export class PokeIOWorker
                 let newLat = latitude + i;
                 let newLng = longitude + j;
 
-                let heartbeat = await PokeIOWorker.getHeartbeatWithCoordinates(newLat, newLng);
-                heartbeats.push(heartbeat);
+                let heartbeatPromise = PokeIOWorker.getHeartbeatWithCoordinates(newLat, newLng);
+                heartbeatPromises.push(heartbeatPromise);
             }
         }
 
-        return heartbeats;
-    }
-
-    public static async getHeartbeatWithLocation(location:string):Promise<any>
-    {
-        var {latitude, longitude} = await GeocoderHelper.resolveLocationByName(location);
-
-        return PokeIOWorker.getHeartbeatWithCoordinates(latitude, longitude);
+        return Promise.all(heartbeatPromises);
     }
 
     public static async getHeartbeatWithCoordinates(latitude:number, longitude:number):Promise<any>
     {
-        var cacheKey = PokeIOWorker.getCacheKeyFromCoords(latitude, longitude);
+        var roundedLat = Math.round(latitude * 10000) / 10000;
+        var roundedLong = Math.round(longitude * 10000) / 10000;
+
+        var cacheKey = PokeIOWorker.getCacheKeyFromCoords(roundedLat, roundedLong);
 
         var heartbeat = await CacheManager.resolve(cacheKey, async() =>
         {
-            var io = await Application.getIO();
+            var io = await PokeIOApplication.getIO();
 
-            return await PokeIOWorker.retryOnIllegalBuffer(() => io.getHeartbeat(latitude, longitude));
+            return await PokeIOWorker.retryOnIllegalBuffer(() => io.getHeartbeat(roundedLat, roundedLong));
         }, 6000);
 
         return heartbeat;
@@ -57,10 +53,7 @@ export class PokeIOWorker
 
     private static getCacheKeyFromCoords(latitude:number, longitude:number):string
     {
-        var roundedLat = Math.round(latitude * 1000) / 1000;
-        var roundedLong = Math.round(longitude * 1000) / 1000;
-
-        return `LAT${roundedLat},LNG${roundedLong}`;
+        return `LAT${latitude},LNG${longitude}`;
     }
 
     private static retryOnIllegalBuffer<T>(action:() => T, maxTries = 5):T
@@ -76,7 +69,7 @@ export class PokeIOWorker
             catch (err)
             {
                 if (err.message === "Illegal buffer")
-                    Application.resetIO();
+                    PokeIOApplication.resetIO();
                 else
                     throw err;
             }

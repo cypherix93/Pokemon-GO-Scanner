@@ -1,12 +1,12 @@
 /// <reference path="../../typings/index.d.ts" />
 
-import {Application} from "./core/Application";
+import {PokeIOApplication} from "./core/PokeIOApplication";
 
 class PokemonGoScanner
 {
     public static main()
     {
-        Application.init()
+        PokeIOApplication.init()
             .then(() => process.exit(0))
             .catch(err =>
             {

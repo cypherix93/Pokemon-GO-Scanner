@@ -5,10 +5,11 @@ import {Config} from "./Config";
 
 import cookieParser = require("cookie-parser");
 import cors = require("cors");
+import {PokeIOApplication} from "../../core/PokeIOApplication";
 
 export class Bootstrapper
 {
-    public static bootstrap(app)
+    public static async bootstrap(app)
     {
         console.log("=> Bootstrapping application...");
 
@@ -20,5 +21,8 @@ export class Bootstrapper
 
         // Setup routes
         RoutesConfig.init(app);
+
+        // Init PokeIO
+        await PokeIOApplication.init();
     }
 }
