@@ -47,6 +47,47 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
+AngularApp.service("ApiService", ["$http", function ApiService($http)
+{
+    var self = this;
+    
+    var baseUrl = "http://localhost:32598";
+    
+    var bindMethods = function ()
+    {
+        for (var i = 0; i < arguments.length; i++)
+        {
+            var arg = arguments[i];
+            
+            self[arg] = (function(method)
+            {
+                return function (apiUrl, config)
+                {
+                    return $http[method](baseUrl + apiUrl, config);
+                }
+            })(arg);
+        }
+    };
+    
+    var bindMethodsWithData = function ()
+    {
+        for (var i = 0; i < arguments.length; i++)
+        {
+            var arg = arguments[i];
+            
+            self[arg] = (function(method)
+            {
+                return function (apiUrl, data, config)
+                {
+                    return $http[method](baseUrl + apiUrl, data, config);
+                }
+            })(arg);
+        }
+    };
+    
+    bindMethods("get", "delete", "head", "jsonp");
+    bindMethodsWithData("post", "put", "patch");
+}]);
 AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     var self = this;
@@ -63,6 +104,15 @@ AngularApp.service("IdentityService", function ()
     self.isAuthenticated = function ()
     {
         return !!self.currentUser;
+    };
+});
+AngularApp.service("IconHelperService", function IconHelperService()
+{
+    var self = this;
+    
+    self.getPokemonIconPath = function(pokedexId)
+    {
+        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
     };
 });
 AngularApp.service("HeartbeatTestService", function HeartbeatTestService()
@@ -67470,7 +67520,7 @@ AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
 });
-AngularApp.controller("HomeController", ["$scope", "uiGmapGoogleMapApi", function HomeController($scope, uiGmapGoogleMapApi)
+AngularApp.controller("HomeController", ["$scope", "uiGmapGoogleMapApi", "ApiService", "IconHelperService", function HomeController($scope, uiGmapGoogleMapApi, ApiService, IconHelperService)
 {
     var self = this;
     
@@ -67491,6 +67541,24 @@ AngularApp.controller("HomeController", ["$scope", "uiGmapGoogleMapApi", functio
     
     self.pokemonMarkers = [];
     
+    var debouncedHeartbeat = _.debounce(function(latitude, longitude)
+    {
+        ApiService.post("/pokemon/getMapPokemons", {latitude:latitude, longitude:longitude})
+            .success(function(response)
+            {
+                var markers = response.data
+                    .map(function(marker)
+                    {
+                        marker.options = {
+                            icon: IconHelperService.getPokemonIconPath(marker.pokemon.pokedexId)
+                        }
+                    });
+                
+                self.pokemonMarkers = response.data;
+            });
+            
+    }, 500);
+    
     uiGmapGoogleMapApi.then(function (maps)
     {
         $scope.$watch(function ()
@@ -67503,6 +67571,8 @@ AngularApp.controller("HomeController", ["$scope", "uiGmapGoogleMapApi", functio
                     latitude: newVal.lat(),
                     longitude: newVal.lng()
                 };
+    
+                debouncedHeartbeat(self.current.coords.latitude, self.current.coords.longitude);
             }
         );
     });

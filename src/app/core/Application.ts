@@ -4,6 +4,7 @@ import _ = require("lodash");
 import {PokeIO} from "./io/PokeIO";
 import {ArgsHelper} from "./helpers/ArgsHelper";
 import {PlayerProfile} from "./models/PlayerProfile";
+import {GeocoderHelper} from "./helpers/GeocoderHelper";
 
 export class Application
 {
@@ -22,6 +23,22 @@ export class Application
         var io = await Application.getIO();
 
         return await Application.retryOnIllegalBuffer(() => io.getProfile());
+    }
+
+    public static async getHeartbeat(latitude:number, longitude:number):Promise<any>
+    {
+        var io = await Application.getIO();
+
+        return await Application.retryOnIllegalBuffer(() => io.getHeartbeat(latitude, longitude));
+    }
+
+    public static async getHeartbeat(location:string):Promise<any>
+    {
+        var io = await Application.getIO();
+
+        var {latitude, longitude} = await GeocoderHelper.resolveLocationByName(location);
+
+        return await Application.retryOnIllegalBuffer(() => io.getHeartbeat(latitude, longitude));
     }
 
     public static async init():Promise<PokeIO>
