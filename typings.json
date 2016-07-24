@@ -10,7 +10,6 @@
     "express": "registry:dt/express#4.0.0+20160708185218",
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160715232503",
     "form-data": "registry:dt/form-data#0.0.0+20160316155526",
-    "lodash": "registry:dt/lodash#3.10.0+20160720001309",
     "long": "registry:dt/long#3.0.2+20160602144319",
     "memory-cache": "registry:dt/memory-cache#0.0.0+20160316155526",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
@@ -26,5 +25,7 @@
     "winston": "registry:dt/winston#0.0.0+20160417152829",
     "yargs": "registry:dt/yargs#0.0.0+20160619033636"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160723033700"
+  }
 }
