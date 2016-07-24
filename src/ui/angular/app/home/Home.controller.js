@@ -1,4 +1,4 @@
-AngularApp.controller("HomeController", function HomeController($scope, uiGmapGoogleMapApi, ApiService, IconHelperService)
+AngularApp.controller("HomeController", function HomeController($scope, uiGmapGoogleMapApi, MapPokemonService, LocationHelperService)
 {
     var self = this;
     
@@ -21,40 +21,58 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
     
     self.pokemonMarkers = [];
     
+    // Search box Watch for coordinates
+    $scope.$watch(function ()
+        {
+            return self.searchCoords;
+        },
+        function (newVal)
+        {
+            if(!newVal)
+                return;
+        
+            self.map.getGMap().setCenter({
+                lat: newVal.latitude,
+                lng: newVal.longitude
+            });
+        });
+    
+    // Debounced Heartbeat retrieval that will be called on specific Google Map Events
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
     {
-        ApiService.post("/pokemon/getMapPokemons", { latitude: latitude, longitude: longitude })
-            .success(function (response)
+        MapPokemonService.getPokemonMarkers(latitude, longitude)
+            .then(function (markers)
             {
-                response.data
-                    .map(function (marker)
-                    {
-                        marker.options = {
-                            icon: IconHelperService.getPokemonIconPath(marker.pokemon.pokedexId)
-                        }
-                    });
-                
-                self.pokemonMarkers = response.data;
-            });
+                self.pokemonMarkers = markers;
+            })
         
     }, 500);
     
-    uiGmapGoogleMapApi.then(function (maps)
-    {
-        $scope.$watch(function ()
+    // One time Watch for Map Init
+    var mapInstanceWatch = $scope.$watch(function ()
+        {
+            return self.map.getGMap;
+        },
+        function (newVal)
+        {
+            if (!newVal)
+                return;
+            
+            self.map.getGMap().addListener("idle", function ()
             {
-                return self.map.getGMap().getCenter();
-            },
-            function (newVal, oldVal)
-            {
-                self.current.coords = {
-                    latitude: newVal.lat(),
-                    longitude: newVal.lng()
+                var center = self.map.getGMap().getCenter();
+                var coords = {
+                    latitude: center.lat(),
+                    longitude: center.lng()
                 };
                 
-                if (self.current.coords.latitude && self.current.coords.longitude)
-                    debouncedHeartbeat(self.current.coords.latitude, self.current.coords.longitude);
-            }
-        );
-    });
+                if (coords.latitude && coords.longitude)
+                {
+                    self.current.coords = coords;
+                    debouncedHeartbeat(coords.latitude, coords.longitude);
+                }
+            });
+            
+            mapInstanceWatch();
+        });
 });

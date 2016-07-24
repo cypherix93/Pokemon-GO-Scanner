@@ -7,7 +7,9 @@ export class CacheManager
         var cacheItem = cache.get(key);
 
         if (cacheItem)
+        {
             return cacheItem;
+        }
 
         var fallbackItem =  fallback();
 

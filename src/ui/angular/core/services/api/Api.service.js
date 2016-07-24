@@ -14,6 +14,8 @@ AngularApp.service("ApiService", function ApiService($http)
             {
                 return function (apiUrl, config)
                 {
+                    apiUrl = formatApiUrl(apiUrl);
+                    
                     return $http[method](baseUrl + apiUrl, config);
                 }
             })(arg);
@@ -30,10 +32,17 @@ AngularApp.service("ApiService", function ApiService($http)
             {
                 return function (apiUrl, data, config)
                 {
+                    apiUrl = formatApiUrl(apiUrl);
+                    
                     return $http[method](baseUrl + apiUrl, data, config);
                 }
             })(arg);
         }
+    };
+    
+    var formatApiUrl = function(url)
+    {
+        return url[0] === "/" ? url : "/" + url;
     };
     
     bindMethods("get", "delete", "head", "jsonp");

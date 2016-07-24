@@ -6632,6 +6632,24 @@ home-component .angular-google-map-container {
   right: 0;
   bottom: 0; }
 
+.location-search-box {
+  opacity: 0.6;
+  transition: opacity 0.25s ease; }
+  .location-search-box:hover, .location-search-box:focus {
+    opacity: 1; }
+  .location-search-box .navbar-brand {
+    font-size: 28px;
+    padding: 11px 25px;
+    height: auto;
+    line-height: unset; }
+    .location-search-box .navbar-brand .navbar-image {
+      display: inline;
+      margin-bottom: 6px; }
+  .location-search-box .navbar-form {
+    padding: 0; }
+    .location-search-box .navbar-form .search-input-group {
+      width: 100%; }
+
 .info-panel {
   position: absolute;
   top: 50px;

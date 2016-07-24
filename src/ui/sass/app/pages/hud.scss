@@ -5,6 +5,40 @@ $infoPanelPadding: 30px;
 
 $infoPanelButtonLeft: -52px;
 
+.location-search-box
+{
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+
+    &:hover, &:focus
+    {
+        opacity: 1;
+    }
+
+    .navbar-brand
+    {
+        font-size: 28px;
+        padding: 11px 25px;
+        height: auto;
+        line-height: unset;
+
+        .navbar-image
+        {
+            display: inline;
+            margin-bottom: 6px;
+        }
+    }
+
+    .navbar-form
+    {
+        padding: 0;
+
+        .search-input-group
+        {
+            width: 100%;
+        }
+    }
+}
 
 .info-panel
 {
