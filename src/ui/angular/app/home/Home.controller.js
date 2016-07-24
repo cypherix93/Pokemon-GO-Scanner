@@ -10,7 +10,9 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
         zoom: 16,
         options: {
             disableDefaultUI: true,
-            zoomControl: true
+            zoomControl: true,
+            minZoom: 16,
+            maxZoom: 18
         }
     };
     
@@ -21,10 +23,7 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
     
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
     {
-        ApiService.post("/pokemon/getMapPokemons", {
-            latitude: latitude,
-            longitude: longitude
-        })
+        ApiService.post("/pokemon/getMapPokemons", { latitude: latitude, longitude: longitude })
             .success(function (response)
             {
                 response.data

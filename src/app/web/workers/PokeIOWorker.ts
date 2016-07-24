@@ -12,7 +12,7 @@ export class PokeIOWorker
         return await PokeIOWorker.retryOnIllegalBuffer(() => io.getProfile());
     }
 
-    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 5):Promise<any>
+    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 10):Promise<any>
     {
         var step = 0.0005;
         var upperBound = (maxSteps / 2) * step;
