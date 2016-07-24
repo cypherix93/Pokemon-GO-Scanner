@@ -11,9 +11,7 @@ export class PlayerController
     @Get("/getProfile")
     public async getProfile()
     {
-        var io = await Application.getIO();
-
-        var profile = await io.getProfile();
+        var profile = await Application.getProfile();
 
         return {
             success: true,

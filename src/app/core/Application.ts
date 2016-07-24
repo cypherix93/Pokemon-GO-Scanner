@@ -2,7 +2,8 @@ import yargs = require("yargs");
 import _ = require("lodash");
 
 import {PokeIO} from "./io/PokeIO";
-import {Logger} from "./helpers/Logger";
+import {ArgsHelper} from "./helpers/ArgsHelper";
+import {PlayerProfile} from "./models/PlayerProfile";
 
 export class Application
 {
@@ -10,15 +11,22 @@ export class Application
 
     public static async getIO():Promise<PokeIO>
     {
-        if(Application._io)
+        if (Application._io)
             return Application._io;
 
         return await Application.init();
     }
 
+    public static async getProfile():Promise<PlayerProfile>
+    {
+        var io = await Application.getIO();
+
+        return await Application.retryOnIllegalBuffer(() => io.getProfile());
+    }
+
     public static async init():Promise<PokeIO>
     {
-        var args = Application.getArgs();
+        var args = ArgsHelper.getArgs();
 
         var io = new PokeIO();
 
@@ -43,26 +51,23 @@ export class Application
         return io;
     }
 
-    private static getArgs()
+    private static retryOnIllegalBuffer(action:Function, maxTries = 5)
     {
-        var args = yargs.argv;
+        var tries = 0;
 
-        var location = args.l || args.location || "Times Square, NY";
-
-        var username = args.u || args.user || "fakefakefaker";
-        var password = args.p || args.password || "asdfghjkl";
-        var provider = args.r || args.provider || "ptc";
-
-        if (provider !== "ptc" && provider !== "google")
+        while (tries < maxTries)
         {
-            throw new Error("Invalid provider");
-        }
-
-        return {
-            location: location,
-            username: username,
-            password: password,
-            provider: provider,
+            try
+            {
+                return action();
+            }
+            catch (err)
+            {
+                if (err.message == "Illegal buffer")
+                    Application._io = undefined;
+                else
+                    throw err;
+            }
         }
     }
 }

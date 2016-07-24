@@ -18,8 +18,6 @@ export class PokeIO extends PokeIOBase
 
         var responseProfile = this.responseEnvelope.ProfilePayload.decode(apiResponse.payload[0]).profile;
 
-        Logger.info("Logged in!");
-
         var profile = new PlayerProfile();
 
         profile.username = responseProfile.username;
