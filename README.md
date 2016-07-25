@@ -6,10 +6,17 @@ Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for P
 
 ---
 
+### What's working:
+
+- Web UI with Google Maps that can show nearby Pokemon in a relatively large radius.
+- Search feature for quickly searching for Pokemon in a certain location.
+
+
 ### Roadmap (still WIP):
 
-- Add Web application so it's easier to supply application parameters (username, password, location etc.).
-- Add map view to see Pokémon, Pokéstops and Gyms around the targeted location.
+- Add map view to see Pokéstops and Gyms around the targeted location.
+- Faster API queries.
+- Larger radius of scanning.
 
 ### Contributions
 
