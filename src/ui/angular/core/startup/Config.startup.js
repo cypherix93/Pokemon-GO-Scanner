@@ -15,9 +15,9 @@ AngularApp.config(function (toastrConfig)
         googleMapProvider = uiGmapGoogleMapApiProvider;
     });
     
-    AngularApp.run(function($http)
+    AngularApp.run(function(ApiService)
     {
-        $http.get("http://localhost:32598/config/getGoogleMapsApiKey")
+        ApiService.get("/config/getGoogleMapsApiKey")
             .success(function(response)
             {
                 googleMapProvider.configure({
