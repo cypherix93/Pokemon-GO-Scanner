@@ -1,17 +1,19 @@
 <div>
     <div class="info-window pokemon-info-window text-center">
         <div>
-            <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="100">
+            <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">
         </div>
-        <h4 class="info-window-title">
+        <h5 class="info-window-title">
             <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>
             {{marker.pokemon.name}}
-        </h4>
+        </h5>
         <div>
-            <span class="text-muted">Type:</span> {{marker.pokemon.type}}
+            <small>
+                <span class="text-muted">Type:</span> {{marker.pokemon.type}}
+            </small>
         </div>
         <div class="label label-primary info-window-label">
-            {{marker.pokemon.expirationTime}} ms
+            {{marker.expirationTime}} ms
         </div>
     </div>
 </div>

@@ -1,4 +1,4 @@
-AngularApp.service("InfoWindowService", function InfoWindowService($q, $compile, $templateCache, $timeout)
+AngularApp.service("InfoWindowService", function InfoWindowService($q, $compile, $templateCache)
 {
     var self = this;
     
