@@ -1,6 +1,8 @@
 # PokéRadar
 
-Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for Pokémon GO. 
+Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for Pokémon GO.
+
+> This is still a work in progress. If you want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
 
 ---
 
@@ -8,6 +10,10 @@ Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for P
 
 - Add Web application so it's easier to supply application parameters (username, password, location etc.).
 - Add map view to see Pokémon, Pokéstops and Gyms around the targeted location.
+
+### Contributions
+
+If you want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
 
 ### Thanks to:
 
