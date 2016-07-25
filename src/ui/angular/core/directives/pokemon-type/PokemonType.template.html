@@ -1,0 +1,6 @@
+<span ng-repeat="type in types track by $index">
+    <span class="pokemon-type pokemon-type-{{type.toLowerCase()}}">
+        {{type}}
+    </span>
+    <span class="text-muted" ng-hide="$last"> / </span>
+</span>
