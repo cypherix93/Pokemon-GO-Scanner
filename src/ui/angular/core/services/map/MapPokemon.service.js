@@ -13,8 +13,8 @@ AngularApp.service("MapPokemonService", function MapPokemonService($q, ApiServic
                     .map(function (marker)
                     {
                         marker.options = {
-                            icon: IconHelperService.getPokemonIconPath(marker.pokemon.pokedexId)
-                        }
+                            icon: IconHelperService.getPokemonSmallIconPath(marker.pokemon.pokedexId)
+                        };
                     });
     
                 def.resolve(response.data);

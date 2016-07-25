@@ -6671,3 +6671,10 @@ home-component .angular-google-map-container {
     right: 0; }
     .info-panel.shown .expand-arrow {
       left: -52px; }
+
+.info-window .info-window-title {
+  margin: 4px; }
+
+.info-window .info-window-label {
+  font-size: 14px;
+  font-weight: bold; }

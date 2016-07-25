@@ -1,4 +1,4 @@
-AngularApp.controller("HomeController", function HomeController($scope, uiGmapGoogleMapApi, MapPokemonService, LocationHelperService)
+AngularApp.controller("HomeController", function HomeController($scope, $compile, uiGmapGoogleMapApi, MapPokemonService, InfoWindowService)
 {
     var self = this;
     
@@ -20,11 +20,30 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
     self.current = {};
     
     self.pokemonMarkers = [];
+        
+    var infowindow;
+    var infowindowScope = $scope.$new(true);
+    var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
     
     self.pokemonMarkerEvents = {
-        "mouseover": function(marker, event, model, args)
+        "mouseover": function (marker, event, model, args)
         {
-            console.log(marker, event, model, args);
+            infowindowScope.$apply(function()
+            {
+                infowindowScope.marker = model;
+            });
+            
+            infowindow = new google.maps.InfoWindow({
+                content: infowindowTemplate.html()
+            });
+
+            var map = self.map.getGMap();
+
+            infowindow.open(map, marker);
+        },
+        "mouseout" : function()
+        {
+            infowindow.close();
         }
     };
     
@@ -35,9 +54,9 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
         },
         function (newVal)
         {
-            if(!newVal)
+            if (!newVal)
                 return;
-        
+            
             self.map.getGMap().setCenter({
                 lat: newVal.latitude,
                 lng: newVal.longitude
