@@ -1,6 +1,5 @@
 import {PlayerProfile} from "../../core/models/PlayerProfile";
 import {PokeIOApplication} from "../../core/PokeIOApplication";
-import {GeocoderHelper} from "../../core/helpers/GeocoderHelper";
 import {CacheManager} from "../cache/CacheManager";
 
 export class PokeIOWorker

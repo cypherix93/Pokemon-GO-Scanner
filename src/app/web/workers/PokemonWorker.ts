@@ -23,6 +23,8 @@ export class PokemonWorker
 
             let pokemonMarker = new MapPokemon(latitude, longitude, pokemonId);
 
+            pokemonMarker.expirationTime = pokemon.ExpirationTimeMs.toNumber();
+
             markers.push(pokemonMarker);
         }
 
@@ -33,6 +35,8 @@ export class PokemonWorker
             let pokemonId = pokemon.pokemon.PokemonId;
 
             let pokemonMarker = new MapPokemon(latitude, longitude, pokemonId);
+
+            pokemonMarker.expirationTime = parseFloat(pokemon.TimeTillHiddenMs);
 
             markers.push(pokemonMarker);
         }

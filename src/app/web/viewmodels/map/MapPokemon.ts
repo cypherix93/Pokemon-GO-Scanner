@@ -5,6 +5,8 @@ export class MapPokemon extends MapObject
 {
     public pokemon:Pokemon;
 
+    public expirationTime:number;
+
     constructor(latitude:number, longitude:number, pokemonId:number)
     {
         super(latitude, longitude);

@@ -21,6 +21,13 @@ AngularApp.controller("HomeController", function HomeController($scope, uiGmapGo
     
     self.pokemonMarkers = [];
     
+    self.pokemonMarkerEvents = {
+        "mouseover": function(marker, event, model, args)
+        {
+            console.log(marker, event, model, args);
+        }
+    };
+    
     // Search box Watch for coordinates
     $scope.$watch(function ()
         {
