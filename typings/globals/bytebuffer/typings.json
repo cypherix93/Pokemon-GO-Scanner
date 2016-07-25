@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/6dda2973562b160555844271c4f84120a1a53e95/bytebuffer/bytebuffer.d.ts",
+    "raw": "registry:dt/bytebuffer#5.0.0+20160624071349",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/6dda2973562b160555844271c4f84120a1a53e95/bytebuffer/bytebuffer.d.ts"
+  }
+}

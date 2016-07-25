@@ -1,0 +1,24 @@
+<location-search coords="Home.searchCoords"></location-search>
+
+<info-panel>
+    <div class="row">
+        <div class="col-xs-6">
+            <small class="text-muted">Latitude</small>
+            <div>{{Home.current.coords.latitude | number:6}}</div>
+        </div>
+        <div class="col-xs-6">
+            <small class="text-muted">Longitude</small>
+            <div>{{Home.current.coords.longitude | number:6}}</div>
+        </div>
+    </div>
+</info-panel>
+
+<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">
+
+    <!-- Pokemon Markers -->
+    <ui-gmap-markers models="Home.pokemonMarkers" events="Home.pokemonMarkerEvents" coords="'coords'" idKey="'id'" events="" options="'options'"></ui-gmap-markers>
+
+    <!-- Center Marker -->
+    <ui-gmap-marker coords="Home.current.coords" idKey="'GOOGLE_MAPS_CENTER_MARKER'"></ui-gmap-marker>
+
+</ui-gmap-google-map>

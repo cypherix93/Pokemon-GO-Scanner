@@ -2,3 +2,5 @@
 node_modules/
 build/
 deploy/
+bower_components/
+npm-debug.log

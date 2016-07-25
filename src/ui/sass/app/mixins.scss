@@ -1,0 +1,18 @@
+// Effect Mixins
+@mixin text-antialias()
+{
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: $text-shadow;
+}
+
+@mixin transitions($prop:all)
+{
+    transition: $prop 0.15s ease;
+}
+
+// Style Mixins
+@mixin border-all-radius($radius)
+{
+    border-radius: $radius;
+}

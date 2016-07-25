@@ -1,0 +1,81 @@
+$searchPanelHeight: 50px;
+
+$infoPanelWidth: 250px;
+$infoPanelPadding: 30px;
+
+$infoPanelButtonLeft: -52px;
+
+.location-search-box
+{
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+
+    &:hover, &:focus
+    {
+        opacity: 1;
+    }
+
+    .navbar-brand
+    {
+        font-size: 28px;
+        padding: 11px 25px;
+        height: auto;
+        line-height: unset;
+
+        .navbar-image
+        {
+            display: inline;
+            margin-bottom: 6px;
+        }
+    }
+
+    .navbar-form
+    {
+        padding: 0;
+
+        .search-input-group
+        {
+            width: 100%;
+        }
+    }
+}
+
+.info-panel
+{
+    position: absolute;
+    top: $searchPanelHeight;
+    right: -($infoPanelWidth + $infoPanelPadding);
+    z-index: 999;
+
+    width: $infoPanelWidth;
+    margin: 15px 0;
+
+    transition: right 0.25s ease;
+
+    .panel-body
+    {
+        padding: 15px $infoPanelPadding;
+    }
+
+    .expand-arrow
+    {
+        position: absolute;
+        left: $infoPanelButtonLeft - $infoPanelPadding;
+        top: 20px;
+
+        width: -($infoPanelButtonLeft) + 2px;
+        padding: 4px;
+
+        overflow: hidden;
+    }
+
+    &.shown
+    {
+        right: 0;
+
+        .expand-arrow
+        {
+            left: $infoPanelButtonLeft;
+        }
+    }
+}

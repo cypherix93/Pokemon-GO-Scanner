@@ -1,17 +1,30 @@
 # PokéRadar
 
-Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for Pokémon GO. 
+Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for Pokémon GO.
+
+> This is still a work in progress. If you want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
 
 ---
 
+### What's working:
+
+- Web UI with Google Maps that can show nearby Pokemon in a relatively large radius.
+- Search feature for quickly searching for Pokemon in a certain location.
+
+
 ### Roadmap (still WIP):
 
-- Add Web application so it's easier to supply application parameters (username, password, location etc.).
-- Add map view to see Pokémon, Pokéstops and Gyms around the targeted location.
+- Add map view to see Pokéstops and Gyms around the targeted location.
+- Faster API queries.
+- Larger radius of scanning.
+
+### Contributions
+
+If you want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
 
 ### Thanks to:
 
-- [Armax's](https://github.com/Armax) project [Poké.io](https://github.com/Armax/Pokemon-GO-node-api), which is the core of my project. I copied over most of the functionality to clean, organize, and port to Typescript for ease of extension.
+- [Armax's](https://github.com/Armax) project [Poké.io](https://github.com/Armax/Pokemon-GO-node-api), which is almost entirely the core of my project. I copied over most of the functionality to clean, organize, and port to Typescript for ease of extension.
 - [tejado](https://github.com/tejado) for the [Pokemon GO API library / demo](https://github.com/tejado/pgoapi).
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/) for providing his [proof of conept](https://github.com/AHAAAAAAA/PokemonGo-Map/).
 
