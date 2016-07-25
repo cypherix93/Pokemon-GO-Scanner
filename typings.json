@@ -3,14 +3,29 @@
     "node": "registry:dt/node#6.0.0+20160709114037"
   },
   "globalDependencies": {
+    "body-parser": "registry:dt/body-parser#0.0.0+20160619023215",
     "bytebuffer": "registry:dt/bytebuffer#5.0.0+20160624071349",
+    "cookie-parser": "registry:dt/cookie-parser#1.3.4+20160316155526",
+    "cors": "registry:dt/cors#0.0.0+20160708202709",
+    "express": "registry:dt/express#4.0.0+20160708185218",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160715232503",
     "form-data": "registry:dt/form-data#0.0.0+20160316155526",
     "long": "registry:dt/long#3.0.2+20160602144319",
+    "memory-cache": "registry:dt/memory-cache#0.0.0+20160316155526",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "moment": "registry:dt/moment#2.8.0+20160316155526",
+    "moment-node": "registry:dt/moment-node#2.11.1+20160511043338",
     "node": "registry:dt/node#6.0.0+20160709114037",
     "protobufjs": "registry:dt/protobufjs#0.0.0+20160317120654",
     "q": "registry:dt/q#0.0.0+20160613154756",
     "request": "registry:dt/request#0.0.0+20160524135346",
+    "serve-favicon": "registry:dt/serve-favicon#0.0.0+20160316155526",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "shortid": "registry:dt/shortid#0.0.0+20160316155526",
     "winston": "registry:dt/winston#0.0.0+20160417152829",
     "yargs": "registry:dt/yargs#0.0.0+20160619033636"
+  },
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160723033700"
   }
 }

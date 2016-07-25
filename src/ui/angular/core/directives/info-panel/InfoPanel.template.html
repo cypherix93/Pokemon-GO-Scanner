@@ -1,0 +1,10 @@
+<div class="panel panel-default info-panel" ng-class="{'shown': panelShown}">
+    <div class="expand-arrow">
+        <a class="btn btn-lg btn-default" ng-click="togglePanel()">
+            <span class="fa fa-2x" ng-class="{'fa-angle-double-left': !panelShown, 'fa-angle-double-right': panelShown}"></span>
+        </a>
+    </div>
+    <div class="panel-body">
+        <div ng-transclude></div>
+    </div>
+</div>

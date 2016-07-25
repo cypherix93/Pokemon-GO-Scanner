@@ -1,0 +1,16 @@
+﻿// Variables
+@import "app/theme";
+@import "app/mixins";
+@import "themes/paper/_variables";
+@import "app/variables";
+
+// Bootstrap
+@import "bootstrap/_bootstrap";
+
+// Bootswatch Style
+@import "themes/paper/_bootswatch";
+
+// App Specific Styles
+@import "app/elements";
+@import "app/menu";
+@import "app/pages/*.scss";
