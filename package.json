@@ -65,7 +65,7 @@
   "scripts": {
     "build": "./node_modules/.bin/gulp",
     "serve-app": "./node_modules/.bin/nodemon ./build/app/Server.js",
-    "serve-client": "./node_modules/.bin/live-server ./build/ui/ --port=9090"
+    "serve-client": "./node_modules/.bin/live-server ./build/ui/ --port=32600"
   },
   "copyright": "Copyright © 2016"
 }
