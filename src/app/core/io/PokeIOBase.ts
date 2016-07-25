@@ -8,6 +8,7 @@ import {Auth} from "../auth/Auth";
 import {Constants} from "./Constants";
 import {ApiHandler} from "./handlers/ApiHandler";
 import {GeocoderHelper} from "../helpers/GeocoderHelper";
+import {ErrorHandler} from "./handlers/ErrorHandler";
 
 var api_url = "https://pgorelease.nianticlabs.com/plfe/rpc";
 
@@ -57,6 +58,13 @@ export abstract class PokeIOBase
 
         var apiResponse = await this.makeApiRequest(Constants.API_URL, requests) as any;
 
+        var apiUrl = apiResponse.api_url;
+
+        if(!apiUrl)
+        {
+            ErrorHandler.throwRPCOfflineError();
+        }
+
         var endpoint = `https://${apiResponse.api_url}/rpc`;
 
         Logger.info("Received API Endpoint: " + endpoint);
@@ -102,9 +110,7 @@ export abstract class PokeIOBase
         {
             if (!response || !body)
             {
-                Logger.error("RPC Server offline");
-
-                throw new Error("RPC Server offline");
+                ErrorHandler.throwRPCOfflineError();
             }
 
             try
