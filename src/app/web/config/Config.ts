@@ -7,7 +7,7 @@ const config = {
         rootPath: rootPath,
         port: process.env.PORT || 32598,
         cors: {
-            origin: process.env.CLIENT_URL || "http://localhost:32600",
+            origin: process.env.CLIENT_URL || ["http://localhost:32600", "http://127.0.0.1:32600"],
             credentials: true
         },
         winston: {
