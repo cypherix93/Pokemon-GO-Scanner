@@ -6624,31 +6624,25 @@ textarea {
 .navbar {
   -webkit-box-shadow: #666 0 0 5px;
   box-shadow: #666 0 0 5px; }
-
-home-component .angular-google-map-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0; }
-
-.location-search-box {
-  opacity: 0.6;
-  transition: opacity 0.25s ease; }
-  .location-search-box:hover, .location-search-box:focus {
-    opacity: 1; }
-  .location-search-box .navbar-brand {
+  .navbar .navbar-brand {
     font-size: 28px;
     padding: 11px 25px;
     height: auto;
     line-height: unset; }
-    .location-search-box .navbar-brand .navbar-image {
+    .navbar .navbar-brand .navbar-image {
       display: inline;
       margin-bottom: 6px; }
-  .location-search-box .navbar-form {
+  .navbar .navbar-form {
     padding: 0; }
-    .location-search-box .navbar-form .search-input-group {
+    .navbar .navbar-form .search-input-group {
       width: 100%; }
+
+home-component .angular-google-map-container {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0; }
 
 .info-panel {
   position: absolute;
