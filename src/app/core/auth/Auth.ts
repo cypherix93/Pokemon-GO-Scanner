@@ -6,7 +6,7 @@ export class Auth
 {
     public static async getAccessToken(user, pass, provider):Promise<string>
     {
-        Logger.info("Logging in with user: " + user);
+        Logger.debug("Logging in with user: " + user);
 
         if (provider === "ptc")
         {

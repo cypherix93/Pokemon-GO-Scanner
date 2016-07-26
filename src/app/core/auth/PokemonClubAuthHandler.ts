@@ -16,7 +16,7 @@ export class PokemonClubAuthHandler
 
         var token = await PokemonClubAuthHandler.getOAuthToken(ticket) as string;
 
-        Logger.info(`Session token: ${token}`);
+        Logger.debug(`Session token: ${token}`);
 
         return token;
     }

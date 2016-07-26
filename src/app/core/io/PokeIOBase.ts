@@ -9,6 +9,7 @@ import {Constants} from "./Constants";
 import {ApiHandler} from "./handlers/ApiHandler";
 import {GeocoderHelper} from "../helpers/GeocoderHelper";
 import {ErrorHandler} from "./handlers/ErrorHandler";
+import {PlayerProfile} from "../models/PlayerProfile";
 
 var api_url = "https://pgorelease.nianticlabs.com/plfe/rpc";
 
@@ -67,7 +68,7 @@ export abstract class PokeIOBase
 
         var endpoint = `https://${apiResponse.api_url}/rpc`;
 
-        Logger.info("Received API Endpoint: " + endpoint);
+        Logger.debug("Received API Endpoint: " + endpoint);
 
         return endpoint;
     };
@@ -132,5 +133,7 @@ export abstract class PokeIOBase
         return def.promise;
     }
 
-    public abstract async getProfile();
+    public abstract async getProfile():Promise<PlayerProfile>;
+
+    public abstract async getHeartbeat(latitude:number, longitude:number);
 }

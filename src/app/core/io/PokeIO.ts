@@ -65,7 +65,7 @@ export class PokeIO extends PokeIOBase
 
         var payload = apiResponse.payload[0];
 
-        Logger.info(`Heartbeat at ${latitude}, ${longitude}`);
+        Logger.debug(`Heartbeat at ${latitude}, ${longitude}`);
 
         var heartbeat = this.responseEnvelope.HeartbeatPayload.decode(payload);
 
