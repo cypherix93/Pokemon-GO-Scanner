@@ -1,4 +1,4 @@
-<div class="navbar navbar-default navbar-fixed-top location-search-box">
+<div class="navbar navbar-default navbar-fixed-top">
     <div class="container clearfix">
         <div class="pull-left text-center">
             <div class="navbar-brand">
@@ -7,9 +7,9 @@
             </div>
         </div>
         <div class="col-xs-9">
-            <form class="navbar-form" ng-submit="searchLocation()" novalidate>
+            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>
                 <div class="input-group search-input-group">
-                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="searchInput">
+                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">
 
                     <div class="input-group-btn">
                         <button type="submit" class="btn-lg btn-default">

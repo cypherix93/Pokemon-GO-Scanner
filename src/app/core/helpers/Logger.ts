@@ -1,3 +1,6 @@
 import winston = require("winston");
+import {Config} from "../../web/config/Config";
 
-export var Logger = winston;
+winston.level = Config.current.winston.level;
+
+export const Logger = winston;

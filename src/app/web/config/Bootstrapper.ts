@@ -1,17 +1,17 @@
 import bodyParser = require("body-parser");
+import cookieParser = require("cookie-parser");
+import cors = require("cors");
 
 import {RoutesConfig} from "./routes/RoutesConfig";
 import {Config} from "./Config";
-
-import cookieParser = require("cookie-parser");
-import cors = require("cors");
 import {PokeIOApplication} from "../../core/PokeIOApplication";
+import {Logger} from "../../core/helpers/Logger";
 
 export class Bootstrapper
 {
     public static async bootstrap(app)
     {
-        console.log("=> Bootstrapping application...");
+        Logger.info("Bootstrapping application...");
 
         // Configure express middlewares
         app.use(bodyParser.json());

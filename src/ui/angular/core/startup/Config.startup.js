@@ -23,6 +23,6 @@ AngularApp.config(function (toastrConfig)
                 googleMapProvider.configure({
                     key: response.data
                 });
-            })
+            });
     });
 })();

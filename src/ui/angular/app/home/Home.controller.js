@@ -2,6 +2,11 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
 {
     var self = this;
     
+    self.map = {};
+    self.current = {};
+    
+    self.pokemonMarkers = [];
+    
     self.mapOptions = {
         center: {
             latitude: 40.925493,
@@ -16,11 +21,6 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
         }
     };
     
-    self.map = {};
-    self.current = {};
-    
-    self.pokemonMarkers = [];
-        
     var infowindow;
     var infowindowScope = $scope.$new(true);
     var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
@@ -28,7 +28,7 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
     self.pokemonMarkerEvents = {
         "mouseover": function (marker, event, model, args)
         {
-            infowindowScope.$apply(function()
+            infowindowScope.$apply(function ()
             {
                 infowindowScope.marker = model;
             });
@@ -36,12 +36,12 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
             infowindow = new google.maps.InfoWindow({
                 content: infowindowTemplate.html()
             });
-
+            
             var map = self.map.getGMap();
-
+            
             infowindow.open(map, marker);
         },
-        "mouseout" : function()
+        "mouseout": function ()
         {
             infowindow.close();
         }
@@ -62,6 +62,28 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
                 lng: newVal.longitude
             });
         });
+    
+    // Map Init Handler
+    function mapInitHandler()
+    {
+        self.map.getGMap().addListener("idle", function ()
+        {
+            var center = self.map.getGMap().getCenter();
+            var coords = {
+                latitude: center.lat(),
+                longitude: center.lng()
+            };
+            
+            if (coords.latitude && coords.longitude)
+            {
+                $scope.$apply(function ()
+                {
+                    self.current.coords = coords;
+                    debouncedHeartbeat(coords.latitude, coords.longitude);
+                });
+            }
+        });
+    }
     
     // Debounced Heartbeat retrieval that will be called on specific Google Map Events
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
@@ -84,21 +106,10 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
             if (!newVal)
                 return;
             
-            self.map.getGMap().addListener("idle", function ()
-            {
-                var center = self.map.getGMap().getCenter();
-                var coords = {
-                    latitude: center.lat(),
-                    longitude: center.lng()
-                };
-                
-                if (coords.latitude && coords.longitude)
-                {
-                    self.current.coords = coords;
-                    debouncedHeartbeat(coords.latitude, coords.longitude);
-                }
-            });
+            // Init map
+            mapInitHandler();
             
+            // Dispose watch
             mapInstanceWatch();
         });
 });

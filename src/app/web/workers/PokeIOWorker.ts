@@ -8,7 +8,7 @@ export class PokeIOWorker
     {
         var io = await PokeIOApplication.getIO();
 
-        return await PokeIOWorker.retryOnIllegalBuffer(() => io.getProfile());
+        return await io.getProfile();
     }
 
     public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 10):Promise<any>
@@ -44,8 +44,8 @@ export class PokeIOWorker
         {
             var io = await PokeIOApplication.getIO();
 
-            return await PokeIOWorker.retryOnIllegalBuffer(() => io.getHeartbeat(roundedLat, roundedLong));
-        }, 6000);
+            return await io.getHeartbeat(roundedLat, roundedLong);
+        }, 60000);
 
         return heartbeat;
     }
@@ -53,25 +53,5 @@ export class PokeIOWorker
     private static getCacheKeyFromCoords(latitude:number, longitude:number):string
     {
         return `LAT${latitude},LNG${longitude}`;
-    }
-
-    private static retryOnIllegalBuffer<T>(action:() => T, maxTries = 5):T
-    {
-        var tries = 0;
-
-        while (tries < maxTries)
-        {
-            try
-            {
-                return action();
-            }
-            catch (err)
-            {
-                if (err.message === "Illegal buffer")
-                    PokeIOApplication.resetIO();
-                else
-                    throw err;
-            }
-        }
     }
 }

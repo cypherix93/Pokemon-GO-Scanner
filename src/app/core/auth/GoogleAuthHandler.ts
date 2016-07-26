@@ -19,7 +19,7 @@ export class GoogleAuthHandler
         
         var oauthResult = await GoogleAuthHandler.makeOAuthRequest(user, loginResult.masterToken, loginResult.androidId);
 
-        Logger.info(`Session token: ${oauthResult}`);
+        Logger.debug(`Session token: ${oauthResult}`);
 
         return oauthResult.toString();
     }
