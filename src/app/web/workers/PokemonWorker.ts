@@ -19,9 +19,9 @@ export class PokemonWorker
         {
             let latitude = pokemon.Latitude;
             let longitude = pokemon.Longitude;
-            let pokemonId = pokemon.PokedexTypeId;
+            let pokedexId = pokemon.PokedexTypeId;
 
-            let pokemonMarker = new MapPokemon(latitude, longitude, pokemonId);
+            let pokemonMarker = new MapPokemon(latitude, longitude, pokedexId);
 
             pokemonMarker.expirationTime = pokemon.ExpirationTimeMs.toNumber();
 
@@ -32,9 +32,9 @@ export class PokemonWorker
         {
             let latitude = pokemon.Latitude;
             let longitude = pokemon.Longitude;
-            let pokemonId = pokemon.pokemon.PokemonId;
+            let pokedexId = pokemon.pokemon.PokemonId;
 
-            let pokemonMarker = new MapPokemon(latitude, longitude, pokemonId);
+            let pokemonMarker = new MapPokemon(latitude, longitude, pokedexId);
 
             pokemonMarker.expirationTime = parseFloat(pokemon.TimeTillHiddenMs);
 

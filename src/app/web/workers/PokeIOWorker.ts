@@ -40,12 +40,14 @@ export class PokeIOWorker
 
         var cacheKey = PokeIOWorker.getCacheKeyFromCoords(roundedLat, roundedLong);
 
-        var heartbeat = await CacheManager.resolve(cacheKey, async() =>
+        var cacheFallback = async() =>
         {
             var io = await PokeIOApplication.getIO();
 
             return await io.getHeartbeat(roundedLat, roundedLong);
-        }, 60000);
+        };
+
+        var heartbeat = await CacheManager.resolve(cacheKey, cacheFallback, 60000);
 
         return heartbeat;
     }

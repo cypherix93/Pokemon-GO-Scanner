@@ -1,6 +1,28 @@
-AngularApp.service("MapPokemonService", function MapPokemonService($q, ApiService, IconHelperService)
+AngularApp.service("MapPokemonService", function MapPokemonService($q, ApiService, PokemonDataService)
 {
     var self = this;
+    
+    var composeMarkerWithPokemon = function(marker)
+    {
+        var def = $q.defer();
+        
+        PokemonDataService.getPokemon(marker.pokedexId)
+            .then(function(pokemon)
+            {
+                marker.pokemon = pokemon;
+    
+                marker.options = {
+                    icon: marker.pokemon.smallIcon
+                };
+                
+                delete marker.pokedexId;
+                
+                def.resolve(marker);
+            });
+        
+        return def.promise;
+    };
+      
     
     self.getPokemonMarkers = function(latitude, longitude)
     {
@@ -12,12 +34,10 @@ AngularApp.service("MapPokemonService", function MapPokemonService($q, ApiServic
                 response.data
                     .map(function (marker)
                     {
-                        marker.options = {
-                            icon: IconHelperService.getPokemonSmallIconPath(marker.pokemon.pokedexId)
-                        };
+                        return composeMarkerWithPokemon(marker);
                     });
     
-                def.resolve(response.data);
+                def.resolve($q.all(response.data));
             });
         
         return def.promise;
