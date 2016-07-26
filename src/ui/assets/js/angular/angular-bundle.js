@@ -97,6 +97,24 @@ AngularApp.service("ApiService", ["$http", function ApiService($http)
     bindMethods("get", "delete", "head", "jsonp");
     bindMethodsWithData("post", "put", "patch");
 }]);
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    var self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    var self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
+});
 AngularApp.service("IconHelperService", function IconHelperService()
 {
     var self = this;
@@ -127,24 +145,42 @@ AngularApp.service("LocationHelperService", ["$q", "ApiService", function Locati
         return def.promise;
     };
 }]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
 {
     var self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    var self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
+    
+    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
+    
+    self.getPokemonInfoWindowTemplate = function (scope)
     {
-        return !!self.currentUser;
+        return $compile(pokemonWindowTemplate)(scope);
     };
-});
+}]);
+AngularApp.service("MapPokemonService", ["$q", "ApiService", "IconHelperService", function MapPokemonService($q, ApiService, IconHelperService)
+{
+    var self = this;
+    
+    self.getPokemonMarkers = function(latitude, longitude)
+    {
+        var def = $q.defer();
+        
+        ApiService.post("/pokemon/getMapPokemons", {latitude: latitude,longitude: longitude})
+            .success(function (response)
+            {
+                response.data
+                    .map(function (marker)
+                    {
+                        marker.options = {
+                            icon: IconHelperService.getPokemonSmallIconPath(marker.pokemon.pokedexId)
+                        };
+                    });
+    
+                def.resolve(response.data);
+            });
+        
+        return def.promise;
+    }
+}]);
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -242,66 +278,6 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     {
     };
 }]);
-AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
-{
-    var self = this;
-    
-    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
-    
-    self.getPokemonInfoWindowTemplate = function (scope)
-    {
-        return $compile(pokemonWindowTemplate)(scope);
-    };
-}]);
-AngularApp.service("MapPokemonService", ["$q", "ApiService", "IconHelperService", function MapPokemonService($q, ApiService, IconHelperService)
-{
-    var self = this;
-    
-    self.getPokemonMarkers = function(latitude, longitude)
-    {
-        var def = $q.defer();
-        
-        ApiService.post("/pokemon/getMapPokemons", {latitude: latitude,longitude: longitude})
-            .success(function (response)
-            {
-                response.data
-                    .map(function (marker)
-                    {
-                        marker.options = {
-                            icon: IconHelperService.getPokemonSmallIconPath(marker.pokemon.pokedexId)
-                        };
-                    });
-    
-                def.resolve(response.data);
-            });
-        
-        return def.promise;
-    }
-}]);
-AngularApp.directive("infoPanel", function ()
-{
-    return {
-        restrict: "EA",
-        scope: {},
-        transclude: true,
-        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
-        link: {
-            pre: function (scope, element, attrs)
-            {
-                scope.panelShown = true;
-                
-                scope.togglePanel = function()
-                {
-                    scope.panelShown = !scope.panelShown;
-                };
-            },
-            post: function (scope, element, attrs)
-            {
-                
-            }
-        }
-    }
-});
 AngularApp.directive("pokemonType", function ()
 {
     return {
@@ -324,6 +300,30 @@ AngularApp.directive("pokemonType", function ()
                         return type.trim();
                     });
             });
+        }
+    }
+});
+AngularApp.directive("infoPanel", function ()
+{
+    return {
+        restrict: "EA",
+        scope: {},
+        transclude: true,
+        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
+        link: {
+            pre: function (scope, element, attrs)
+            {
+                scope.panelShown = true;
+                
+                scope.togglePanel = function()
+                {
+                    scope.panelShown = !scope.panelShown;
+                };
+            },
+            post: function (scope, element, attrs)
+            {
+                
+            }
         }
     }
 });
