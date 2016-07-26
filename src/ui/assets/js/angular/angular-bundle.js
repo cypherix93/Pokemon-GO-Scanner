@@ -97,24 +97,6 @@ AngularApp.service("ApiService", ["$http", function ApiService($http)
     bindMethods("get", "delete", "head", "jsonp");
     bindMethodsWithData("post", "put", "patch");
 }]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    var self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    var self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.service("IconHelperService", function IconHelperService()
 {
     var self = this;
@@ -145,42 +127,24 @@ AngularApp.service("LocationHelperService", ["$q", "ApiService", function Locati
         return def.promise;
     };
 }]);
-AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     var self = this;
-    
-    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
-    
-    self.getPokemonInfoWindowTemplate = function (scope)
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    var self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
     {
-        return $compile(pokemonWindowTemplate)(scope);
+        return !!self.currentUser;
     };
-}]);
-AngularApp.service("MapPokemonService", ["$q", "ApiService", "IconHelperService", function MapPokemonService($q, ApiService, IconHelperService)
-{
-    var self = this;
-    
-    self.getPokemonMarkers = function(latitude, longitude)
-    {
-        var def = $q.defer();
-        
-        ApiService.post("/pokemon/getMapPokemons", {latitude: latitude,longitude: longitude})
-            .success(function (response)
-            {
-                response.data
-                    .map(function (marker)
-                    {
-                        marker.options = {
-                            icon: IconHelperService.getPokemonSmallIconPath(marker.pokemon.pokedexId)
-                        };
-                    });
-    
-                def.resolve(response.data);
-            });
-        
-        return def.promise;
-    }
-}]);
+});
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -278,6 +242,42 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     {
     };
 }]);
+AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
+{
+    var self = this;
+    
+    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
+    
+    self.getPokemonInfoWindowTemplate = function (scope)
+    {
+        return $compile(pokemonWindowTemplate)(scope);
+    };
+}]);
+AngularApp.service("MapPokemonService", ["$q", "ApiService", "IconHelperService", function MapPokemonService($q, ApiService, IconHelperService)
+{
+    var self = this;
+    
+    self.getPokemonMarkers = function(latitude, longitude)
+    {
+        var def = $q.defer();
+        
+        ApiService.post("/pokemon/getMapPokemons", {latitude: latitude,longitude: longitude})
+            .success(function (response)
+            {
+                response.data
+                    .map(function (marker)
+                    {
+                        marker.options = {
+                            icon: IconHelperService.getPokemonSmallIconPath(marker.pokemon.pokedexId)
+                        };
+                    });
+    
+                def.resolve(response.data);
+            });
+        
+        return def.promise;
+    }
+}]);
 AngularApp.directive("infoPanel", function ()
 {
     return {
@@ -302,30 +302,6 @@ AngularApp.directive("infoPanel", function ()
         }
     }
 });
-AngularApp.directive("locationSearch", ["LocationHelperService", function (LocationHelperService)
-{
-    return {
-        restrict: "EA",
-        scope: {
-            coords: "="
-        },
-        templateUrl: "templates/core/directives/location-search/LocationSearch.template.html",
-        link: function (scope, element, attrs)
-        {
-            scope.searchLocation = function()
-            {
-                if(!scope.searchInput)
-                    return;
-                
-                LocationHelperService.reverseGeocode(scope.searchInput)
-                    .then(function(coords)
-                    {
-                        scope.coords = coords;
-                    });
-            };
-        }
-    }
-}]);
 AngularApp.directive("pokemonType", function ()
 {
     return {
@@ -359,6 +335,11 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
 {
     var self = this;
     
+    self.map = {};
+    self.current = {};
+    
+    self.pokemonMarkers = [];
+    
     self.mapOptions = {
         center: {
             latitude: 40.925493,
@@ -373,11 +354,6 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
         }
     };
     
-    self.map = {};
-    self.current = {};
-    
-    self.pokemonMarkers = [];
-        
     var infowindow;
     var infowindowScope = $scope.$new(true);
     var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
@@ -385,7 +361,7 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
     self.pokemonMarkerEvents = {
         "mouseover": function (marker, event, model, args)
         {
-            infowindowScope.$apply(function()
+            infowindowScope.$apply(function ()
             {
                 infowindowScope.marker = model;
             });
@@ -393,12 +369,12 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
             infowindow = new google.maps.InfoWindow({
                 content: infowindowTemplate.html()
             });
-
+            
             var map = self.map.getGMap();
-
+            
             infowindow.open(map, marker);
         },
-        "mouseout" : function()
+        "mouseout": function ()
         {
             infowindow.close();
         }
@@ -419,6 +395,28 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
                 lng: newVal.longitude
             });
         });
+    
+    // Map Init Handler
+    function mapInitHandler()
+    {
+        self.map.getGMap().addListener("idle", function ()
+        {
+            var center = self.map.getGMap().getCenter();
+            var coords = {
+                latitude: center.lat(),
+                longitude: center.lng()
+            };
+            
+            if (coords.latitude && coords.longitude)
+            {
+                $scope.$apply(function ()
+                {
+                    self.current.coords = coords;
+                    debouncedHeartbeat(coords.latitude, coords.longitude);
+                });
+            }
+        });
+    }
     
     // Debounced Heartbeat retrieval that will be called on specific Google Map Events
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
@@ -441,21 +439,10 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
             if (!newVal)
                 return;
             
-            self.map.getGMap().addListener("idle", function ()
-            {
-                var center = self.map.getGMap().getCenter();
-                var coords = {
-                    latitude: center.lat(),
-                    longitude: center.lng()
-                };
-                
-                if (coords.latitude && coords.longitude)
-                {
-                    self.current.coords = coords;
-                    debouncedHeartbeat(coords.latitude, coords.longitude);
-                }
-            });
+            // Init map
+            mapInitHandler();
             
+            // Dispose watch
             mapInstanceWatch();
         });
 }]);
@@ -471,8 +458,31 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search coords="Home.searchCoords"></location-search>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    <!-- Pokemon Markers -->\r\n    <ui-gmap-markers models="Home.pokemonMarkers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idkey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    <!-- Center Marker -->\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>');
+AngularApp.component("locationSearchComponent", {
+    controller: "LocationSearchController as LocationSearch",
+    templateUrl: "templates/app/location-search/LocationSearch.template.html",
+    bindings: {
+        coords: "="
+    }
+});
+AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperService", function LocationSearchController($scope, LocationHelperService)
+{
+    var self = this;
+        
+    self.searchLocation = function()
+    {
+        if(!self.searchInput)
+            return;
+        
+        LocationHelperService.reverseGeocode(self.searchInput)
+            .then(function(coords)
+            {
+                self.coords = coords;
+            });
+    };
+}]);
+angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search-component coords="Home.searchCoords"></location-search-component>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    <!-- Pokemon Markers -->\r\n    <ui-gmap-markers models="Home.pokemonMarkers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idkey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    <!-- Center Marker -->\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>');
+$templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div>\r\n            <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">\r\n        </div>\r\n        <h5 class="info-window-title">\r\n            <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n            {{marker.pokemon.name}}\r\n        </h5>\r\n        <div>\r\n            <small>\r\n                <span class="text-muted">Type:</span>\r\n                <b pokemon-type="{{marker.pokemon.type}}"></b>\r\n            </small>\r\n        </div>\r\n        <div class="label label-primary info-window-label">\r\n            {{marker.expirationTime}} ms\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');
-$templateCache.put('templates/core/directives/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/pokemon-type/PokemonType.template.html','<span ng-repeat="type in types track by $index">\r\n    <span class="pokemon-type pokemon-type-{{type.toLowerCase()}}">\r\n        {{type}}\r\n    </span>\r\n    <span class="text-muted" ng-hide="$last"> / </span>\r\n</span>');}]);
