@@ -10,23 +10,9 @@ export class PokemonWorker
         var heartbeats = await PokeIOWorker.getHeartbeatMapWithCoordinates(latitude, longitude);
         var cells = _.flatten(heartbeats.map(x => x.cells)) as any[];
 
-        var mapPokemons = _.flatten(cells.map(x => x.MapPokemon)) as any[];
         var wildPokemons = _.flatten(cells.map(x => x.WildPokemon)) as any[];
 
         var markers = [];
-
-        for (let pokemon of mapPokemons)
-        {
-            let latitude = pokemon.Latitude;
-            let longitude = pokemon.Longitude;
-            let pokedexId = pokemon.PokedexTypeId;
-
-            let pokemonMarker = new MapPokemon(latitude, longitude, pokedexId);
-
-            pokemonMarker.expirationTime = pokemon.ExpirationTimeMs.toNumber();
-
-            markers.push(pokemonMarker);
-        }
 
         for (let pokemon of wildPokemons)
         {
