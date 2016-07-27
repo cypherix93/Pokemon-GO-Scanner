@@ -9,6 +9,8 @@ export class MapPokestop extends MapObject
     constructor(latitude:number, longitude:number)
     {
         super(latitude, longitude, MapObjectType.pokestop);
+
+        this.generateMapId();
     }
 
     public setLure(expirationTime:number)

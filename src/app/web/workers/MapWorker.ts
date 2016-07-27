@@ -21,7 +21,7 @@ export class MapWorker
         return markers;
     }
 
-    private static async getPokemonMarkers(cells:any[]):Promise<MapPokemon[]>
+    private static async getPokemonMarkers(cells:any[]):Promise<MapObject[]>
     {
         var wildPokemonCells = cells
             .filter(x => x.WildPokemon.length)
@@ -44,18 +44,19 @@ export class MapWorker
             pokemonMarkers.push(pokemonMarker);
         }
 
-        var uniqueMarkers = MapObject.getUniqueMapObjects(pokemonMarkers) as MapPokemon[];
+        var uniqueMarkers = MapObject.getUniqueMapObjects(pokemonMarkers);
 
         return uniqueMarkers;
     }
 
-    private static async getPokestopMarkers(cells:any[]):Promise<MapPokestop[]>
+    private static async getPokestopMarkers(cells:any[]):Promise<MapObject[]>
     {
         var pokestopCells = cells
-            .filter(x => x.Fort.length && x.Fort.FortType && x.Fort.Enabled)
+            .filter(x => x.Fort.length)
             .map(x => x.Fort);
 
-        var pokestops = _.flatten(pokestopCells) as any[];
+        var pokestops = _.flatten(pokestopCells)
+            .filter(x => x.FortType && x.Enabled) as any[];
 
         var pokestopMarkers = [];
 
@@ -76,7 +77,7 @@ export class MapWorker
             pokestopMarkers.push(pokestopMarker);
         }
 
-        var uniqueMarkers = MapObject.getUniqueMapObjects(pokestopMarkers) as MapPokestop[];
+        var uniqueMarkers = MapObject.getUniqueMapObjects(pokestopMarkers);
 
         return uniqueMarkers;
     }

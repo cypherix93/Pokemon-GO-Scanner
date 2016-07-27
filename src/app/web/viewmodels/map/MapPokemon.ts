@@ -14,7 +14,7 @@ export class MapPokemon extends MapObject
 
         this.pokedexId = pokedexId;
 
-        this.id = this.generateMapId();
+        this.generateMapId();
     }
 
     protected generateMapId():string

@@ -24,7 +24,9 @@ export abstract class MapObject
     {
         var stringToEncode = `${prefix || ""}LAT${this.coords.latitude}|LONG${this.coords.longitude}`;
 
-        return new Buffer(stringToEncode).toString("base64");
+        this.id = new Buffer(stringToEncode).toString("base64");
+
+        return this.id;
     }
 
     public static getUniqueMapObjects(mapObjects:MapObject[]):MapObject[]
