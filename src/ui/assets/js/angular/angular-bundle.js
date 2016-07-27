@@ -47,24 +47,6 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    var self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    var self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.service("ApiService", ["$http", function ApiService($http)
 {
     var self = this;
@@ -115,6 +97,24 @@ AngularApp.service("ApiService", ["$http", function ApiService($http)
     bindMethods("get", "delete", "head", "jsonp");
     bindMethodsWithData("post", "put", "patch");
 }]);
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    var self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    var self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
+});
 AngularApp.service("IconHelperService", function IconHelperService()
 {
     var self = this;
@@ -448,29 +448,6 @@ AngularApp.directive("pokemonType", function ()
         }
     }
 });
-AngularApp.component("locationSearchComponent", {
-    controller: "LocationSearchController as LocationSearch",
-    templateUrl: "templates/app/location-search/LocationSearch.template.html",
-    bindings: {
-        coords: "="
-    }
-});
-AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperService", function LocationSearchController($scope, LocationHelperService)
-{
-    var self = this;
-        
-    self.searchLocation = function()
-    {
-        if(!self.searchInput)
-            return;
-        
-        LocationHelperService.reverseGeocode(self.searchInput)
-            .then(function(coords)
-            {
-                self.coords = coords;
-            });
-    };
-}]);
 AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
@@ -611,6 +588,29 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
                 $rootScope.PageName = "Home"
             }]
         });
+}]);
+AngularApp.component("locationSearchComponent", {
+    controller: "LocationSearchController as LocationSearch",
+    templateUrl: "templates/app/location-search/LocationSearch.template.html",
+    bindings: {
+        coords: "="
+    }
+});
+AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperService", function LocationSearchController($scope, LocationHelperService)
+{
+    var self = this;
+        
+    self.searchLocation = function()
+    {
+        if(!self.searchInput)
+            return;
+        
+        LocationHelperService.reverseGeocode(self.searchInput)
+            .then(function(coords)
+            {
+                self.coords = coords;
+            });
+    };
 }]);
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search-component coords="Home.searchCoords"></location-search-component>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    <!-- Pokemon Markers -->\r\n    <ui-gmap-markers models="Home.markers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idkey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    <!-- Center Marker -->\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>');
 $templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
