@@ -10,20 +10,56 @@
         padding-left: 24px;
         margin: 0 -20px;
 
-        .label
-        {
-            margin: 2px;
-            font-size: 12px;
-        }
-
         .info-window-title
         {
             margin: 4px;
         }
 
+        // Labels
+        .label
+        {
+            margin: 2px;
+            font-size: 12px;
+        }
         .info-window-label
         {
             margin: 4px;
+        }
+
+        // Team Text colors
+        .text-arena-mystic
+        {
+            color: $brand-primary;
+        }
+        .text-arena-instinct
+        {
+            color: $state-warning-text;
+        }
+        .text-arena-valor
+        {
+            color: $state-danger-text;
+        }
+        .text-arena-default
+        {
+            color: $text-muted;
+        }
+
+        // Team Label colors
+        .label-arena-mystic
+        {
+            background: $label-primary-bg;
+        }
+        .label-arena-instinct
+        {
+            background: $label-warning-bg;
+        }
+        .label-arena-valor
+        {
+            background: $label-danger-bg;
+        }
+        .label-arena-default
+        {
+            background: $label-default-bg;
         }
     }
 }

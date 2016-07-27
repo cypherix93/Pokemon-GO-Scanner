@@ -42,6 +42,10 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
         {
             def.resolve(composeMarkerWithPokestop(marker));
         }
+        else if(marker.type === "arena")
+        {
+            def.resolve(composeMarkerWithArena(marker));
+        }
         
         return def.promise;
     }
@@ -79,6 +83,19 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
         
         marker.options = {
             icon: icon
+        };
+        
+        def.resolve(marker);
+        
+        return def.promise;
+    }
+    
+    function composeMarkerWithArena(marker)
+    {
+        var def = $q.defer();
+                
+        marker.options = {
+            icon: IconHelperService.getPokemonTeamIcon(marker.team)
         };
         
         def.resolve(marker);

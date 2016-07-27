@@ -4,6 +4,8 @@ import {PokeIOWorker} from "./PokeIOWorker";
 import {MapPokemon} from "../viewmodels/map/MapPokemon";
 import {MapObject} from "../viewmodels/map/MapObject";
 import {MapPokestop} from "../viewmodels/map/MapPokestop";
+import {MapArena} from "../viewmodels/map/MapArena";
+import {Team} from "../viewmodels/enums/Team";
 
 export class MapWorker
 {
@@ -15,8 +17,9 @@ export class MapWorker
 
         var pokemonMarkers = await MapWorker.getPokemonMarkers(cells);
         var pokestopMarkers = await MapWorker.getPokestopMarkers(cells);
+        var arenaMarkers = await MapWorker.getArenaMarkers(cells);
 
-        var markers = pokemonMarkers.concat(pokestopMarkers);
+        var markers = pokemonMarkers.concat(pokestopMarkers).concat(arenaMarkers);
 
         return markers;
     }
@@ -78,6 +81,41 @@ export class MapWorker
         }
 
         var uniqueMarkers = MapObject.getUniqueMapObjects(pokestopMarkers);
+
+        return uniqueMarkers;
+    }
+
+    private static async getArenaMarkers(cells:any[]):Promise<MapObject[]>
+    {
+        var arenaCells = cells
+            .filter(x => x.Fort.length)
+            .map(x => x.Fort);
+
+        var arenas = _.flatten(arenaCells)
+            .filter(x => !x.FortType && x.Enabled) as any[];
+
+        var arenaMarkers = [];
+
+        for (let arena of arenas)
+        {
+            let latitude = arena.Latitude;
+            let longitude = arena.Longitude;
+
+            let arenaMarker = new MapArena(latitude, longitude);
+
+            if(arena.Team === 1)
+                arenaMarker.setTeam(Team.Mystic);
+            else if(arena.Team === 2)
+                arenaMarker.setTeam(Team.Valor);
+            else if(arena.Team === 3)
+                arenaMarker.setTeam(Team.Instinct);
+
+            arenaMarker.prestige = arena.GymPoints.toNumber();
+
+            arenaMarkers.push(arenaMarker);
+        }
+
+        var uniqueMarkers = MapObject.getUniqueMapObjects(arenaMarkers);
 
         return uniqueMarkers;
     }

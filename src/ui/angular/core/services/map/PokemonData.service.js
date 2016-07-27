@@ -1,4 +1,4 @@
-AngularApp.service("PokemonDataService", function PokemonDataService($q, ApiService, IconHelperService)
+AngularApp.service("PokemonDataService", function PokemonDataService($q, ApiService)
 {
     var self = this;
     
