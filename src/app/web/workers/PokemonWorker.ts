@@ -8,6 +8,7 @@ export class PokemonWorker
     public static async getPokemonMarkers(latitude:number, longitude:number):Promise<MapPokemon[]>
     {
         var heartbeats = await PokeIOWorker.getHeartbeatMapWithCoordinates(latitude, longitude);
+
         var cells = _.flatten(heartbeats.map(x => x.cells)) as any[];
 
         var wildPokemons = _.flatten(cells.map(x => x.WildPokemon)) as any[];

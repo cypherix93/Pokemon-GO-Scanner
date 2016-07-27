@@ -407,7 +407,7 @@ AngularApp.component("homeComponent", {
     controller: "HomeController as Home",
     templateUrl: "templates/app/home/Home.template.html"
 });
-AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapApi", "MapPokemonService", "InfoWindowService", function HomeController($scope, $compile, uiGmapGoogleMapApi, MapPokemonService, InfoWindowService)
+AngularApp.controller("HomeController", ["$scope", "$compile", "$location", "uiGmapGoogleMapApi", "MapPokemonService", "InfoWindowService", function HomeController($scope, $compile, $location, uiGmapGoogleMapApi, MapPokemonService, InfoWindowService)
 {
     var self = this;
     
@@ -416,10 +416,16 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
     
     self.pokemonMarkers = [];
     
+    // On load check URL for location coords
+    var urlParams = $location.search();
+    var urlLat = urlParams.latitude;
+    var urlLng = urlParams.longitude;
+    
+    // Google Maps Options
     self.mapOptions = {
         center: {
-            latitude: 40.925493,
-            longitude: -73.123182
+            latitude: urlLat || 40.925493,
+            longitude: urlLng || -73.123182
         },
         zoom: 16,
         options: {
@@ -434,6 +440,7 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
     var infowindowScope = $scope.$new(true);
     var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
     
+    // Events for each marker
     self.pokemonMarkerEvents = {
         "mouseover": function (marker, event, model, args)
         {
@@ -488,6 +495,8 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "uiGmapGoogleMapA
                 $scope.$apply(function ()
                 {
                     self.current.coords = coords;
+                    $location.search(self.current.coords);
+                    
                     debouncedHeartbeat(coords.latitude, coords.longitude);
                 });
             }
