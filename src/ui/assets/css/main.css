@@ -6674,56 +6674,42 @@ home-component .angular-google-map-container {
     font-size: 14px;
     font-weight: bold; }
 
-.pokemon-type.pokemon-type-normal {
-  color: #A8A878; }
-
-.pokemon-type.pokemon-type-fire {
-  color: #F08030; }
-
-.pokemon-type.pokemon-type-fighting {
-  color: #C03028; }
-
-.pokemon-type.pokemon-type-water {
-  color: #6890F0; }
-
-.pokemon-type.pokemon-type-flying {
-  color: #A890F0; }
-
-.pokemon-type.pokemon-type-grass {
-  color: #78C850; }
-
-.pokemon-type.pokemon-type-poison {
-  color: #A040A0; }
-
-.pokemon-type.pokemon-type-electric {
-  color: #F8D030; }
-
-.pokemon-type.pokemon-type-ground {
-  color: #E0C068; }
-
-.pokemon-type.pokemon-type-psychic {
-  color: #F85888; }
-
-.pokemon-type.pokemon-type-rock {
-  color: #B8A038; }
-
-.pokemon-type.pokemon-type-ice {
-  color: #98D8D8; }
-
-.pokemon-type.pokemon-type-bug {
-  color: #A8B820; }
-
-.pokemon-type.pokemon-type-dragon {
-  color: #7038F8; }
-
-.pokemon-type.pokemon-type-ghost {
-  color: #705898; }
-
-.pokemon-type.pokemon-type-dark {
-  color: #705848; }
-
-.pokemon-type.pokemon-type-steel {
-  color: #B8B8D0; }
-
-.pokemon-type.pokemon-type-fairy {
-  color: #EE99AC; }
+.pokemon-type {
+  margin: 4px;
+  font-size: 14px; }
+  .pokemon-type.pokemon-type-normal {
+    background: #A8A878; }
+  .pokemon-type.pokemon-type-fire {
+    background: #F08030; }
+  .pokemon-type.pokemon-type-fighting {
+    background: #C03028; }
+  .pokemon-type.pokemon-type-water {
+    background: #6890F0; }
+  .pokemon-type.pokemon-type-flying {
+    background: #A890F0; }
+  .pokemon-type.pokemon-type-grass {
+    background: #78C850; }
+  .pokemon-type.pokemon-type-poison {
+    background: #A040A0; }
+  .pokemon-type.pokemon-type-electric {
+    background: #F8D030; }
+  .pokemon-type.pokemon-type-ground {
+    background: #E0C068; }
+  .pokemon-type.pokemon-type-psychic {
+    background: #F85888; }
+  .pokemon-type.pokemon-type-rock {
+    background: #B8A038; }
+  .pokemon-type.pokemon-type-ice {
+    background: #98D8D8; }
+  .pokemon-type.pokemon-type-bug {
+    background: #A8B820; }
+  .pokemon-type.pokemon-type-dragon {
+    background: #7038F8; }
+  .pokemon-type.pokemon-type-ghost {
+    background: #705898; }
+  .pokemon-type.pokemon-type-dark {
+    background: #705848; }
+  .pokemon-type.pokemon-type-steel {
+    background: #B8B8D0; }
+  .pokemon-type.pokemon-type-fairy {
+    background: #EE99AC; }
