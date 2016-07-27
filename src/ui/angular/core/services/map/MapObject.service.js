@@ -56,7 +56,7 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
                 marker.pokemon = pokemon;
                 
                 marker.options = {
-                    icon: marker.pokemon.smallIcon
+                    icon: IconHelperService.getPokemonSmallIconPath(marker.pokedexId)
                 };
                 
                 delete marker.pokedexId;

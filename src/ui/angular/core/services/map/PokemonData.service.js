@@ -24,14 +24,8 @@ AngularApp.service("PokemonDataService", function PokemonDataService($q, ApiServ
             .then(function (pokemons)
             {
                 var pokemon = pokemons.filter(p => (p.pokedexId) === pokedexId)[0];
-                
-                if (!pokemon)
-                    def.resolve(null);
-                
-                pokemon.smallIcon = IconHelperService.getPokemonSmallIconPath(pokedexId);
-                pokemon.bigIcon = IconHelperService.getPokemonBigIconPath(pokedexId);
-                
-                def.resolve(pokemon);
+                                
+                def.resolve(pokemon || null);
             });
         
         return def.promise;
