@@ -3,6 +3,7 @@ import _ = require("lodash");
 import {PokeIOWorker} from "./PokeIOWorker";
 import {MapPokemon} from "../viewmodels/map/MapPokemon";
 import {MapObject} from "../viewmodels/map/MapObject";
+import {MapPokestop} from "../viewmodels/map/MapPokestop";
 
 export class MapWorker
 {
@@ -22,9 +23,13 @@ export class MapWorker
 
     private static async getPokemonMarkers(cells:any[]):Promise<MapPokemon[]>
     {
-        var wildPokemons = _.flatten(cells.map(x => x.WildPokemon)) as any[];
+        var wildPokemonCells = cells
+            .filter(x => x.WildPokemon.length)
+            .map(x => x.WildPokemon);
 
-        var markers = [];
+        var wildPokemons = _.flatten(wildPokemonCells) as any[];
+
+        var pokemonMarkers = [];
 
         for (let pokemon of wildPokemons)
         {
@@ -36,62 +41,42 @@ export class MapWorker
 
             pokemonMarker.expirationTime = parseFloat(pokemon.TimeTillHiddenMs);
 
-            markers.push(pokemonMarker);
+            pokemonMarkers.push(pokemonMarker);
         }
 
-        // Get unique markers
-        var sortedMarkers = markers.sort((x, y) =>
-        {
-            var a = x.id;
-            var b = y.id;
-
-            if (a < b)
-                return -1;
-
-            if (a > b)
-                return 1;
-
-            return 0;
-        });
-        var uniqueMarkers = _.sortedUniqBy(sortedMarkers, "id");
+        var uniqueMarkers = MapObject.getUniqueMapObjects(pokemonMarkers) as MapPokemon[];
 
         return uniqueMarkers;
     }
 
-    private static async getPokestopMarkers(cells:any[]):Promise<MapPokemon[]>
+    private static async getPokestopMarkers(cells:any[]):Promise<MapPokestop[]>
     {
-        var wildPokemons = _.flatten(cells.map(x => x.WildPokemon)) as any[];
+        var pokestopCells = cells
+            .filter(x => x.Fort.length && x.Fort.FortType && x.Fort.Enabled)
+            .map(x => x.Fort);
 
-        var markers = [];
+        var pokestops = _.flatten(pokestopCells) as any[];
 
-        for (let pokemon of wildPokemons)
+        var pokestopMarkers = [];
+
+        for (let pokestop of pokestops)
         {
-            let latitude = pokemon.Latitude;
-            let longitude = pokemon.Longitude;
-            let pokedexId = pokemon.pokemon.PokemonId;
+            let latitude = pokestop.Latitude;
+            let longitude = pokestop.Longitude;
 
-            let pokemonMarker = new MapPokemon(latitude, longitude, pokedexId);
+            let pokestopMarker = new MapPokestop(latitude, longitude);
 
-            pokemonMarker.expirationTime = parseFloat(pokemon.TimeTillHiddenMs);
+            if(pokestop.LureInfo)
+            {
+                var expirationMs = pokestop.LureInfo.LureExpiresTimestampMs.toNumber();
 
-            markers.push(pokemonMarker);
+                pokestopMarker.setLure(expirationMs);
+            }
+
+            pokestopMarkers.push(pokestopMarker);
         }
 
-        // Get unique markers
-        var sortedMarkers = markers.sort((x, y) =>
-        {
-            var a = x.id;
-            var b = y.id;
-
-            if (a < b)
-                return -1;
-
-            if (a > b)
-                return 1;
-
-            return 0;
-        });
-        var uniqueMarkers = _.sortedUniqBy(sortedMarkers, "id");
+        var uniqueMarkers = MapObject.getUniqueMapObjects(pokestopMarkers) as MapPokestop[];
 
         return uniqueMarkers;
     }
