@@ -1,25 +1,24 @@
 import {MapObject} from "./MapObject";
 import {Pokemon} from "../../../core/models/Pokemon";
+import {MapObjectType} from "./MapObjectType";
 
 export class MapPokemon extends MapObject
 {
-    public pokemon:Pokemon;
+    public pokedexId:number;
 
     public expirationTime:number;
 
-    constructor(latitude:number, longitude:number, pokemonId:number)
+    constructor(latitude:number, longitude:number, pokedexId:number)
     {
-        super(latitude, longitude);
+        super(latitude, longitude, MapObjectType.pokemon);
 
-        this.pokemon = new Pokemon(pokemonId);
+        this.pokedexId = pokedexId;
 
-        this.id = this.generateMapId();
+        this.generateMapId();
     }
 
     protected generateMapId():string
     {
-        var stringToEncode = `PKMN${this.pokemon.pokedexId}|LAT${this.coords.latitude}|LONG${this.coords.longitude}`;
-
-        return new Buffer(stringToEncode).toString("base64");
+        return super.generateMapId(`PKMN${this.pokedexId}|`);
     }
 }

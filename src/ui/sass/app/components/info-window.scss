@@ -1,15 +1,29 @@
-.info-window
+.gm-style-iw
 {
-    padding-left: 20px;
-
-    .info-window-title
+    & > div, & > div > div
     {
-        margin: 4px;
+        overflow: visible !important;
     }
 
-    .info-window-label
+    .info-window
     {
-        font-size: 14px;
-        font-weight: bold;
+        padding-left: 24px;
+        margin: 0 -20px;
+
+        .label
+        {
+            margin: 2px;
+            font-size: 12px;
+        }
+
+        .info-window-title
+        {
+            margin: 4px;
+        }
+
+        .info-window-label
+        {
+            margin: 4px;
+        }
     }
 }

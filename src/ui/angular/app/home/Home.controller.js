@@ -1,16 +1,22 @@
-AngularApp.controller("HomeController", function HomeController($scope, $compile, uiGmapGoogleMapApi, MapPokemonService, InfoWindowService)
+AngularApp.controller("HomeController", function HomeController($scope, $compile, $location, uiGmapGoogleMapApi, MapObjectService, InfoWindowService)
 {
     var self = this;
     
     self.map = {};
     self.current = {};
     
-    self.pokemonMarkers = [];
+    self.markers = [];
     
+    // On load check URL for location coords
+    var urlParams = $location.search();
+    var urlLat = urlParams.latitude;
+    var urlLng = urlParams.longitude;
+    
+    // Google Maps Options
     self.mapOptions = {
         center: {
-            latitude: 40.925493,
-            longitude: -73.123182
+            latitude: urlLat || 40.925493,
+            longitude: urlLng || -73.123182
         },
         zoom: 16,
         options: {
@@ -25,6 +31,7 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
     var infowindowScope = $scope.$new(true);
     var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
     
+    // Events for each marker
     self.pokemonMarkerEvents = {
         "mouseover": function (marker, event, model, args)
         {
@@ -79,6 +86,8 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
                 $scope.$apply(function ()
                 {
                     self.current.coords = coords;
+                    $location.search(self.current.coords);
+                    
                     debouncedHeartbeat(coords.latitude, coords.longitude);
                 });
             }
@@ -88,10 +97,11 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
     // Debounced Heartbeat retrieval that will be called on specific Google Map Events
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
     {
-        MapPokemonService.getPokemonMarkers(latitude, longitude)
-            .then(function (markers)
+        MapObjectService.getPokemonMarkers(latitude, longitude)
+            .then(function (data)
             {
-                self.pokemonMarkers = markers;
+                if (_.isEqual(self.current.coords, data.center))
+                    self.markers = data.markers;
             })
         
     }, 500);

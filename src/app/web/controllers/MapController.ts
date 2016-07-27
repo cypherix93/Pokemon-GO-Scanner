@@ -11,39 +11,34 @@ import {MapWorker} from "../workers/MapWorker";
 import {PokemonRepository} from "../../core/data/PokemonRepository";
 import {Pokemon} from "../../core/models/Pokemon";
 
-@JsonController("/pokemon")
-export class PokemonController
+@JsonController("/map")
+export class MapController
 {
-    @Post("/getPokemonById")
-    public async getPokemonById(@Req() request:Request):Promise<any>
+    @Post("/getMapObjects")
+    public async getMapObjects(@Req() request:Request):Promise<any>
     {
-        var pokedexId = request.body.pokedexId;
+        var latitude = parseFloat(request.body.latitude);
+        var longitude = parseFloat(request.body.longitude);
 
-        if(!pokedexId)
+        if(!latitude || !longitude)
         {
             return {
                 success: false,
-                message: "Pokedex ID must both be provided."
+                message: "Latitude and Longitude must both be provided."
             };
         }
 
-        var pokemon = await PokemonRepository.getPokemon(pokedexId);
+        var markers = await MapWorker.getMapMarkers(latitude, longitude);
 
         return {
             success: true,
-            data: pokemon
+            data: {
+                center: {
+                    latitude,
+                    longitude
+                },
+                markers
+            }
         };
     }
-
-    @Post("/getAllPokemons")
-    public async getAllPokemons():Promise<any>
-    {
-        var pokemons = await PokemonRepository.getAllPokemons();
-
-        return {
-            success: true,
-            data: pokemons
-        };
-    }
-
 }
