@@ -1,6 +1,6 @@
 import _ = require("lodash");
 
-import {MapObjectType} from "./MapObjectType";
+import {MapObjectType} from "../enums/MapObjectType";
 
 export abstract class MapObject
 {

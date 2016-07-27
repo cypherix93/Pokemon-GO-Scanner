@@ -1,6 +1,5 @@
 import {MapObject} from "./MapObject";
-import {Pokemon} from "../../../core/models/Pokemon";
-import {MapObjectType} from "./MapObjectType";
+import {MapObjectType} from "../enums/MapObjectType";
 
 export class MapPokemon extends MapObject
 {

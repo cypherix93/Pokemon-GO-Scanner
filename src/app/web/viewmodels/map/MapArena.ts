@@ -1,22 +1,22 @@
 import {MapObject} from "./MapObject";
+import {Team} from "../enums/Team";
 import {MapObjectType} from "../enums/MapObjectType";
 
-export class MapPokestop extends MapObject
+export class MapArena extends MapObject
 {
-    public lured:boolean;
-    public lureExpirationTime:number;
+    public team:string;
+    public prestige:number;
 
     constructor(latitude:number, longitude:number)
     {
-        super(latitude, longitude, MapObjectType.pokestop);
+        super(latitude, longitude, MapObjectType.arena);
 
         this.generateMapId();
     }
 
-    public setLure(expirationTime:number)
+    public setTeam(team:Team)
     {
-        this.lured = true;
-        this.lureExpirationTime = expirationTime;
+        this.team = Team[team];
     }
 
     protected generateMapId():string
