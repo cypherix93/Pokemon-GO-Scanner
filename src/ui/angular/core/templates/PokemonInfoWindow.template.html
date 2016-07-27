@@ -1,17 +1,40 @@
 <div>
     <div class="info-window pokemon-info-window text-center">
-        <div>
-            <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">
-        </div>
-        <h5 class="info-window-title">
-            <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>
-            {{marker.pokemon.name}}
-        </h5>
-        <div>
-            <span pokemon-type="{{marker.pokemon.type}}"></span>
-        </div>
-        <div class="info-window-label">
-            {{marker.expirationTime | expiration}} remaining
+        <div ng-switch="marker.type">
+
+            <!-- Pokemon -->
+            <div ng-switch-when="pokemon">
+                <div>
+                    <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">
+                </div>
+                <h5 class="info-window-title">
+                    <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>
+                    {{marker.pokemon.name}}
+                </h5>
+                <div>
+                    <span pokemon-type="{{marker.pokemon.type}}"></span>
+                </div>
+                <div class="info-window-label">
+                    {{marker.expirationTime | expiration}} remaining
+                </div>
+            </div>
+
+            <!-- PokeStop -->
+            <div ng-switch-when="pokestop">
+                <div>
+                    <img src="assets/images/map/pokestop{{marker.lured ? 'pink' : ''}}-2x.png" width="90">
+                </div>
+                <h5 class="info-window-title">
+                    PokéStop
+                </h5>
+                <div>
+                    <span class="label label-info">Lured</span>
+                </div>
+                <div class="info-window-label" ng-show="marker.lured">
+                    Lure expires in: {{marker.lureExpirationTime | expiration}}
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

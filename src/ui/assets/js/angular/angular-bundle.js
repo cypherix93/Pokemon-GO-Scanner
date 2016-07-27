@@ -115,6 +115,40 @@ AngularApp.service("IdentityService", function ()
         return !!self.currentUser;
     };
 });
+AngularApp.service("IconHelperService", function IconHelperService()
+{
+    var self = this;
+    
+    self.getPokemonSmallIconPath = function(pokedexId)
+    {
+        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
+    };
+    self.getPokemonBigIconPath = function(pokedexId)
+    {
+        return "assets/images/pokemon/go-sprites/big/" + pokedexId + ".png";
+    };
+    self.getPokestopIconPath = function()
+    {
+        return "assets/images/pokemon/map/pokestop.png";
+    };
+});
+AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
+{
+    var self = this;
+    
+    self.reverseGeocode = function(locationName)
+    {
+        var def = $q.defer();
+        
+        ApiService.post("/location/reverseGeocode", {location:locationName})
+            .success(function(response)
+            {
+                def.resolve(response.data);
+            });
+        
+        return def.promise;
+    };
+}]);
 AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
 {
     var self = this;
@@ -240,40 +274,6 @@ AngularApp.service("PokemonDataService", ["$q", "ApiService", "IconHelperService
         
         return def.promise;
     }
-}]);
-AngularApp.service("IconHelperService", function IconHelperService()
-{
-    var self = this;
-    
-    self.getPokemonSmallIconPath = function(pokedexId)
-    {
-        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
-    };
-    self.getPokemonBigIconPath = function(pokedexId)
-    {
-        return "assets/images/pokemon/go-sprites/big/" + pokedexId + ".png";
-    };
-    self.getPokestopIconPath = function()
-    {
-        return "assets/images/pokemon/map/pokestop.png";
-    };
-});
-AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
-{
-    var self = this;
-    
-    self.reverseGeocode = function(locationName)
-    {
-        var def = $q.defer();
-        
-        ApiService.post("/location/reverseGeocode", {location:locationName})
-            .success(function(response)
-            {
-                def.resolve(response.data);
-            });
-        
-        return def.promise;
-    };
 }]);
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
@@ -604,6 +604,6 @@ AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperServ
 }]);
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search-component coords="Home.searchCoords"></location-search-component>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    <!-- Pokemon Markers -->\r\n    <ui-gmap-markers models="Home.markers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idkey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    <!-- Center Marker -->\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>');
 $templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
-$templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div>\r\n            <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">\r\n        </div>\r\n        <h5 class="info-window-title">\r\n            <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n            {{marker.pokemon.name}}\r\n        </h5>\r\n        <div>\r\n            <span pokemon-type="{{marker.pokemon.type}}"></span>\r\n        </div>\r\n        <div class="info-window-label">\r\n            {{marker.expirationTime | expiration}} remaining\r\n        </div>\r\n    </div>\r\n</div>');
+$templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div ng-switch="marker.type">\r\n\r\n            <!-- Pokemon -->\r\n            <div ng-switch-when="pokemon">\r\n                <div>\r\n                    <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">\r\n                </div>\r\n                <h5 class="info-window-title">\r\n                    <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n                    {{marker.pokemon.name}}\r\n                </h5>\r\n                <div>\r\n                    <span pokemon-type="{{marker.pokemon.type}}"></span>\r\n                </div>\r\n                <div class="info-window-label">\r\n                    {{marker.expirationTime | expiration}} remaining\r\n                </div>\r\n            </div>\r\n\r\n            <!-- PokeStop -->\r\n            <div ng-switch-when="pokestop">\r\n                <div>\r\n                    <img src="assets/images/map/pokestop{{marker.lured ? \'pink\' : \'\'}}-2x.png" width="90">\r\n                </div>\r\n                <h5 class="info-window-title">\r\n                    Pok\xE9Stop\r\n                </h5>\r\n                <div>\r\n                    <span class="label label-info">Lured</span>\r\n                </div>\r\n                <div class="info-window-label" ng-show="marker.lured">\r\n                    Lure expires in: {{marker.lureExpirationTime | expiration}}\r\n                </div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/pokemon-type/PokemonType.template.html','<span ng-repeat="type in types track by $index">\r\n    <span class="label pokemon-type pokemon-type-{{type.toLowerCase()}}">\r\n        {{type}}\r\n    </span>\r\n</span>');}]);
