@@ -1,11 +1,11 @@
-AngularApp.controller("HomeController", function HomeController($scope, $compile, $location, uiGmapGoogleMapApi, MapPokemonService, InfoWindowService)
+AngularApp.controller("HomeController", function HomeController($scope, $compile, $location, uiGmapGoogleMapApi, MapObjectService, InfoWindowService)
 {
     var self = this;
     
     self.map = {};
     self.current = {};
     
-    self.pokemonMarkers = [];
+    self.markers = [];
     
     // On load check URL for location coords
     var urlParams = $location.search();
@@ -97,10 +97,11 @@ AngularApp.controller("HomeController", function HomeController($scope, $compile
     // Debounced Heartbeat retrieval that will be called on specific Google Map Events
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
     {
-        MapPokemonService.getPokemonMarkers(latitude, longitude)
-            .then(function (markers)
+        MapObjectService.getPokemonMarkers(latitude, longitude)
+            .then(function (data)
             {
-                self.pokemonMarkers = markers;
+                if (_.isEqual(self.current.coords, data.center))
+                    self.markers = data.markers;
             })
         
     }, 500);

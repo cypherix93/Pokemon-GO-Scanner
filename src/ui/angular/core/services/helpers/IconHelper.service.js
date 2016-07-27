@@ -10,4 +10,8 @@ AngularApp.service("IconHelperService", function IconHelperService()
     {
         return "assets/images/pokemon/go-sprites/big/" + pokedexId + ".png";
     };
+    self.getPokestopIconPath = function()
+    {
+        return "assets/images/pokemon/map/pokestop.png";
+    };
 });
