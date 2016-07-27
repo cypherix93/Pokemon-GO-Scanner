@@ -6672,13 +6672,29 @@ home-component .angular-google-map-container {
 .gm-style-iw .info-window {
   padding-left: 24px;
   margin: 0 -20px; }
+  .gm-style-iw .info-window .info-window-title {
+    margin: 4px; }
   .gm-style-iw .info-window .label {
     margin: 2px;
     font-size: 12px; }
-  .gm-style-iw .info-window .info-window-title {
-    margin: 4px; }
   .gm-style-iw .info-window .info-window-label {
     margin: 4px; }
+  .gm-style-iw .info-window .text-arena-mystic {
+    color: #2196F3; }
+  .gm-style-iw .info-window .text-arena-instinct {
+    color: #ff9800; }
+  .gm-style-iw .info-window .text-arena-valor {
+    color: #e51c23; }
+  .gm-style-iw .info-window .text-arena-default {
+    color: #bbb; }
+  .gm-style-iw .info-window .label-arena-mystic {
+    background: #2196F3; }
+  .gm-style-iw .info-window .label-arena-instinct {
+    background: #ff9800; }
+  .gm-style-iw .info-window .label-arena-valor {
+    background: #e51c23; }
+  .gm-style-iw .info-window .label-arena-default {
+    background: #bbb; }
 
 .pokemon-type.pokemon-type-normal {
   background: #A8A878; }
