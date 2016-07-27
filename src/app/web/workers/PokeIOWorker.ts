@@ -13,6 +13,9 @@ export class PokeIOWorker
 
     public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 10):Promise<any>
     {
+        var roundedLat = Math.round(latitude * 1000) / 1000;
+        var roundedLong = Math.round(longitude * 1000) / 1000;
+
         var step = 0.0005;
         var upperBound = (maxSteps / 2) * step;
         var lowerBound = -upperBound;
@@ -22,8 +25,8 @@ export class PokeIOWorker
         {
             for (let j = lowerBound; j <= upperBound; j += step)
             {
-                let newLat = latitude + i;
-                let newLng = longitude + j;
+                let newLat = roundedLat + i;
+                let newLng = roundedLong + j;
 
                 let heartbeatPromise = PokeIOWorker.getHeartbeatWithCoordinates(newLat, newLng);
                 heartbeatPromises.push(heartbeatPromise);
@@ -40,12 +43,14 @@ export class PokeIOWorker
 
         var cacheKey = PokeIOWorker.getCacheKeyFromCoords(roundedLat, roundedLong);
 
-        var heartbeat = await CacheManager.resolve(cacheKey, async() =>
+        var cacheFallback = async() =>
         {
             var io = await PokeIOApplication.getIO();
 
             return await io.getHeartbeat(roundedLat, roundedLong);
-        }, 60000);
+        };
+
+        var heartbeat = await CacheManager.resolve(cacheKey, cacheFallback, 60000);
 
         return heartbeat;
     }

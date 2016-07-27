@@ -19,7 +19,7 @@ export class Pokemon
     {
         this.pokedexId = pokedexId;
 
-        var pokemonData = PokemonRepository.getPokemon(pokedexId);
+        var pokemonData = PokemonRepository.getPokemonFromFile(pokedexId);
 
         this.name = pokemonData.name;
         this.type = pokemonData.type;
