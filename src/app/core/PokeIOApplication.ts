@@ -49,9 +49,9 @@ export class PokeIOApplication
     {
         var io = await PokeIOApplication.getIO();
 
-        // Just get the API endpoint as a ping
-        io.player.apiEndpoint = await io.getApiEndpoint();
+        // io.player.apiEndpoint = await io.getApiEndpoint();
 
+        // Just get the player profile as a ping
         await io.getProfile();
 
         Logger.debug(`API Pinged at ${new Date().toISOString()}`);
