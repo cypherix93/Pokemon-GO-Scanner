@@ -337,6 +337,23 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     {
     };
 }]);
+AngularApp.filter("expiration", function ()
+{
+    return function (milliseconds)
+    {
+        var mins = milliseconds / 1000 / 60;
+        
+        if (mins < 1)
+            return "Less than a minute";
+        
+        var days = milliseconds / 1000 / 60 / 60 / 24;
+        
+        if (days > 7)
+            return "An eternity";
+        
+        return moment.duration(milliseconds, "ms").format("d[d] h[h] m[m]");
+    };
+});
 AngularApp.directive("infoPanel", function ()
 {
     return {
@@ -542,6 +559,6 @@ AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperServ
 }]);
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search-component coords="Home.searchCoords"></location-search-component>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    <!-- Pokemon Markers -->\r\n    <ui-gmap-markers models="Home.pokemonMarkers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idkey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    <!-- Center Marker -->\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>');
 $templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
-$templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div>\r\n            <img src="{{marker.pokemon.bigIcon}}" width="90">\r\n        </div>\r\n        <h5 class="info-window-title">\r\n            <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n            {{marker.pokemon.name}}\r\n        </h5>\r\n        <div>\r\n            <span pokemon-type="{{marker.pokemon.type}}"></span>\r\n        </div>\r\n        <div class="label label-primary info-window-label">\r\n            {{marker.expirationTime}} ms\r\n        </div>\r\n    </div>\r\n</div>');
+$templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div>\r\n            <img src="{{marker.pokemon.bigIcon}}" width="90">\r\n        </div>\r\n        <h5 class="info-window-title">\r\n            <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n            {{marker.pokemon.name}}\r\n        </h5>\r\n        <div>\r\n            <span pokemon-type="{{marker.pokemon.type}}"></span>\r\n        </div>\r\n        <div class="info-window-label">\r\n            {{marker.expirationTime | expiration}} remaining\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/pokemon-type/PokemonType.template.html','<span ng-repeat="type in types track by $index">\r\n    <span class="label pokemon-type pokemon-type-{{type.toLowerCase()}}">\r\n        {{type}}\r\n    </span>\r\n</span>');}]);

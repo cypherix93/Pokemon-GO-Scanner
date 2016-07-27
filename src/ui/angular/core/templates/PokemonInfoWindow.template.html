@@ -10,8 +10,8 @@
         <div>
             <span pokemon-type="{{marker.pokemon.type}}"></span>
         </div>
-        <div class="label label-primary info-window-label">
-            {{marker.expirationTime}} ms
+        <div class="info-window-label">
+            {{marker.expirationTime | expiration}} remaining
         </div>
     </div>
 </div>

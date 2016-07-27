@@ -6666,17 +6666,20 @@ home-component .angular-google-map-container {
     .info-panel.shown .expand-arrow {
       left: -52px; }
 
-.info-window {
-  padding-left: 20px; }
-  .info-window .info-window-title {
+.gm-style-iw > div, .gm-style-iw > div > div {
+  overflow: visible !important; }
+
+.gm-style-iw .info-window {
+  padding-left: 24px;
+  margin: -10px -20px; }
+  .gm-style-iw .info-window .info-window-title {
     margin: 4px; }
-  .info-window .info-window-label {
-    font-size: 14px;
-    font-weight: bold; }
+  .gm-style-iw .info-window .info-window-label {
+    margin: 4px; }
 
 .pokemon-type {
-  margin: 4px;
-  font-size: 14px; }
+  margin: 2px;
+  font-size: 12px; }
   .pokemon-type.pokemon-type-normal {
     background: #A8A878; }
   .pokemon-type.pokemon-type-fire {
