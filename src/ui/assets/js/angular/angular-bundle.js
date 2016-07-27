@@ -97,24 +97,6 @@ AngularApp.service("ApiService", ["$http", function ApiService($http)
     bindMethods("get", "delete", "head", "jsonp");
     bindMethodsWithData("post", "put", "patch");
 }]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    var self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    var self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.service("IconHelperService", function IconHelperService()
 {
     var self = this;
@@ -129,7 +111,11 @@ AngularApp.service("IconHelperService", function IconHelperService()
     };
     self.getPokestopIconPath = function()
     {
-        return "assets/images/pokemon/map/pokestop.png";
+        return "assets/images/map/pokestop.png";
+    };
+    self.getPokestopLuredIconPath = function()
+    {
+        return "assets/images/map/pokestoppink.png";
     };
 });
 AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
@@ -149,132 +135,24 @@ AngularApp.service("LocationHelperService", ["$q", "ApiService", function Locati
         return def.promise;
     };
 }]);
-AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
 {
     var self = this;
-    
-    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
-    
-    self.getPokemonInfoWindowTemplate = function (scope)
-    {
-        return $compile(pokemonWindowTemplate)(scope);
-    };
+
 }]);
-AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService", "IconHelperService", function MapObjectService($q, ApiService, PokemonDataService, IconHelperService)
+AngularApp.service("IdentityService", function ()
 {
     var self = this;
-    
-    self.getPokemonMarkers = function (latitude, longitude)
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
     {
-        var def = $q.defer();
-        
-        ApiService.post("/map/getMapObjects", {latitude: latitude,longitude: longitude})
-            .success(function (response)
-            {
-                var center = response.data.center;
-                
-                var markers = response.data.markers
-                    .map(function (marker)
-                    {
-                        return composeMarker(marker);
-                    });
-                
-                $q.all(markers)
-                    .then(function (markers)
-                    {
-                        def.resolve({
-                            center: center,
-                            markers: markers
-                        });
-                    });
-            });
-        
-        return def.promise;
+        return !!self.currentUser;
     };
-    
-    function composeMarker(marker)
-    {
-        var def = $q.defer();
-        
-        if(marker.type === "pokemon")
-        {
-            def.resolve(composeMarkerWithPokemon(marker));
-        }
-        else if(marker.type === "pokestop")
-        {
-            def.resolve(composeMarkerWithPokestop(marker));
-        }
-        
-        return def.promise;
-    }
-    
-    function composeMarkerWithPokemon(marker)
-    {
-        var def = $q.defer();
-        
-        PokemonDataService.getPokemon(marker.pokedexId)
-            .then(function (pokemon)
-            {
-                marker.pokemon = pokemon;
-                
-                marker.options = {
-                    icon: IconHelperService.getPokemonSmallIconPath(marker.pokedexId)
-                };
-                
-                delete marker.pokedexId;
-                
-                def.resolve(marker);
-            });
-        
-        return def.promise;
-    }
-    
-    function composeMarkerWithPokestop(marker)
-    {
-        var def = $q.defer();
-                        
-        marker.options = {
-            icon: IconHelperService.getPokestopIconPath()
-        };
-        
-        def.resolve(marker);
-        
-        return def.promise;
-    }
-}]);
-AngularApp.service("PokemonDataService", ["$q", "ApiService", "IconHelperService", function PokemonDataService($q, ApiService, IconHelperService)
-{
-    var self = this;
-    
-    var pokemonDataDeferrred = $q.defer();
-    
-    var pokemonDataPromise = pokemonDataDeferrred.promise;
-    
-    var getAllPokemons = function ()
-    {
-        ApiService.post("/pokemon/getAllPokemons")
-            .success(function (response)
-            {
-                pokemonDataDeferrred.resolve(response.data);
-            });
-    };
-    getAllPokemons();
-    
-    self.getPokemon = function (pokedexId)
-    {
-        var def = $q.defer();
-        
-        pokemonDataPromise
-            .then(function (pokemons)
-            {
-                var pokemon = pokemons.filter(p => (p.pokedexId) === pokedexId)[0];
-                                
-                def.resolve(pokemon || null);
-            });
-        
-        return def.promise;
-    }
-}]);
+});
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -371,6 +249,138 @@ AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", fun
     exports.initGlobalModals = function ()
     {
     };
+}]);
+AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
+{
+    var self = this;
+    
+    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
+    
+    self.getPokemonInfoWindowTemplate = function (scope)
+    {
+        return $compile(pokemonWindowTemplate)(scope);
+    };
+}]);
+AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService", "IconHelperService", function MapObjectService($q, ApiService, PokemonDataService, IconHelperService)
+{
+    var self = this;
+    
+    self.getPokemonMarkers = function (latitude, longitude)
+    {
+        var def = $q.defer();
+        
+        ApiService.post("/map/getMapObjects", {latitude: latitude,longitude: longitude})
+            .success(function (response)
+            {
+                var center = response.data.center;
+                
+                var markers = response.data.markers
+                    .map(function (marker)
+                    {
+                        return composeMarker(marker);
+                    });
+                
+                $q.all(markers)
+                    .then(function (markers)
+                    {
+                        def.resolve({
+                            center: center,
+                            markers: markers
+                        });
+                    });
+            });
+        
+        return def.promise;
+    };
+    
+    function composeMarker(marker)
+    {
+        var def = $q.defer();
+        
+        if(marker.type === "pokemon")
+        {
+            def.resolve(composeMarkerWithPokemon(marker));
+        }
+        else if(marker.type === "pokestop")
+        {
+            def.resolve(composeMarkerWithPokestop(marker));
+        }
+        
+        return def.promise;
+    }
+    
+    function composeMarkerWithPokemon(marker)
+    {
+        var def = $q.defer();
+        
+        PokemonDataService.getPokemon(marker.pokedexId)
+            .then(function (pokemon)
+            {
+                marker.pokemon = pokemon;
+                
+                marker.options = {
+                    icon: IconHelperService.getPokemonSmallIconPath(marker.pokedexId)
+                };
+                
+                delete marker.pokedexId;
+                
+                def.resolve(marker);
+            });
+        
+        return def.promise;
+    }
+    
+    function composeMarkerWithPokestop(marker)
+    {
+        var def = $q.defer();
+        
+        var icon;
+        if(marker.lured)
+            icon = IconHelperService.getPokestopLuredIconPath();
+        else
+            icon = IconHelperService.getPokestopIconPath();
+        
+        marker.options = {
+            icon: icon
+        };
+        
+        def.resolve(marker);
+        
+        return def.promise;
+    }
+}]);
+AngularApp.service("PokemonDataService", ["$q", "ApiService", "IconHelperService", function PokemonDataService($q, ApiService, IconHelperService)
+{
+    var self = this;
+    
+    var pokemonDataDeferrred = $q.defer();
+    
+    var pokemonDataPromise = pokemonDataDeferrred.promise;
+    
+    var getAllPokemons = function ()
+    {
+        ApiService.post("/pokemon/getAllPokemons")
+            .success(function (response)
+            {
+                pokemonDataDeferrred.resolve(response.data);
+            });
+    };
+    getAllPokemons();
+    
+    self.getPokemon = function (pokedexId)
+    {
+        var def = $q.defer();
+        
+        pokemonDataPromise
+            .then(function (pokemons)
+            {
+                var pokemon = pokemons.filter(p => (p.pokedexId) === pokedexId)[0];
+                                
+                def.resolve(pokemon || null);
+            });
+        
+        return def.promise;
+    }
 }]);
 AngularApp.filter("expiration", function ()
 {
@@ -604,6 +614,6 @@ AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperServ
 }]);
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<location-search-component coords="Home.searchCoords"></location-search-component>\r\n\r\n<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    <!-- Pokemon Markers -->\r\n    <ui-gmap-markers models="Home.markers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idkey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    <!-- Center Marker -->\r\n    <ui-gmap-marker coords="Home.current.coords" idkey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>');
 $templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container clearfix">\r\n        <div class="pull-left text-center">\r\n            <div class="navbar-brand">\r\n                <img class="navbar-image" src="assets/images/logo-small.png" height="40">\r\n                Pok\xE9Radar\r\n            </div>\r\n        </div>\r\n        <div class="col-xs-9">\r\n            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                <div class="input-group search-input-group">\r\n                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                    <div class="input-group-btn">\r\n                        <button type="submit" class="btn-lg btn-default">\r\n                            <span class="fa fa-lg fa-search"></span>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n        </div>\r\n    </div>\r\n</div>');
-$templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div ng-switch="marker.type">\r\n\r\n            <!-- Pokemon -->\r\n            <div ng-switch-when="pokemon">\r\n                <div>\r\n                    <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">\r\n                </div>\r\n                <h5 class="info-window-title">\r\n                    <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n                    {{marker.pokemon.name}}\r\n                </h5>\r\n                <div>\r\n                    <span pokemon-type="{{marker.pokemon.type}}"></span>\r\n                </div>\r\n                <div class="info-window-label">\r\n                    {{marker.expirationTime | expiration}} remaining\r\n                </div>\r\n            </div>\r\n\r\n            <!-- PokeStop -->\r\n            <div ng-switch-when="pokestop">\r\n                <div>\r\n                    <img src="assets/images/map/pokestop{{marker.lured ? \'pink\' : \'\'}}-2x.png" width="90">\r\n                </div>\r\n                <h5 class="info-window-title">\r\n                    Pok\xE9Stop\r\n                </h5>\r\n                <div>\r\n                    <span class="label label-info">Lured</span>\r\n                </div>\r\n                <div class="info-window-label" ng-show="marker.lured">\r\n                    Lure expires in: {{marker.lureExpirationTime | expiration}}\r\n                </div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n</div>');
+$templateCache.put('templates/core/templates/PokemonInfoWindow.template.html','<div>\r\n    <div class="info-window pokemon-info-window text-center">\r\n        <div ng-switch="marker.type">\r\n\r\n            <!-- Pokemon -->\r\n            <div ng-switch-when="pokemon">\r\n                <div>\r\n                    <img src="assets/images/pokemon/go-sprites/big/{{marker.pokemon.pokedexId}}.png" width="90">\r\n                </div>\r\n                <h5 class="info-window-title">\r\n                    <small class="text-muted">#{{marker.pokemon.pokedexId}}</small>\r\n                    {{marker.pokemon.name}}\r\n                </h5>\r\n                <div>\r\n                    <span pokemon-type="{{marker.pokemon.type}}"></span>\r\n                </div>\r\n                <div class="info-window-label">\r\n                    {{marker.expirationTime | expiration}} remaining\r\n                </div>\r\n            </div>\r\n\r\n            <!-- PokeStop -->\r\n            <div ng-switch-when="pokestop">\r\n                <div>\r\n                    <img src="assets/images/map/pokestop{{marker.lured ? \'pink\' : \'\'}}-2x.png" height="90">\r\n                </div>\r\n                <h5 class="info-window-title">\r\n                    Pok\xE9Stop\r\n                </h5>\r\n                <div ng-show="marker.lured">\r\n                    <div class="label label-info">Lured</div>\r\n                    <div class="info-window-label">\r\n                        Lure expires in: {{marker.lureExpirationTime | expiration}}\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/core/directives/pokemon-type/PokemonType.template.html','<span ng-repeat="type in types track by $index">\r\n    <span class="label pokemon-type pokemon-type-{{type.toLowerCase()}}">\r\n        {{type}}\r\n    </span>\r\n</span>');}]);

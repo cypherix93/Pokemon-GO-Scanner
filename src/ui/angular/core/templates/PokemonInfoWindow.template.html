@@ -22,16 +22,16 @@
             <!-- PokeStop -->
             <div ng-switch-when="pokestop">
                 <div>
-                    <img src="assets/images/map/pokestop{{marker.lured ? 'pink' : ''}}-2x.png" width="90">
+                    <img src="assets/images/map/pokestop{{marker.lured ? 'pink' : ''}}-2x.png" height="90">
                 </div>
                 <h5 class="info-window-title">
                     PokéStop
                 </h5>
-                <div>
-                    <span class="label label-info">Lured</span>
-                </div>
-                <div class="info-window-label" ng-show="marker.lured">
-                    Lure expires in: {{marker.lureExpirationTime | expiration}}
+                <div ng-show="marker.lured">
+                    <div class="label label-info">Lured</div>
+                    <div class="info-window-label">
+                        Lure expires in: {{marker.lureExpirationTime | expiration}}
+                    </div>
                 </div>
             </div>
 

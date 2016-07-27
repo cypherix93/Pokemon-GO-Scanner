@@ -12,6 +12,10 @@ AngularApp.service("IconHelperService", function IconHelperService()
     };
     self.getPokestopIconPath = function()
     {
-        return "assets/images/pokemon/map/pokestop.png";
+        return "assets/images/map/pokestop.png";
+    };
+    self.getPokestopLuredIconPath = function()
+    {
+        return "assets/images/map/pokestoppink.png";
     };
 });

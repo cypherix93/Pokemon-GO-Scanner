@@ -70,9 +70,15 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
     function composeMarkerWithPokestop(marker)
     {
         var def = $q.defer();
-                        
+        
+        var icon;
+        if(marker.lured)
+            icon = IconHelperService.getPokestopLuredIconPath();
+        else
+            icon = IconHelperService.getPokestopIconPath();
+        
         marker.options = {
-            icon: IconHelperService.getPokestopIconPath()
+            icon: icon
         };
         
         def.resolve(marker);
