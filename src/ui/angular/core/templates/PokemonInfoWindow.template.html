@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <h5 class="info-window-title text-arena-{{marker.team.toLowerCase() || 'default'}}">
-                    {{marker.team}} Gym
+                    {{marker.team || "Vacant"}} Gym
                 </h5>
                 <div ng-show="marker.team">
                     <div class="label label-arena-{{marker.team.toLowerCase() || 'default'}}">
