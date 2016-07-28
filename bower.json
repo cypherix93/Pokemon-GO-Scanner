@@ -1,6 +1,6 @@
 {
   "name": "pokemon-go-scanner",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "dependencies": {
     "angular": "1.x.x",
     "angular-sanitize": "1.x.x",

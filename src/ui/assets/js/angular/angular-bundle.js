@@ -521,7 +521,7 @@ AngularApp.controller("HomeController", ["$scope", "$compile", "$location", "uiG
     };
     
     var infowindow;
-    infowindowScope = $scope.$new(true);
+    var infowindowScope = $scope.$new(true);
     var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
     
     // Events for each marker
