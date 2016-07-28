@@ -110,7 +110,8 @@ export class MapWorker
             else if(arena.Team === 3)
                 arenaMarker.setTeam(Team.Instinct);
 
-            arenaMarker.prestige = arena.GymPoints.toNumber();
+            if(arenaMarker.team)
+                arenaMarker.prestige = arena.GymPoints.toNumber();
 
             arenaMarkers.push(arenaMarker);
         }
