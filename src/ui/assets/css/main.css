@@ -6631,11 +6631,13 @@ textarea {
     line-height: unset; }
     .navbar .navbar-brand .navbar-image {
       display: inline;
-      margin-bottom: 6px; }
+      margin: 5px; }
   .navbar .navbar-form {
     padding: 0; }
     .navbar .navbar-form .search-input-group {
       width: 100%; }
+      .navbar .navbar-form .search-input-group .input-group-btn {
+        width: 2%; }
 
 home-component .angular-google-map-container {
   position: absolute;

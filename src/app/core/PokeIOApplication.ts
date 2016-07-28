@@ -47,13 +47,17 @@ export class PokeIOApplication
 
     public static async ping()
     {
-        var io = await PokeIOApplication.getIO();
+        try
+        {
+            var io = await PokeIOApplication.getIO();
 
-        // io.player.apiEndpoint = await io.getApiEndpoint();
+            // io.player.apiEndpoint = await io.getApiEndpoint();
 
-        // Just get the player profile as a ping
-        await io.getProfile();
+            // Just get the player profile as a ping
+            await io.getProfile();
 
-        Logger.debug(`API Pinged at ${new Date().toISOString()}`);
+            Logger.debug(`API Pinged at ${new Date().toISOString()}`);
+        }
+        catch(e){}
     }
 }
