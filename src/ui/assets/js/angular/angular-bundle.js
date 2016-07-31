@@ -47,74 +47,6 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
-AngularApp.service("ApiService", ["$http", function ApiService($http)
-{
-    var self = this;
-    
-    var baseUrl = "http://localhost:32598";
-    
-    var bindMethods = function ()
-    {
-        for (var i = 0; i < arguments.length; i++)
-        {
-            var arg = arguments[i];
-            
-            self[arg] = (function(method)
-            {
-                return function (apiUrl, config)
-                {
-                    apiUrl = formatApiUrl(apiUrl);
-                    
-                    return $http[method](baseUrl + apiUrl, config);
-                }
-            })(arg);
-        }
-    };
-    
-    var bindMethodsWithData = function ()
-    {
-        for (var i = 0; i < arguments.length; i++)
-        {
-            var arg = arguments[i];
-            
-            self[arg] = (function(method)
-            {
-                return function (apiUrl, data, config)
-                {
-                    apiUrl = formatApiUrl(apiUrl);
-                    
-                    return $http[method](baseUrl + apiUrl, data, config);
-                }
-            })(arg);
-        }
-    };
-    
-    var formatApiUrl = function(url)
-    {
-        return url[0] === "/" ? url : "/" + url;
-    };
-    
-    bindMethods("get", "delete", "head", "jsonp");
-    bindMethodsWithData("post", "put", "patch");
-}]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    var self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    var self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
 AngularApp.service("IconHelperService", function IconHelperService()
 {
     var self = this;
@@ -324,6 +256,74 @@ AngularApp.service("PokemonDataService", ["$q", "ApiService", function PokemonDa
         return def.promise;
     }
 }]);
+AngularApp.service("ApiService", ["$http", function ApiService($http)
+{
+    var self = this;
+    
+    var baseUrl = "http://localhost:32598";
+    
+    var bindMethods = function ()
+    {
+        for (var i = 0; i < arguments.length; i++)
+        {
+            var arg = arguments[i];
+            
+            self[arg] = (function(method)
+            {
+                return function (apiUrl, config)
+                {
+                    apiUrl = formatApiUrl(apiUrl);
+                    
+                    return $http[method](baseUrl + apiUrl, config);
+                }
+            })(arg);
+        }
+    };
+    
+    var bindMethodsWithData = function ()
+    {
+        for (var i = 0; i < arguments.length; i++)
+        {
+            var arg = arguments[i];
+            
+            self[arg] = (function(method)
+            {
+                return function (apiUrl, data, config)
+                {
+                    apiUrl = formatApiUrl(apiUrl);
+                    
+                    return $http[method](baseUrl + apiUrl, data, config);
+                }
+            })(arg);
+        }
+    };
+    
+    var formatApiUrl = function(url)
+    {
+        return url[0] === "/" ? url : "/" + url;
+    };
+    
+    bindMethods("get", "delete", "head", "jsonp");
+    bindMethodsWithData("post", "put", "patch");
+}]);
+AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
+{
+    var self = this;
+
+}]);
+AngularApp.service("IdentityService", function ()
+{
+    var self = this;
+
+    // Current User Identity
+    self.currentUser = undefined;
+
+    // Function to check if the current user is authenticated
+    self.isAuthenticated = function ()
+    {
+        return !!self.currentUser;
+    };
+});
 AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
     var exports = this;
@@ -438,30 +438,6 @@ AngularApp.filter("expiration", function ()
         return moment.duration(milliseconds, "ms").format("d[d] h[h] m[m]");
     };
 });
-AngularApp.directive("infoPanel", function ()
-{
-    return {
-        restrict: "EA",
-        scope: {},
-        transclude: true,
-        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
-        link: {
-            pre: function (scope, element, attrs)
-            {
-                scope.panelShown = true;
-                
-                scope.togglePanel = function()
-                {
-                    scope.panelShown = !scope.panelShown;
-                };
-            },
-            post: function (scope, element, attrs)
-            {
-                
-            }
-        }
-    }
-});
 AngularApp.directive("pokemonType", function ()
 {
     return {
@@ -484,6 +460,30 @@ AngularApp.directive("pokemonType", function ()
                         return type.trim();
                     });
             });
+        }
+    }
+});
+AngularApp.directive("infoPanel", function ()
+{
+    return {
+        restrict: "EA",
+        scope: {},
+        transclude: true,
+        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
+        link: {
+            pre: function (scope, element, attrs)
+            {
+                scope.panelShown = true;
+                
+                scope.togglePanel = function()
+                {
+                    scope.panelShown = !scope.panelShown;
+                };
+            },
+            post: function (scope, element, attrs)
+            {
+                
+            }
         }
     }
 });
