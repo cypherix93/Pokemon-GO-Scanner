@@ -61,7 +61,7 @@ export abstract class PokeIOBase
 
         var apiUrl = apiResponse.api_url;
 
-        if(!apiUrl)
+        if (!apiUrl)
         {
             ErrorHandler.throwRPCOfflineError();
         }
