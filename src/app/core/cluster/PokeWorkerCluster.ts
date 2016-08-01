@@ -18,7 +18,7 @@ export class PokeWorkerCluster
         }
     }
 
-    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 10):Promise<any>
+    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 1):Promise<any>
     {
         var roundedLat = Math.round(latitude * 1000) / 1000;
         var roundedLong = Math.round(longitude * 1000) / 1000;
@@ -40,7 +40,9 @@ export class PokeWorkerCluster
             }
         }
 
-        return Promise.all(heartbeatPromises);
+        var heartbeats = await Promise.all(heartbeatPromises) as any[];
+
+        return heartbeats.filter(x => !!x);
     }
 
     private static async getHeartbeatWithCoordinates(latitude:number, longitude:number)

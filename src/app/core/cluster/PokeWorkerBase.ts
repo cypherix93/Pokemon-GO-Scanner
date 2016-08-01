@@ -47,7 +47,7 @@ export class PokeWorkerBase
         Logger.debug(`Worker "${this.username}" initialized at ${new Date().toISOString()}`);
     }
 
-    protected async ping(tries?:number):Promise<void>
+    protected async ping():Promise<void>
     {
         // Just get the player profile as a ping
         await RetryHelper.retryAsync(async() =>
