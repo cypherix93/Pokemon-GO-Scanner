@@ -4,8 +4,8 @@ import cors = require("cors");
 
 import {RoutesConfig} from "./routes/RoutesConfig";
 import {Config} from "./Config";
-import {PokeIOApplication} from "../../core/PokeIOApplication";
 import {Logger} from "../../core/helpers/Logger";
+import {PokeScannerApplication} from "../../core/PokeScannerApplication";
 
 export class Bootstrapper
 {
@@ -22,7 +22,7 @@ export class Bootstrapper
         // Setup routes
         RoutesConfig.init(app);
 
-        // Init PokeIO
-        await PokeIOApplication.init();
+        // Init PokeScanner
+        await PokeScannerApplication.init();
     }
 }

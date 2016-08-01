@@ -11,7 +11,7 @@ export class PokeWorkerCluster
 
         for (let account of accounts)
         {
-            let worker = await new PokeWorker(account.username, account.password);
+            let worker = await new PokeWorker(account.username, account.password, account.provider);
             await worker.init();
 
             PokeWorkerCluster._workers.push(worker);
@@ -52,6 +52,6 @@ export class PokeWorkerCluster
 
     private static async getNextIdleWorker():Promise<PokeWorker>
     {
-
+        return PokeWorkerCluster._workers[0];
     }
 }

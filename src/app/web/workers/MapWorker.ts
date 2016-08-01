@@ -1,17 +1,17 @@
 import _ = require("lodash");
 
-import {PokeIOWorker} from "./PokeIOWorker";
 import {MapPokemon} from "../viewmodels/map/MapPokemon";
 import {MapObject} from "../viewmodels/map/MapObject";
 import {MapPokestop} from "../viewmodels/map/MapPokestop";
 import {MapArena} from "../viewmodels/map/MapArena";
 import {Team} from "../viewmodels/enums/Team";
+import {PokeWorkerCluster} from "../../core/cluster/PokeWorkerCluster";
 
 export class MapWorker
 {
     public static async getMapMarkers(latitude:number, longitude:number):Promise<MapObject[]>
     {
-        var heartbeats = await PokeIOWorker.getHeartbeatMapWithCoordinates(latitude, longitude);
+        var heartbeats = await PokeWorkerCluster.getHeartbeatMapWithCoordinates(latitude, longitude);
 
         var cells = _.flatten(heartbeats.map(x => x.cells)) as any[];
 
