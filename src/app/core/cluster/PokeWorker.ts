@@ -20,7 +20,7 @@ export class PokeWorker extends PokeWorkerBase
             return await this.io.getHeartbeat(roundedLat, roundedLong);
         };
 
-        var heartbeat = await CacheManager.resolve(cacheKey, cacheFallback, 60000);
+        var heartbeat = await CacheManager.resolveAsync(cacheKey, cacheFallback, 60000);
 
         return heartbeat;
     }
