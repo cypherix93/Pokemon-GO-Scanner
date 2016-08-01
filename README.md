@@ -3,8 +3,8 @@
 Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for Pokémon GO.
 
 > **IMPORTANT** <br>
-Since Niantic decided to throttle their API requests, this has become unusable. <br> 
-Fixes are on the way. But for now the map won't work. You will get `Error: IllegalBuffer` all over the place.
+Since Niantic decided to throttle their API requests, this has become sort of unusable. <br> 
+I put some fixes in there to make the map functional at least. But the radius of scan is pretty small right now. PokeStops and Gyms are visible in a good radius. Pokemon, however are very hard to scan. Hold tight, more changes are coming. 
 
 > This is still a work in progress. If you want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
 
