@@ -1,27 +1,29 @@
 <div class="navbar navbar-default navbar-fixed-top">
-    <div class="container clearfix">
-        <div class="pull-left text-center clearfix">
-            <div class="navbar-brand">
-                <img class="navbar-image pull-left" src="assets/images/logo-small.png" height="40">
-                <div class="pull-left">
-                    <span class="visible-md visible-lg">
-                        PokéRadar
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-9">
-            <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>
-                <div class="input-group search-input-group">
-                    <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">
-
-                    <div class="input-group-btn">
-                        <button type="submit" class="btn-lg btn-default">
-                            <span class="fa fa-lg fa-search"></span>
-                        </button>
+    <div class="container-fluid clearfix">
+        <div class="col-lg-offset-1 col-lg-10 col-xs-12">
+            <div class="pull-left text-center clearfix">
+                <div class="navbar-brand">
+                    <img class="navbar-image pull-left" src="assets/images/logo-small.png" height="40">
+                    <div class="pull-left">
+                        <span class="visible-md visible-lg">
+                            PokéScanner
+                        </span>
                     </div>
                 </div>
-            </form>
+            </div>
+            <div class="col-xs-10 col-md-8">
+                <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>
+                    <div class="input-group search-input-group">
+                        <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">
+
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn-lg btn-default">
+                                <span class="fa fa-lg fa-search"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

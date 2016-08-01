@@ -6621,24 +6621,6 @@ textarea {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0; }
 
-.navbar {
-  -webkit-box-shadow: #666 0 0 5px;
-  box-shadow: #666 0 0 5px; }
-  .navbar .navbar-brand {
-    font-size: 28px;
-    padding: 11px 25px;
-    height: auto;
-    line-height: unset; }
-    .navbar .navbar-brand .navbar-image {
-      display: inline;
-      margin: 5px; }
-  .navbar .navbar-form {
-    padding: 0; }
-    .navbar .navbar-form .search-input-group {
-      width: 100%; }
-      .navbar .navbar-form .search-input-group .input-group-btn {
-        width: 2%; }
-
 home-component .angular-google-map-container {
   position: absolute;
   top: 75px;
@@ -6697,6 +6679,24 @@ home-component .angular-google-map-container {
     background: #e51c23; }
   .gm-style-iw .info-window .label-arena-default {
     background: #bbb; }
+
+.navbar {
+  -webkit-box-shadow: #666 0 0 5px;
+  box-shadow: #666 0 0 5px; }
+  .navbar .navbar-brand {
+    font-size: 28px;
+    padding: 11px 25px;
+    height: auto;
+    line-height: unset; }
+    .navbar .navbar-brand .navbar-image {
+      display: inline;
+      margin: 5px; }
+  .navbar .navbar-form {
+    padding: 0; }
+    .navbar .navbar-form .search-input-group {
+      width: 100%; }
+      .navbar .navbar-form .search-input-group .input-group-btn {
+        width: 2%; }
 
 .pokemon-type.pokemon-type-normal {
   background: #A8A878; }
