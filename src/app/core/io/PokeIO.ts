@@ -65,10 +65,19 @@ export class PokeIO extends PokeIOBase
 
         var payload = apiResponse.payload[0];
 
-        Logger.debug(`Heartbeat at ${latitude}, ${longitude}`);
+        // Try to decode heartbeat, if failed, return null
+        try
+        {
+            var heartbeat = this.responseEnvelope.HeartbeatPayload.decode(payload);
 
-        var heartbeat = this.responseEnvelope.HeartbeatPayload.decode(payload);
+            Logger.debug(`Heartbeat at ${latitude}, ${longitude}`);
 
-        return heartbeat;
+            return heartbeat;
+        }
+        catch(err)
+        {
+            Logger.error(`Heartbeat failed at ${latitude}, ${longitude}`);
+            return null;
+        }
     }
 }

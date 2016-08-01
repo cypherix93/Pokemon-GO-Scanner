@@ -3,7 +3,6 @@ import {JsonController} from "routing-controllers/decorator/Controllers";
 import {Get, Post} from "routing-controllers/decorator/Methods";
 import {Req, Res} from "routing-controllers/decorator/Params";
 
-import {PokeIOWorker} from "../workers/PokeIOWorker";
 import {GeocoderHelper} from "../../core/helpers/GeocoderHelper";
 
 @JsonController("/location")

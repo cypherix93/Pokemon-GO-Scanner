@@ -2,7 +2,7 @@ import cache = require("memory-cache");
 
 export class CacheManager
 {
-    public static async resolve<T>(key:string, fallback:() => Promise<T>, expiry?:number):Promise<T>
+    public static async resolveAsync<T>(key:string, fallback:() => Promise<T>, expiry?:number):Promise<T>
     {
         var cacheItem = cache.get(key);
 
@@ -13,7 +13,8 @@ export class CacheManager
 
         var fallbackItem = await fallback();
 
-        cache.put(key, fallbackItem, expiry);
+        if (fallbackItem)
+            cache.put(key, fallbackItem, expiry);
 
         return fallbackItem;
     }

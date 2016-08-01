@@ -12,7 +12,7 @@
         .navbar-image
         {
             display: inline;
-            margin-bottom: 6px;
+            margin: 5px;
         }
     }
 
@@ -23,6 +23,11 @@
         .search-input-group
         {
             width: 100%;
+
+            .input-group-btn
+            {
+                width: 2%;
+            }
         }
     }
 }

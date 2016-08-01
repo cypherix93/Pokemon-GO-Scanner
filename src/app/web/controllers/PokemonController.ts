@@ -5,11 +5,7 @@ import {Req, Res} from "routing-controllers/decorator/Params";
 
 import _ = require("lodash");
 
-import {MapPokemon} from "../viewmodels/map/MapPokemon";
-import {PokeIOWorker} from "../workers/PokeIOWorker";
-import {MapWorker} from "../workers/MapWorker";
 import {PokemonRepository} from "../../core/data/PokemonRepository";
-import {Pokemon} from "../../core/models/Pokemon";
 
 @JsonController("/pokemon")
 export class PokemonController
