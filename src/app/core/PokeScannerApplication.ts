@@ -7,13 +7,13 @@ export class PokeScannerApplication
 {
     public static async init()
     {
-        var accounts = await PokeScannerApplication.loadAccounts();
+        var accounts = PokeScannerApplication.loadAccounts();
 
         await PokeWorkerCluster.init(accounts);
     }
 
-    private static async loadAccounts():Promise<Account[]>
+    private static loadAccounts():Account[]
     {
-        return await jsonfile.readFile(path.join(__dirname, "../data/accounts.json")) as Account[];
+        return jsonfile.readFileSync(path.join(__dirname, "../data/accounts.json")) as Account[];
     }
 }

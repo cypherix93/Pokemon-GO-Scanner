@@ -2,6 +2,7 @@ import {PokeIO} from "../io/PokeIO";
 import {Logger} from "../helpers/Logger";
 
 import Timer = NodeJS.Timer;
+import {RetryHelper} from "../helpers/RetryHelper";
 
 const defaultLocation = "Times Square, NY";
 const defaultProvider = "ptc";
@@ -28,38 +29,31 @@ export class PokeWorkerBase
 
     public async init():Promise<void>
     {
-        this.io = new PokeIO();
+        // Just get the player profile as a ping
+        await RetryHelper.retryAsync(async() =>
+        {
+            this.io = new PokeIO();
 
-        // Init the IO
-        await this.io.init(this.username, this.password, this.location, this.provider);
+            // Init the IO
+            await this.io.init(this.username, this.password, this.location, this.provider);
 
-        if(this.pingTimer)
-            clearInterval(this.pingTimer);
+            if (this.pingTimer)
+                clearInterval(this.pingTimer);
 
-        // On an interval, ping Niantic to make sure they don't drop our session
-        this.pingTimer = setInterval(() => this.ping(), this.pingIntervalTime);
+            // On an interval, ping Niantic to make sure they don't drop our session
+            this.pingTimer = setInterval(() => this.ping(), this.pingIntervalTime);
+        });
+
+        Logger.debug(`Worker "${this.username}" initialized at ${new Date().toISOString()}`);
     }
 
     protected async ping(tries?:number):Promise<void>
     {
         // Just get the player profile as a ping
-        try
+        await RetryHelper.retryAsync(async() =>
         {
             await this.io.getProfile();
-        }
-        catch (err)
-        {
-            if (tries && tries > 5)
-            {
-                Logger.error(err.stack);
-                throw err;
-            }
-
-            // If ping fails, reset IO and try again
-            await this.init();
-
-            await this.ping((tries || 1) + 1);
-        }
+        });
 
         Logger.debug(`API Pinged on worker "${this.username}" at ${new Date().toISOString()}`);
     }
