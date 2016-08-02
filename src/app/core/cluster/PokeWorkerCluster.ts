@@ -21,7 +21,7 @@ export class PokeWorkerCluster
 
             PokeWorkerCluster._workers.push(worker);
 
-            //await new Promise(resolve => setTimeout(() => resolve(), 5000));
+            //await new Promise(resolve => setTimeout(() => resolve(), 500));
         }
 
         await Promise.all(workerInitPromises);
@@ -29,7 +29,7 @@ export class PokeWorkerCluster
         Logger.info(`Worker cluster ready!`);
     }
 
-    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 1):Promise<any>
+    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 8):Promise<any>
     {
         var roundedLat = Math.round(latitude * 1000) / 1000;
         var roundedLong = Math.round(longitude * 1000) / 1000;
@@ -46,7 +46,9 @@ export class PokeWorkerCluster
                 let newLat = roundedLat + i;
                 let newLng = roundedLong + j;
 
-                let heartbeatPromise = PokeWorkerCluster.getHeartbeatWithCoordinates(newLat, newLng);
+                let idleWorker = await PokeWorkerCluster.getNextIdleWorker();
+
+                let heartbeatPromise = idleWorker.doHeartbeat(newLat, newLng);
                 heartbeatPromises.push(heartbeatPromise);
             }
         }
@@ -56,15 +58,19 @@ export class PokeWorkerCluster
         return heartbeats.filter(x => !!x);
     }
 
-    private static async getHeartbeatWithCoordinates(latitude:number, longitude:number)
-    {
-        var idleWorker = await PokeWorkerCluster.getNextIdleWorker();
-
-        return await idleWorker.doHeartbeat(latitude, longitude);
-    }
-
     private static async getNextIdleWorker():Promise<PokeWorker>
     {
-        return PokeWorkerCluster._workers[0];
+        var idleWorker = PokeWorkerCluster._workers
+            .filter(w => w.isIdle())[0];
+
+        if(idleWorker)
+            return idleWorker;
+
+        // Wait 300ms
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        idleWorker = await PokeWorkerCluster.getNextIdleWorker();
+
+        return idleWorker;
     }
 }
