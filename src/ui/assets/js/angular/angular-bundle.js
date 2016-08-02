@@ -47,6 +47,66 @@ AngularApp.run(["$rootScope", "$state", function ($rootScope, $state)
 {
     $state.go("home");
 }]);
+AngularApp.service("IconHelperService", function IconHelperService()
+{
+    var self = this;
+    
+    self.getPokemonSmallIconPath = function (pokedexId)
+    {
+        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
+    };
+    self.getPokemonBigIconPath = function (pokedexId)
+    {
+        return "assets/images/pokemon/go-sprites/big/" + pokedexId + ".png";
+    };
+    self.getPokestopIconPath = function ()
+    {
+        return "assets/images/map/pokestop.png";
+    };
+    self.getPokestopLuredIconPath = function ()
+    {
+        return "assets/images/map/pokestoppink.png";
+    };
+    self.getPokemonTeamIcon = function (team)
+    {
+        var arenaLogo;
+        
+        switch (team)
+        {
+            case "Mystic":
+                arenaLogo = "arena_blue";
+                break;
+            case "Instinct":
+                arenaLogo = "arena_yellow";
+                break;
+            case "Valor":
+                arenaLogo = "arena_red";
+                break;
+            default:
+                arenaLogo = "arena_white";
+                break;
+        }
+        
+        return "assets/images/map/" + arenaLogo + ".png";
+    };
+});
+AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
+{
+    var self = this;
+    
+    self.reverseGeocode = function(locationName)
+    {
+        var def = $q.defer();
+        
+        ApiService.post("/location/reverseGeocode", {location:locationName})
+            .success(function(response)
+            {
+                def.resolve(response.data);
+            });
+        
+        return def.promise;
+    };
+}]);
 AngularApp.service("ApiService", ["$http", function ApiService($http)
 {
     var self = this;
@@ -115,64 +175,101 @@ AngularApp.service("IdentityService", function ()
         return !!self.currentUser;
     };
 });
-AngularApp.service("IconHelperService", function IconHelperService()
+AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
 {
-    var self = this;
-    
-    self.getPokemonSmallIconPath = function (pokedexId)
+    var exports = this;
+
+    var ModalInstance = function (element, options)
     {
-        return "assets/images/pokemon/go-sprites/small/" + pokedexId + ".png";
-    };
-    self.getPokemonBigIconPath = function (pokedexId)
-    {
-        return "assets/images/pokemon/go-sprites/big/" + pokedexId + ".png";
-    };
-    self.getPokestopIconPath = function ()
-    {
-        return "assets/images/map/pokestop.png";
-    };
-    self.getPokestopLuredIconPath = function ()
-    {
-        return "assets/images/map/pokestoppink.png";
-    };
-    self.getPokemonTeamIcon = function (team)
-    {
-        var arenaLogo;
-        
-        switch (team)
+        var _instance = this;
+
+        // Fields
+        _instance.element = element;
+        _instance.state = "default";
+
+        _instance.onOpen = options.onOpen;
+        _instance.onClose = options.onClose;
+
+        // Init the modal
+        _instance.element.modal({
+            show: false
+        });
+
+        // Width fix
+        _instance.element.width(options.width);
+
+        // Event Handlers
+        _instance.element.on("show", function ()
         {
-            case "Mystic":
-                arenaLogo = "arena_blue";
-                break;
-            case "Instinct":
-                arenaLogo = "arena_yellow";
-                break;
-            case "Valor":
-                arenaLogo = "arena_red";
-                break;
-            default:
-                arenaLogo = "arena_white";
-                break;
-        }
-        
-        return "assets/images/map/" + arenaLogo + ".png";
+            // Margin fix
+            _instance.element.css("margin-left", -(_instance.element.width() / 2));
+
+            if (_instance.onOpen)
+                _instance.onOpen();
+        });
+        _instance.element.on("hidden", function ()
+        {
+            if (_instance.onClose)
+                _instance.onClose();
+        });
+
+        // Open and Close functions
+        _instance.open = function ()
+        {
+            _instance.element.modal("show");
+        };
+        _instance.close = function ()
+        {
+            _instance.element.modal("hide");
+        };
     };
-});
-AngularApp.service("LocationHelperService", ["$q", "ApiService", function LocationHelperService($q, ApiService)
-{
-    var self = this;
-    
-    self.reverseGeocode = function(locationName)
+
+    // Create modal from Template URL
+    exports.createModal = function (templateUrl, options)
     {
         var def = $q.defer();
-        
-        ApiService.post("/location/reverseGeocode", {location:locationName})
-            .success(function(response)
+
+        // Get the template markup from the URL provided
+        $http.get(templateUrl)
+            .success(function (response)
             {
-                def.resolve(response.data);
+                var element = angular.element(response);
+
+                var scope = $rootScope.$new(true);
+                $compile(element)(scope);
+
+                angular.element("#content-container").append(element);
+
+                var modalInstance = new ModalInstance(element, options || {width: 600});
+
+                def.resolve(modalInstance);
             });
-        
+
         return def.promise;
+    };
+
+    // Store for all the global modals
+    exports.modals = {};
+
+    exports.waitUntilReady = function (modalName)
+    {
+        var def = $q.defer();
+
+        var watch = $rootScope.$watch(function()
+        {
+            return !!exports.modals[modalName];
+        }, function()
+        {
+            def.resolve(exports.modals[modalName]);
+            watch();
+        });
+
+        return def.promise;
+    };
+
+    // Global modals init function
+    exports.initGlobalModals = function ()
+    {
     };
 }]);
 AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
@@ -324,103 +421,6 @@ AngularApp.service("PokemonDataService", ["$q", "ApiService", function PokemonDa
         return def.promise;
     }
 }]);
-AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
-{
-    var exports = this;
-
-    var ModalInstance = function (element, options)
-    {
-        var _instance = this;
-
-        // Fields
-        _instance.element = element;
-        _instance.state = "default";
-
-        _instance.onOpen = options.onOpen;
-        _instance.onClose = options.onClose;
-
-        // Init the modal
-        _instance.element.modal({
-            show: false
-        });
-
-        // Width fix
-        _instance.element.width(options.width);
-
-        // Event Handlers
-        _instance.element.on("show", function ()
-        {
-            // Margin fix
-            _instance.element.css("margin-left", -(_instance.element.width() / 2));
-
-            if (_instance.onOpen)
-                _instance.onOpen();
-        });
-        _instance.element.on("hidden", function ()
-        {
-            if (_instance.onClose)
-                _instance.onClose();
-        });
-
-        // Open and Close functions
-        _instance.open = function ()
-        {
-            _instance.element.modal("show");
-        };
-        _instance.close = function ()
-        {
-            _instance.element.modal("hide");
-        };
-    };
-
-    // Create modal from Template URL
-    exports.createModal = function (templateUrl, options)
-    {
-        var def = $q.defer();
-
-        // Get the template markup from the URL provided
-        $http.get(templateUrl)
-            .success(function (response)
-            {
-                var element = angular.element(response);
-
-                var scope = $rootScope.$new(true);
-                $compile(element)(scope);
-
-                angular.element("#content-container").append(element);
-
-                var modalInstance = new ModalInstance(element, options || {width: 600});
-
-                def.resolve(modalInstance);
-            });
-
-        return def.promise;
-    };
-
-    // Store for all the global modals
-    exports.modals = {};
-
-    exports.waitUntilReady = function (modalName)
-    {
-        var def = $q.defer();
-
-        var watch = $rootScope.$watch(function()
-        {
-            return !!exports.modals[modalName];
-        }, function()
-        {
-            def.resolve(exports.modals[modalName]);
-            watch();
-        });
-
-        return def.promise;
-    };
-
-    // Global modals init function
-    exports.initGlobalModals = function ()
-    {
-    };
-}]);
 AngularApp.filter("expiration", function ()
 {
     return function (milliseconds)
@@ -437,30 +437,6 @@ AngularApp.filter("expiration", function ()
         
         return moment.duration(milliseconds, "ms").format("d[d] h[h] m[m]");
     };
-});
-AngularApp.directive("infoPanel", function ()
-{
-    return {
-        restrict: "EA",
-        scope: {},
-        transclude: true,
-        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
-        link: {
-            pre: function (scope, element, attrs)
-            {
-                scope.panelShown = true;
-                
-                scope.togglePanel = function()
-                {
-                    scope.panelShown = !scope.panelShown;
-                };
-            },
-            post: function (scope, element, attrs)
-            {
-                
-            }
-        }
-    }
 });
 AngularApp.directive("pokemonType", function ()
 {
@@ -484,6 +460,30 @@ AngularApp.directive("pokemonType", function ()
                         return type.trim();
                     });
             });
+        }
+    }
+});
+AngularApp.directive("infoPanel", function ()
+{
+    return {
+        restrict: "EA",
+        scope: {},
+        transclude: true,
+        templateUrl: "templates/core/directives/info-panel/InfoPanel.template.html",
+        link: {
+            pre: function (scope, element, attrs)
+            {
+                scope.panelShown = true;
+                
+                scope.togglePanel = function()
+                {
+                    scope.panelShown = !scope.panelShown;
+                };
+            },
+            post: function (scope, element, attrs)
+            {
+                
+            }
         }
     }
 });

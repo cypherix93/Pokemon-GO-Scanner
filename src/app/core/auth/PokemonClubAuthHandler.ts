@@ -21,7 +21,7 @@ export class PokemonClubAuthHandler
         return token;
     }
 
-    private static makeLoginGetRequest()
+    private static async makeLoginGetRequest()
     {
         var def = q.defer();
 
@@ -40,6 +40,12 @@ export class PokemonClubAuthHandler
             //Parse body if any exists, callback with errors if any.
             if (body)
             {
+
+                if (body.trim().indexOf('<') === 0)
+                {
+                    throw new Error("Error: CAS is Unavailable!");
+                }
+
                 var parsedBody = JSON.parse(body);
                 if (parsedBody.errors && parsedBody.errors.length !== 0)
                 {
@@ -50,10 +56,10 @@ export class PokemonClubAuthHandler
             }
         });
 
-        return def.promise;
+        return await def.promise;
     }
 
-    private static getAuthTicket(data, user, pass)
+    private static async getAuthTicket(data, user, pass)
     {
         var def = q.defer();
 
@@ -85,16 +91,16 @@ export class PokemonClubAuthHandler
                     throw new Error(`Error logging in: ${parsedBody.errors[0]}`);
                 }
             }
-            
+
             var ticket = response.headers["location"].split("ticket=")[1];
 
             def.resolve(ticket);
         });
 
-        return def.promise;
+        return await def.promise;
     }
 
-    private static getOAuthToken(ticket)
+    private static async getOAuthToken(ticket)
     {
         var def = q.defer();
 
@@ -126,6 +132,6 @@ export class PokemonClubAuthHandler
             def.resolve(token);
         });
 
-        return def.promise;
+        return await def.promise;
     }
 }
