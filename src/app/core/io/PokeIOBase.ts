@@ -7,8 +7,6 @@ import {Player} from "../models/Player";
 import {Auth} from "../auth/Auth";
 import {Constants} from "./Constants";
 import {ApiHandler} from "./handlers/ApiHandler";
-import {GeocoderHelper} from "../helpers/GeocoderHelper";
-import {ErrorHandler} from "./handlers/ErrorHandler";
 import {PlayerProfile} from "../models/PlayerProfile";
 import {Account} from "../models/Account";
 import {Location} from "../models/Location";
@@ -65,7 +63,7 @@ export abstract class PokeIOBase
 
         if (!apiUrl)
         {
-            ErrorHandler.throwRPCOfflineError();
+            throw new Error("API endpoint retrieval failed.");
         }
 
         var endpoint = `https://${apiResponse.api_url}/rpc`;
@@ -113,7 +111,7 @@ export abstract class PokeIOBase
         {
             if (!response || !body)
             {
-                ErrorHandler.throwRPCOfflineError();
+                throw new Error("RPC Server offline.");
             }
 
             try

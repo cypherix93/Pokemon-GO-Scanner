@@ -60,10 +60,19 @@ export class PokeWorkerBase
     {
         this.setBusy();
 
-        // Just get the player profile as a ping
-        await this.io.getProfile();
+        try
+        {
+            // Just get the player profile as a ping
+            await this.io.getProfile();
 
-        Logger.debug(`API Pinged on worker "${this.account.username}" at ${new Date().toISOString()}`);
+            Logger.debug(`API pinged on worker "${this.account.username}" at ${new Date().toISOString()}`);
+        }
+        catch(err)
+        {
+            Logger.error(`API ping failed on worker "${this.account.username}" at ${new Date().toISOString()}`);
+
+            await this.ping();
+        }
 
         this.setIdle();
     }
