@@ -10,6 +10,8 @@ import {ApiHandler} from "./handlers/ApiHandler";
 import {GeocoderHelper} from "../helpers/GeocoderHelper";
 import {ErrorHandler} from "./handlers/ErrorHandler";
 import {PlayerProfile} from "../models/PlayerProfile";
+import {Account} from "../models/Account";
+import {Location} from "../models/Location";
 
 var api_url = "https://pgorelease.nianticlabs.com/plfe/rpc";
 
@@ -30,16 +32,16 @@ export abstract class PokeIOBase
         this.responseEnvelope = proto.response;
     }
 
-    public async init(username:string, password:string, location:string, provider:string)
+    public async init(account:Account, location:Location)
     {
         // Set provider
-        this.player.provider = provider;
+        this.player.provider = account.provider;
 
         // Updating location
-        this.player.location = await GeocoderHelper.resolveLocationByName(location);
+        this.player.location = location;
 
         // Getting access token
-        this.player.accessToken = await Auth.getAccessToken(username, password, provider);
+        this.player.accessToken = await Auth.getAccessToken(account.username, account.password, account.provider);
 
         // Getting api endpoint
         this.player.apiEndpoint = await this.getApiEndpoint();

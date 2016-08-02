@@ -1,5 +1,6 @@
 import {Account} from "../models/Account";
 import {PokeWorker} from "./PokeWorker";
+import {Logger} from "../helpers/Logger";
 
 export class PokeWorkerCluster
 {
@@ -9,13 +10,23 @@ export class PokeWorkerCluster
     {
         PokeWorkerCluster._workers = [];
 
+        var workerInitPromises = [];
+
         for (let account of accounts)
         {
-            let worker = await new PokeWorker(account.username, account.password, account.provider);
-            await worker.init();
+            let worker = new PokeWorker(account);
+            let workerInitPromise = worker.init();
+
+            workerInitPromises.push(workerInitPromise);
 
             PokeWorkerCluster._workers.push(worker);
+
+            //await new Promise(resolve => setTimeout(() => resolve(), 5000));
         }
+
+        await Promise.all(workerInitPromises);
+
+        Logger.info(`Worker cluster ready!`);
     }
 
     public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 1):Promise<any>

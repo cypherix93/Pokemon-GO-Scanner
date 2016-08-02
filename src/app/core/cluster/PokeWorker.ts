@@ -1,11 +1,13 @@
 import {CacheManager} from "../cache/CacheManager";
 import {PokeWorkerBase} from "./PokeWorkerBase";
+import {Account} from "../models/Account";
+import {Location} from "../models/Location";
 
 export class PokeWorker extends PokeWorkerBase
 {
-    constructor(username:string, password:string, provider?:string, location?:string)
+    constructor(account:Account, location?:Location)
     {
-        super(username, password, provider, location);
+        super(account, location);
     }
 
     public async doHeartbeat(latitude:number, longitude:number):Promise<any>
