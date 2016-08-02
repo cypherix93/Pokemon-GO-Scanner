@@ -29,7 +29,7 @@ export class PokeWorkerCluster
         Logger.info(`Worker cluster ready!`);
     }
 
-    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 1):Promise<any>
+    public static async getHeartbeatMapWithCoordinates(latitude:number, longitude:number, maxSteps = 8):Promise<any>
     {
         var roundedLat = Math.round(latitude * 1000) / 1000;
         var roundedLong = Math.round(longitude * 1000) / 1000;
@@ -60,7 +60,17 @@ export class PokeWorkerCluster
 
     private static async getNextIdleWorker():Promise<PokeWorker>
     {
-        return PokeWorkerCluster._workers
+        var idleWorker = PokeWorkerCluster._workers
             .filter(w => w.isIdle())[0];
+
+        if(idleWorker)
+            return idleWorker;
+
+        // Wait 300ms
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        idleWorker = await PokeWorkerCluster.getNextIdleWorker();
+
+        return idleWorker;
     }
 }
