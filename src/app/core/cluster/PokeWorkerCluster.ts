@@ -21,7 +21,7 @@ export class PokeWorkerCluster
 
             PokeWorkerCluster._workers.push(worker);
 
-            //await new Promise(resolve => setTimeout(() => resolve(), 5000));
+            //await new Promise(resolve => setTimeout(() => resolve(), 500));
         }
 
         await Promise.all(workerInitPromises);
@@ -46,7 +46,9 @@ export class PokeWorkerCluster
                 let newLat = roundedLat + i;
                 let newLng = roundedLong + j;
 
-                let heartbeatPromise = PokeWorkerCluster.getHeartbeatWithCoordinates(newLat, newLng);
+                let idleWorker = await PokeWorkerCluster.getNextIdleWorker();
+
+                let heartbeatPromise = idleWorker.doHeartbeat(newLat, newLng);
                 heartbeatPromises.push(heartbeatPromise);
             }
         }
@@ -56,15 +58,9 @@ export class PokeWorkerCluster
         return heartbeats.filter(x => !!x);
     }
 
-    private static async getHeartbeatWithCoordinates(latitude:number, longitude:number)
-    {
-        var idleWorker = await PokeWorkerCluster.getNextIdleWorker();
-
-        return await idleWorker.doHeartbeat(latitude, longitude);
-    }
-
     private static async getNextIdleWorker():Promise<PokeWorker>
     {
-        return PokeWorkerCluster._workers[0];
+        return PokeWorkerCluster._workers
+            .filter(w => w.isIdle())[0];
     }
 }

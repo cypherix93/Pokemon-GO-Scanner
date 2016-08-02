@@ -21,6 +21,8 @@ export class PokeWorkerBase
     private pingTimer:Timer;
     private pingIntervalTime = 60000;
 
+    private idle:boolean;
+
     constructor(account:Account, location?:Location)
     {
         this.account = account;
@@ -49,14 +51,33 @@ export class PokeWorkerBase
         // On an interval, ping Niantic to make sure they don't drop our session
         this.pingTimer = setInterval(() => this.ping(), this.pingIntervalTime);
 
+        this.setIdle();
+
         Logger.info(`Worker "${this.account.username}" initialized at ${new Date().toISOString()}`);
     }
 
     protected async ping():Promise<void>
     {
+        this.setBusy();
+
         // Just get the player profile as a ping
         await this.io.getProfile();
 
         Logger.debug(`API Pinged on worker "${this.account.username}" at ${new Date().toISOString()}`);
+
+        this.setIdle();
+    }
+
+    protected setIdle()
+    {
+        this.idle = true;
+    }
+    protected setBusy()
+    {
+        this.idle = false;
+    }
+    public isIdle():boolean
+    {
+        return this.idle;
     }
 }
