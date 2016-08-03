@@ -161,35 +161,6 @@ AngularApp.service("LocationHelperService", ["$q", "ApiService", function Locati
         return def.promise;
     };
 }]);
-AngularApp.service("AuthService", ["$q", "$window", function ($q, $window)
-{
-    var self = this;
-
-}]);
-AngularApp.service("IdentityService", function ()
-{
-    var self = this;
-
-    // Current User Identity
-    self.currentUser = undefined;
-
-    // Function to check if the current user is authenticated
-    self.isAuthenticated = function ()
-    {
-        return !!self.currentUser;
-    };
-});
-AngularApp.service("InfoWindowService", ["$q", "$compile", "$templateCache", function InfoWindowService($q, $compile, $templateCache)
-{
-    var self = this;
-    
-    var pokemonWindowTemplate = $templateCache.get("templates/core/templates/PokemonInfoWindow.template.html");
-    
-    self.getPokemonInfoWindowTemplate = function (scope)
-    {
-        return $compile(pokemonWindowTemplate)(scope);
-    };
-}]);
 AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService", "IconHelperService", function MapObjectService($q, ApiService, PokemonDataService, IconHelperService)
 {
     var self = this;
@@ -254,7 +225,8 @@ AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService"
                 marker.icon = {
                     iconUrl: IconHelperService.getPokemonSmallIconPath(marker.pokedexId),
                     iconAnchor: [24, 24],
-                    popupAnchor: [0, -30]
+                    popupAnchor: [0, -30],
+                    layer: marker.type
                 };
                 
                 delete marker.pokedexId;
@@ -278,7 +250,8 @@ AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService"
         marker.icon = {
             iconUrl: icon,
             iconAnchor: [8, 25],
-            popupAnchor: [0, -30]
+            popupAnchor: [0, -30],
+            layer: marker.type
         };
         
         def.resolve(marker);
@@ -293,7 +266,8 @@ AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService"
         marker.icon = {
             iconUrl: IconHelperService.getPokemonTeamIcon(marker.team),
             iconAnchor: [20, 20],
-            popupAnchor: [0, -28]
+            popupAnchor: [0, -28],
+            layer: marker.type
         };
         
         def.resolve(marker);
@@ -333,103 +307,6 @@ AngularApp.service("PokemonDataService", ["$q", "ApiService", function PokemonDa
         
         return def.promise;
     }
-}]);
-AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
-{
-    var exports = this;
-
-    var ModalInstance = function (element, options)
-    {
-        var _instance = this;
-
-        // Fields
-        _instance.element = element;
-        _instance.state = "default";
-
-        _instance.onOpen = options.onOpen;
-        _instance.onClose = options.onClose;
-
-        // Init the modal
-        _instance.element.modal({
-            show: false
-        });
-
-        // Width fix
-        _instance.element.width(options.width);
-
-        // Event Handlers
-        _instance.element.on("show", function ()
-        {
-            // Margin fix
-            _instance.element.css("margin-left", -(_instance.element.width() / 2));
-
-            if (_instance.onOpen)
-                _instance.onOpen();
-        });
-        _instance.element.on("hidden", function ()
-        {
-            if (_instance.onClose)
-                _instance.onClose();
-        });
-
-        // Open and Close functions
-        _instance.open = function ()
-        {
-            _instance.element.modal("show");
-        };
-        _instance.close = function ()
-        {
-            _instance.element.modal("hide");
-        };
-    };
-
-    // Create modal from Template URL
-    exports.createModal = function (templateUrl, options)
-    {
-        var def = $q.defer();
-
-        // Get the template markup from the URL provided
-        $http.get(templateUrl)
-            .success(function (response)
-            {
-                var element = angular.element(response);
-
-                var scope = $rootScope.$new(true);
-                $compile(element)(scope);
-
-                angular.element("#content-container").append(element);
-
-                var modalInstance = new ModalInstance(element, options || {width: 600});
-
-                def.resolve(modalInstance);
-            });
-
-        return def.promise;
-    };
-
-    // Store for all the global modals
-    exports.modals = {};
-
-    exports.waitUntilReady = function (modalName)
-    {
-        var def = $q.defer();
-
-        var watch = $rootScope.$watch(function()
-        {
-            return !!exports.modals[modalName];
-        }, function()
-        {
-            def.resolve(exports.modals[modalName]);
-            watch();
-        });
-
-        return def.promise;
-    };
-
-    // Global modals init function
-    exports.initGlobalModals = function ()
-    {
-    };
 }]);
 AngularApp.filter("expiration", function ()
 {
@@ -651,11 +528,8 @@ AngularApp.controller("MapController", ["$scope", "$rootScope", "$location", "Ma
         }
     };
     
-    // var infowindow;
-    // var infowindowScope = $scope.$new(true);
-    // var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
+    // Marker popup events
     var popupTemplate = "<marker-popup-component marker='markerPopupModel'></marker-popup-component>";
-    var popupTemplate2 = "{{markerPopupModel}}";
     
     $scope.$on("leafletDirectiveMarker.pokemap.mouseover", function (event, args)
     {
@@ -663,7 +537,7 @@ AngularApp.controller("MapController", ["$scope", "$rootScope", "$location", "Ma
         $rootScope.markerPopupModel = args.model;
         
         args.leafletObject
-            .bindPopup(popupTemplate)
+            .bindPopup(popupTemplate, {autopan: false})
             .openPopup();
     });
     $scope.$on("leafletDirectiveMarker.pokemap.mouseout", function (event, args)
@@ -721,6 +595,6 @@ AngularApp.controller("MapController", ["$scope", "$rootScope", "$location", "Ma
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<map-component></map-component>\r\n\r\n<!--\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    &lt;!&ndash; Pokemon Markers &ndash;&gt;\r\n    <ui-gmap-markers models="Home.markers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idKey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    &lt;!&ndash; Center Marker &ndash;&gt;\r\n    <ui-gmap-marker coords="Home.current.coords" idKey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>\r\n-->\r\n');
 $templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container-fluid clearfix">\r\n        <div class="col-lg-offset-1 col-lg-10 col-xs-12">\r\n            <div class="pull-left text-center clearfix">\r\n                <div class="navbar-brand">\r\n                    <img class="navbar-image pull-left" src="assets/images/logo-small.png" height="40">\r\n                    <div class="pull-left">\r\n                        <span class="visible-md visible-lg">\r\n                            Pok\xE9Scanner\r\n                        </span>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class="col-xs-10 col-md-8">\r\n                <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                    <div class="input-group search-input-group">\r\n                        <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                        <div class="input-group-btn">\r\n                            <button type="submit" class="btn-lg btn-default">\r\n                                <span class="fa fa-lg fa-search"></span>\r\n                            </button>\r\n                        </div>\r\n                    </div>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('templates/app/map/Map.template.html','<location-search-component coords="Map.searchCoords"></location-search-component>\r\n\r\n<leaflet id="pokemap" center="Map.options.center" controls="Map.options.controls" defaults="Map.options.defaults" layers="Map.options.layers" markers="Map.markers">\r\n</leaflet>\r\n');
-$templateCache.put('templates/app/map/marker-popup/MarkerPopup.template.html','<div class="info-window text-center">\r\n    <div ng-switch="$ctrl.marker.type">\r\n\r\n        <!-- Pokemon -->\r\n        <div ng-switch-when="pokemon">\r\n            <div>\r\n                <img src="assets/images/pokemon/go-sprites/big/{{$ctrl.marker.pokemon.pokedexId}}.png" width="90">\r\n            </div>\r\n            <h5 class="info-window-title">\r\n                <small class="text-muted">#{{$ctrl.marker.pokemon.pokedexId}}</small>\r\n                {{$ctrl.marker.pokemon.name}}\r\n            </h5>\r\n            <div>\r\n                <span pokemon-type="{{$ctrl.marker.pokemon.type}}"></span>\r\n            </div>\r\n            <div class="info-window-label">\r\n                {{$ctrl.marker.expirationTime | expiration}} remaining\r\n            </div>\r\n        </div>\r\n\r\n        <!-- PokeStop -->\r\n        <div ng-switch-when="pokestop">\r\n            <div>\r\n                <img src="assets/images/map/pokestop{{$ctrl.marker.lured ? \'pink\' : \'\'}}-2x.png" height="90">\r\n            </div>\r\n            <h5 class="info-window-title">\r\n                Pok\xE9Stop\r\n            </h5>\r\n            <div ng-show="$ctrl.marker.lured">\r\n                <div class="label label-info">\r\n                    Lure Module Active\r\n                </div>\r\n                <div class="info-window-label">\r\n                    Lure expires in: {{$ctrl.marker.lureExpirationTime | expiration}}\r\n                </div>\r\n            </div>\r\n        </div>\r\n\r\n        <!-- Arena -->\r\n        <div ng-switch-when="arena">\r\n            <div ng-switch="$ctrl.marker.team" style="padding: 10px">\r\n                <div ng-switch-when="Mystic">\r\n                    <img src="assets/images/map/arena_blue-2x.png" height="80">\r\n                </div>\r\n                <div ng-switch-when="Instinct">\r\n                    <img src="assets/images/map/arena_yellow-2x.png" height="80">\r\n                </div>\r\n                <div ng-switch-when="Valor">\r\n                    <img src="assets/images/map/arena_red-2x.png" height="80">\r\n                </div>\r\n                <div ng-switch-default>\r\n                    <img src="assets/images/map/arena_white-2x.png" height="80">\r\n                </div>\r\n            </div>\r\n            <h5 class="info-window-title text-arena-{{$ctrl.marker.team.toLowerCase() || \'default\'}}">\r\n                {{$ctrl.marker.team || "Vacant"}} Gym\r\n            </h5>\r\n            <div ng-show="$ctrl.marker.team">\r\n                <div class="label label-arena-{{$ctrl.marker.team.toLowerCase() || \'default\'}}">\r\n                    Gym Prestige: {{$ctrl.marker.prestige}}\r\n                </div>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n</div>');
-$templateCache.put('templates/core/directives/pokemon-type/PokemonType.template.html','<span ng-repeat="type in types track by $index">\r\n    <span class="label pokemon-type pokemon-type-{{type.toLowerCase()}}">\r\n        {{type}}\r\n    </span>\r\n</span>');
-$templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');}]);
+$templateCache.put('templates/app/map/marker-popup/MarkerPopup.template.html','<div class="info-window text-center">\r\n    <div ng-switch="$ctrl.marker.type">\r\n\r\n        <!-- Pokemon -->\r\n        <div ng-switch-when="pokemon">\r\n            <div>\r\n                <img ng-src="assets/images/pokemon/go-sprites/big/{{$ctrl.marker.pokemon.pokedexId}}.png" width="90">\r\n            </div>\r\n            <h5 class="info-window-title">\r\n                <small class="text-muted">#{{$ctrl.marker.pokemon.pokedexId}}</small>\r\n                {{$ctrl.marker.pokemon.name}}\r\n            </h5>\r\n            <div>\r\n                <span pokemon-type="{{$ctrl.marker.pokemon.type}}"></span>\r\n            </div>\r\n            <div class="info-window-label">\r\n                {{$ctrl.marker.expirationTime | expiration}} remaining\r\n            </div>\r\n        </div>\r\n\r\n        <!-- PokeStop -->\r\n        <div ng-switch-when="pokestop">\r\n            <div>\r\n                <img ng-src="assets/images/map/pokestop{{$ctrl.marker.lured ? \'pink\' : \'\'}}-2x.png" height="90">\r\n            </div>\r\n            <h5 class="info-window-title">\r\n                Pok\xE9Stop\r\n            </h5>\r\n            <div ng-show="$ctrl.marker.lured">\r\n                <div class="label label-info">\r\n                    Lure Module Active\r\n                </div>\r\n                <div class="info-window-label">\r\n                    Lure expires in: {{$ctrl.marker.lureExpirationTime | expiration}}\r\n                </div>\r\n            </div>\r\n        </div>\r\n\r\n        <!-- Arena -->\r\n        <div ng-switch-when="arena">\r\n            <div ng-switch="$ctrl.marker.team" style="padding: 10px">\r\n                <div ng-switch-when="Mystic">\r\n                    <img src="assets/images/map/arena_blue-2x.png" height="80">\r\n                </div>\r\n                <div ng-switch-when="Instinct">\r\n                    <img src="assets/images/map/arena_yellow-2x.png" height="80">\r\n                </div>\r\n                <div ng-switch-when="Valor">\r\n                    <img src="assets/images/map/arena_red-2x.png" height="80">\r\n                </div>\r\n                <div ng-switch-default>\r\n                    <img src="assets/images/map/arena_white-2x.png" height="80">\r\n                </div>\r\n            </div>\r\n            <h5 class="info-window-title text-arena-{{$ctrl.marker.team.toLowerCase() || \'default\'}}">\r\n                {{$ctrl.marker.team || "Vacant"}} Gym\r\n            </h5>\r\n            <div ng-show="$ctrl.marker.team">\r\n                <div class="label label-arena-{{$ctrl.marker.team.toLowerCase() || \'default\'}}">\r\n                    Gym Prestige: {{$ctrl.marker.prestige}}\r\n                </div>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n</div>');
+$templateCache.put('templates/core/directives/info-panel/InfoPanel.template.html','<div class="panel panel-default info-panel" ng-class="{\'shown\': panelShown}">\r\n    <div class="expand-arrow">\r\n        <a class="btn btn-lg btn-default" ng-click="togglePanel()">\r\n            <span class="fa fa-2x" ng-class="{\'fa-angle-double-left\': !panelShown, \'fa-angle-double-right\': panelShown}"></span>\r\n        </a>\r\n    </div>\r\n    <div class="panel-body">\r\n        <div ng-transclude></div>\r\n    </div>\r\n</div>');
+$templateCache.put('templates/core/directives/pokemon-type/PokemonType.template.html','<span ng-repeat="type in types track by $index">\r\n    <span class="label pokemon-type pokemon-type-{{type.toLowerCase()}}">\r\n        {{type}}\r\n    </span>\r\n</span>');}]);

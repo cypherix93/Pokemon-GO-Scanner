@@ -34,11 +34,8 @@ AngularApp.controller("MapController", function MapController($scope, $rootScope
         }
     };
     
-    // var infowindow;
-    // var infowindowScope = $scope.$new(true);
-    // var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
+    // Marker popup events
     var popupTemplate = "<marker-popup-component marker='markerPopupModel'></marker-popup-component>";
-    var popupTemplate2 = "{{markerPopupModel}}";
     
     $scope.$on("leafletDirectiveMarker.pokemap.mouseover", function (event, args)
     {
@@ -46,7 +43,7 @@ AngularApp.controller("MapController", function MapController($scope, $rootScope
         $rootScope.markerPopupModel = args.model;
         
         args.leafletObject
-            .bindPopup(popupTemplate)
+            .bindPopup(popupTemplate, {autopan: false})
             .openPopup();
     });
     $scope.$on("leafletDirectiveMarker.pokemap.mouseout", function (event, args)

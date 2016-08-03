@@ -4,7 +4,7 @@
         <!-- Pokemon -->
         <div ng-switch-when="pokemon">
             <div>
-                <img src="assets/images/pokemon/go-sprites/big/{{$ctrl.marker.pokemon.pokedexId}}.png" width="90">
+                <img ng-src="assets/images/pokemon/go-sprites/big/{{$ctrl.marker.pokemon.pokedexId}}.png" width="90">
             </div>
             <h5 class="info-window-title">
                 <small class="text-muted">#{{$ctrl.marker.pokemon.pokedexId}}</small>
@@ -21,7 +21,7 @@
         <!-- PokeStop -->
         <div ng-switch-when="pokestop">
             <div>
-                <img src="assets/images/map/pokestop{{$ctrl.marker.lured ? 'pink' : ''}}-2x.png" height="90">
+                <img ng-src="assets/images/map/pokestop{{$ctrl.marker.lured ? 'pink' : ''}}-2x.png" height="90">
             </div>
             <h5 class="info-window-title">
                 PokéStop
