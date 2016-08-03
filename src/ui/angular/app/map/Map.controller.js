@@ -8,8 +8,6 @@ AngularApp.controller("MapController", function MapController($scope, $location)
     var urlLng = parseFloat(urlParams.lng);
     var urlZoom = parseFloat(urlParams.zoom);
     
-    console.log(urlParams);
-    
     self.options = {
         center: {
             lat: urlLat || 40.095,
@@ -22,6 +20,15 @@ AngularApp.controller("MapController", function MapController($scope, $location)
         },
         controls: {
             scale: true
+        },
+        layers: {
+            baselayers: {
+                googleRoadmap: {
+                    name: "Google Streets",
+                    layerType: "ROADMAP",
+                    type: "google"
+                }
+            }
         }
     };
     
@@ -34,8 +41,6 @@ AngularApp.controller("MapController", function MapController($scope, $location)
         {
             if (!newVal)
                 return;
-            
-            console.log(newVal);
             
             $location.search({
                 lat: newVal.lat,
