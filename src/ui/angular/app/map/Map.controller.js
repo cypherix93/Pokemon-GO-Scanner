@@ -16,6 +16,10 @@ AngularApp.controller("MapController", function MapController($scope, $location)
             lng: urlLng || -3.823,
             zoom: urlZoom || 16
         },
+        defaults: {
+            minZoom: 16,
+            maxZoom: 18
+        },
         controls: {
             scale: true
         }
@@ -24,7 +28,7 @@ AngularApp.controller("MapController", function MapController($scope, $location)
     // Center Watch for coordinates
     $scope.$watch(function ()
         {
-            return self.center;
+            return self.options.center;
         },
         function (newVal)
         {
