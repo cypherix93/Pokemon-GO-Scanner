@@ -37,22 +37,17 @@ export class PokemonClubAuthHandler
             if (err)
                 throw err;
 
-            //Parse body if any exists, callback with errors if any.
-            if (body)
+            //Parse body
+            try
             {
-
-                if (body.trim().indexOf('<') === 0)
-                {
-                    throw new Error("Error: CAS is Unavailable!");
-                }
-
                 var parsedBody = JSON.parse(body);
-                if (parsedBody.errors && parsedBody.errors.length !== 0)
-                {
-                    throw new Error(`Error logging in: ${parsedBody.errors[0]}`);
-                }
 
                 def.resolve(parsedBody);
+            }
+            catch (err)
+            {
+                Logger.error(`Invalid response from PTC:GET => \n ${body}`);
+                throw new Error(`Invalid response from PTC:GET`);
             }
         });
 
@@ -81,16 +76,6 @@ export class PokemonClubAuthHandler
         {
             if (err)
                 throw err;
-
-            //Parse body if any exists, callback with errors if any.
-            if (body)
-            {
-                var parsedBody = JSON.parse(body);
-                if (parsedBody.errors && parsedBody.errors.length !== 0)
-                {
-                    throw new Error(`Error logging in: ${parsedBody.errors[0]}`);
-                }
-            }
 
             var ticket = response.headers["location"].split("ticket=")[1];
 
@@ -125,7 +110,7 @@ export class PokemonClubAuthHandler
 
             var token = body.split("token=")[1];
 
-            if(!token)
+            if (!token)
             {
                 Logger.error(`Invalid OAuth response: ${body}`);
                 throw new Error("Invalid OAuth response");
