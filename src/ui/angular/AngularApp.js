@@ -7,5 +7,5 @@ var AngularApp = angular.module("AngularApp",
         "ui.router",
         "ui.bootstrap",
         "toastr",
-        "uiGmapgoogle-maps"
+        "leaflet-directive"
     ]);

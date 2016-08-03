@@ -6621,13 +6621,6 @@ textarea {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0; }
 
-home-component .angular-google-map-container {
-  position: absolute;
-  top: 75px;
-  left: 0;
-  right: 0;
-  bottom: 0; }
-
 .info-panel {
   position: absolute;
   top: 50px;
@@ -6679,6 +6672,13 @@ home-component .angular-google-map-container {
     background: #e51c23; }
   .gm-style-iw .info-window .label-arena-default {
     background: #bbb; }
+
+map-component .leaflet-container {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0; }
 
 .navbar {
   -webkit-box-shadow: #666 0 0 5px;
