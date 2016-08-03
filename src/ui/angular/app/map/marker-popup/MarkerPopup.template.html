@@ -1,0 +1,66 @@
+<div class="info-window text-center">
+    <div ng-switch="$ctrl.marker.type">
+
+        <!-- Pokemon -->
+        <div ng-switch-when="pokemon">
+            <div>
+                <img src="assets/images/pokemon/go-sprites/big/{{$ctrl.marker.pokemon.pokedexId}}.png" width="90">
+            </div>
+            <h5 class="info-window-title">
+                <small class="text-muted">#{{$ctrl.marker.pokemon.pokedexId}}</small>
+                {{$ctrl.marker.pokemon.name}}
+            </h5>
+            <div>
+                <span pokemon-type="{{$ctrl.marker.pokemon.type}}"></span>
+            </div>
+            <div class="info-window-label">
+                {{$ctrl.marker.expirationTime | expiration}} remaining
+            </div>
+        </div>
+
+        <!-- PokeStop -->
+        <div ng-switch-when="pokestop">
+            <div>
+                <img src="assets/images/map/pokestop{{$ctrl.marker.lured ? 'pink' : ''}}-2x.png" height="90">
+            </div>
+            <h5 class="info-window-title">
+                PokéStop
+            </h5>
+            <div ng-show="$ctrl.marker.lured">
+                <div class="label label-info">
+                    Lure Module Active
+                </div>
+                <div class="info-window-label">
+                    Lure expires in: {{$ctrl.marker.lureExpirationTime | expiration}}
+                </div>
+            </div>
+        </div>
+
+        <!-- Arena -->
+        <div ng-switch-when="arena">
+            <div ng-switch="$ctrl.marker.team" style="padding: 10px">
+                <div ng-switch-when="Mystic">
+                    <img src="assets/images/map/arena_blue-2x.png" height="80">
+                </div>
+                <div ng-switch-when="Instinct">
+                    <img src="assets/images/map/arena_yellow-2x.png" height="80">
+                </div>
+                <div ng-switch-when="Valor">
+                    <img src="assets/images/map/arena_red-2x.png" height="80">
+                </div>
+                <div ng-switch-default>
+                    <img src="assets/images/map/arena_white-2x.png" height="80">
+                </div>
+            </div>
+            <h5 class="info-window-title text-arena-{{$ctrl.marker.team.toLowerCase() || 'default'}}">
+                {{$ctrl.marker.team || "Vacant"}} Gym
+            </h5>
+            <div ng-show="$ctrl.marker.team">
+                <div class="label label-arena-{{$ctrl.marker.team.toLowerCase() || 'default'}}">
+                    Gym Prestige: {{$ctrl.marker.prestige}}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

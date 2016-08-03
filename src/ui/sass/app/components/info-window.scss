@@ -1,65 +1,73 @@
-.gm-style-iw
+.leaflet-popup-content-wrapper
 {
-    & > div, & > div > div
+    font-family: $font-family-base;
+
+    box-shadow: $gray-dark 0 2px 4px -2px;
+    border-radius: 4px;
+    border: $gray-light solid 1px;
+    border-bottom: none;
+
+    .leaflet-popup-content
     {
-        overflow: visible !important;
+        margin: 10px 20px 15px;
+    }
+}
+.leaflet-popup-tip
+{
+    box-shadow: $gray-dark 0 0 2px;
+}
+
+.info-window
+{
+    .info-window-title
+    {
+        margin: 4px;
     }
 
-    .info-window
+    // Labels
+    .label
     {
-        padding-left: 24px;
-        margin: 0 -20px;
+        margin: 2px;
+        font-size: 12px;
+    }
+    .info-window-label
+    {
+        margin: 8px;
+    }
 
-        .info-window-title
-        {
-            margin: 4px;
-        }
+    // Team Text colors
+    .text-arena-mystic
+    {
+        color: $brand-primary;
+    }
+    .text-arena-instinct
+    {
+        color: $state-warning-text;
+    }
+    .text-arena-valor
+    {
+        color: $state-danger-text;
+    }
+    .text-arena-default
+    {
+        color: $text-muted;
+    }
 
-        // Labels
-        .label
-        {
-            margin: 2px;
-            font-size: 12px;
-        }
-        .info-window-label
-        {
-            margin: 4px;
-        }
-
-        // Team Text colors
-        .text-arena-mystic
-        {
-            color: $brand-primary;
-        }
-        .text-arena-instinct
-        {
-            color: $state-warning-text;
-        }
-        .text-arena-valor
-        {
-            color: $state-danger-text;
-        }
-        .text-arena-default
-        {
-            color: $text-muted;
-        }
-
-        // Team Label colors
-        .label-arena-mystic
-        {
-            background: $label-primary-bg;
-        }
-        .label-arena-instinct
-        {
-            background: $label-warning-bg;
-        }
-        .label-arena-valor
-        {
-            background: $label-danger-bg;
-        }
-        .label-arena-default
-        {
-            background: $label-default-bg;
-        }
+    // Team Label colors
+    .label-arena-mystic
+    {
+        background: $label-primary-bg;
+    }
+    .label-arena-instinct
+    {
+        background: $label-warning-bg;
+    }
+    .label-arena-valor
+    {
+        background: $label-danger-bg;
+    }
+    .label-arena-default
+    {
+        background: $label-default-bg;
     }
 }

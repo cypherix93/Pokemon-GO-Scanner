@@ -60,7 +60,9 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
                 marker.pokemon = pokemon;
                 
                 marker.icon = {
-                    iconUrl: IconHelperService.getPokemonSmallIconPath(marker.pokedexId)
+                    iconUrl: IconHelperService.getPokemonSmallIconPath(marker.pokedexId),
+                    iconAnchor: [24, 24],
+                    popupAnchor: [0, -30]
                 };
                 
                 delete marker.pokedexId;
@@ -82,7 +84,9 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
             icon = IconHelperService.getPokestopIconPath();
         
         marker.icon = {
-            iconUrl: icon
+            iconUrl: icon,
+            iconAnchor: [8, 25],
+            popupAnchor: [0, -30]
         };
         
         def.resolve(marker);
@@ -95,7 +99,9 @@ AngularApp.service("MapObjectService", function MapObjectService($q, ApiService,
         var def = $q.defer();
                 
         marker.icon = {
-            iconUrl: IconHelperService.getPokemonTeamIcon(marker.team)
+            iconUrl: IconHelperService.getPokemonTeamIcon(marker.team),
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -28]
         };
         
         def.resolve(marker);

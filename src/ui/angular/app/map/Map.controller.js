@@ -1,4 +1,4 @@
-AngularApp.controller("MapController", function MapController($scope, $location, MapObjectService)
+AngularApp.controller("MapController", function MapController($scope, $rootScope, $location, MapObjectService)
 {
     var self = this;
     
@@ -34,14 +34,34 @@ AngularApp.controller("MapController", function MapController($scope, $location,
         }
     };
     
+    // var infowindow;
+    // var infowindowScope = $scope.$new(true);
+    // var infowindowTemplate = InfoWindowService.getPokemonInfoWindowTemplate(infowindowScope);
+    var popupTemplate = "<marker-popup-component marker='markerPopupModel'></marker-popup-component>";
+    var popupTemplate2 = "{{markerPopupModel}}";
+    
+    $scope.$on("leafletDirectiveMarker.pokemap.mouseover", function (event, args)
+    {
+        // The popup is compiled with root scope apparently
+        $rootScope.markerPopupModel = args.model;
+        
+        args.leafletObject
+            .bindPopup(popupTemplate)
+            .openPopup();
+    });
+    $scope.$on("leafletDirectiveMarker.pokemap.mouseout", function (event, args)
+    {
+        args.leafletObject.closePopup().unbindPopup();
+    });
+    
     // Debounced Heartbeat retrieval that will be called on specific Google Map Events
     var debouncedHeartbeat = _.debounce(function (latitude, longitude)
     {
         MapObjectService.getPokemonMarkers(latitude, longitude)
             .then(function (data)
             {
-                // if (_.isEqual(self.options.center, data.center))
-                self.markers = data.markers;
+                if (self.options.center.lat === data.center.lat && self.options.center.lng === data.center.lng)
+                    self.markers = data.markers;
             });
         
     }, 500);
@@ -55,7 +75,7 @@ AngularApp.controller("MapController", function MapController($scope, $location,
         {
             if (!newVal)
                 return;
-    
+            
             debouncedHeartbeat(newVal.lat, newVal.lng);
             
             $location.search({
@@ -76,8 +96,8 @@ AngularApp.controller("MapController", function MapController($scope, $location,
             if (!newVal)
                 return;
             
-            self.center.lat = newVal.latitude;
-            self.center.lng = newVal.longitude;
+            self.options.center.lat = newVal.latitude;
+            self.options.center.lng = newVal.longitude;
         });
     
 });
