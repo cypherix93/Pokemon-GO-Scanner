@@ -124,6 +124,13 @@ export class PokemonClubAuthHandler
                 throw err;
 
             var token = body.split("token=")[1];
+
+            if(!token)
+            {
+                Logger.error(`Invalid OAuth response: ${body}`);
+                throw new Error("Invalid OAuth response");
+            }
+
             token = token.split("&")[0];
 
             if (!token)

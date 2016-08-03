@@ -1,4 +1,4 @@
-AngularApp.controller("MapController", function MapController($scope, $location)
+AngularApp.controller("MapController", function MapController($scope, $location, MapObjectService)
 {
     var self = this;
     
@@ -7,6 +7,8 @@ AngularApp.controller("MapController", function MapController($scope, $location)
     var urlLat = parseFloat(urlParams.lat);
     var urlLng = parseFloat(urlParams.lng);
     var urlZoom = parseFloat(urlParams.zoom);
+    
+    self.markers = [];
     
     self.options = {
         center: {
@@ -32,6 +34,18 @@ AngularApp.controller("MapController", function MapController($scope, $location)
         }
     };
     
+    // Debounced Heartbeat retrieval that will be called on specific Google Map Events
+    var debouncedHeartbeat = _.debounce(function (latitude, longitude)
+    {
+        MapObjectService.getPokemonMarkers(latitude, longitude)
+            .then(function (data)
+            {
+                // if (_.isEqual(self.options.center, data.center))
+                self.markers = data.markers;
+            });
+        
+    }, 500);
+    
     // Center Watch for coordinates
     $scope.$watch(function ()
         {
@@ -41,6 +55,8 @@ AngularApp.controller("MapController", function MapController($scope, $location)
         {
             if (!newVal)
                 return;
+    
+            debouncedHeartbeat(newVal.lat, newVal.lng);
             
             $location.search({
                 lat: newVal.lat,
@@ -63,4 +79,5 @@ AngularApp.controller("MapController", function MapController($scope, $location)
             self.center.lat = newVal.latitude;
             self.center.lng = newVal.longitude;
         });
+    
 });
