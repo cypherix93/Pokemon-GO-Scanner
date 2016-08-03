@@ -119,6 +119,103 @@ AngularApp.service("IdentityService", function ()
         return !!self.currentUser;
     };
 });
+AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
+{
+    var exports = this;
+
+    var ModalInstance = function (element, options)
+    {
+        var _instance = this;
+
+        // Fields
+        _instance.element = element;
+        _instance.state = "default";
+
+        _instance.onOpen = options.onOpen;
+        _instance.onClose = options.onClose;
+
+        // Init the modal
+        _instance.element.modal({
+            show: false
+        });
+
+        // Width fix
+        _instance.element.width(options.width);
+
+        // Event Handlers
+        _instance.element.on("show", function ()
+        {
+            // Margin fix
+            _instance.element.css("margin-left", -(_instance.element.width() / 2));
+
+            if (_instance.onOpen)
+                _instance.onOpen();
+        });
+        _instance.element.on("hidden", function ()
+        {
+            if (_instance.onClose)
+                _instance.onClose();
+        });
+
+        // Open and Close functions
+        _instance.open = function ()
+        {
+            _instance.element.modal("show");
+        };
+        _instance.close = function ()
+        {
+            _instance.element.modal("hide");
+        };
+    };
+
+    // Create modal from Template URL
+    exports.createModal = function (templateUrl, options)
+    {
+        var def = $q.defer();
+
+        // Get the template markup from the URL provided
+        $http.get(templateUrl)
+            .success(function (response)
+            {
+                var element = angular.element(response);
+
+                var scope = $rootScope.$new(true);
+                $compile(element)(scope);
+
+                angular.element("#content-container").append(element);
+
+                var modalInstance = new ModalInstance(element, options || {width: 600});
+
+                def.resolve(modalInstance);
+            });
+
+        return def.promise;
+    };
+
+    // Store for all the global modals
+    exports.modals = {};
+
+    exports.waitUntilReady = function (modalName)
+    {
+        var def = $q.defer();
+
+        var watch = $rootScope.$watch(function()
+        {
+            return !!exports.modals[modalName];
+        }, function()
+        {
+            def.resolve(exports.modals[modalName]);
+            watch();
+        });
+
+        return def.promise;
+    };
+
+    // Global modals init function
+    exports.initGlobalModals = function ()
+    {
+    };
+}]);
 AngularApp.service("IconHelperService", function IconHelperService()
 {
     var self = this;
@@ -251,8 +348,8 @@ AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService"
             {
                 marker.pokemon = pokemon;
                 
-                marker.options = {
-                    icon: IconHelperService.getPokemonSmallIconPath(marker.pokedexId)
+                marker.icon = {
+                    iconUrl: IconHelperService.getPokemonSmallIconPath(marker.pokedexId)
                 };
                 
                 delete marker.pokedexId;
@@ -273,8 +370,8 @@ AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService"
         else
             icon = IconHelperService.getPokestopIconPath();
         
-        marker.options = {
-            icon: icon
+        marker.icon = {
+            iconUrl: icon
         };
         
         def.resolve(marker);
@@ -286,8 +383,8 @@ AngularApp.service("MapObjectService", ["$q", "ApiService", "PokemonDataService"
     {
         var def = $q.defer();
                 
-        marker.options = {
-            icon: IconHelperService.getPokemonTeamIcon(marker.team)
+        marker.icon = {
+            iconUrl: IconHelperService.getPokemonTeamIcon(marker.team)
         };
         
         def.resolve(marker);
@@ -327,103 +424,6 @@ AngularApp.service("PokemonDataService", ["$q", "ApiService", function PokemonDa
         
         return def.promise;
     }
-}]);
-AngularApp.service("ModalService", ["$q", "$http", "$compile", "$rootScope", function ($q, $http, $compile, $rootScope)
-{
-    var exports = this;
-
-    var ModalInstance = function (element, options)
-    {
-        var _instance = this;
-
-        // Fields
-        _instance.element = element;
-        _instance.state = "default";
-
-        _instance.onOpen = options.onOpen;
-        _instance.onClose = options.onClose;
-
-        // Init the modal
-        _instance.element.modal({
-            show: false
-        });
-
-        // Width fix
-        _instance.element.width(options.width);
-
-        // Event Handlers
-        _instance.element.on("show", function ()
-        {
-            // Margin fix
-            _instance.element.css("margin-left", -(_instance.element.width() / 2));
-
-            if (_instance.onOpen)
-                _instance.onOpen();
-        });
-        _instance.element.on("hidden", function ()
-        {
-            if (_instance.onClose)
-                _instance.onClose();
-        });
-
-        // Open and Close functions
-        _instance.open = function ()
-        {
-            _instance.element.modal("show");
-        };
-        _instance.close = function ()
-        {
-            _instance.element.modal("hide");
-        };
-    };
-
-    // Create modal from Template URL
-    exports.createModal = function (templateUrl, options)
-    {
-        var def = $q.defer();
-
-        // Get the template markup from the URL provided
-        $http.get(templateUrl)
-            .success(function (response)
-            {
-                var element = angular.element(response);
-
-                var scope = $rootScope.$new(true);
-                $compile(element)(scope);
-
-                angular.element("#content-container").append(element);
-
-                var modalInstance = new ModalInstance(element, options || {width: 600});
-
-                def.resolve(modalInstance);
-            });
-
-        return def.promise;
-    };
-
-    // Store for all the global modals
-    exports.modals = {};
-
-    exports.waitUntilReady = function (modalName)
-    {
-        var def = $q.defer();
-
-        var watch = $rootScope.$watch(function()
-        {
-            return !!exports.modals[modalName];
-        }, function()
-        {
-            def.resolve(exports.modals[modalName]);
-            watch();
-        });
-
-        return def.promise;
-    };
-
-    // Global modals init function
-    exports.initGlobalModals = function ()
-    {
-    };
 }]);
 AngularApp.filter("expiration", function ()
 {
@@ -576,29 +576,6 @@ AngularApp.config(["$stateProvider", function ($stateProvider)
             }]
         });
 }]);
-AngularApp.component("locationSearchComponent", {
-    controller: "LocationSearchController as LocationSearch",
-    templateUrl: "templates/app/location-search/LocationSearch.template.html",
-    bindings: {
-        coords: "="
-    }
-});
-AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperService", function LocationSearchController($scope, LocationHelperService)
-{
-    var self = this;
-        
-    self.searchLocation = function()
-    {
-        if(!self.searchInput)
-            return;
-        
-        LocationHelperService.reverseGeocode(self.searchInput)
-            .then(function(coords)
-            {
-                self.coords = coords;
-            });
-    };
-}]);
 AngularApp.component("mapComponent", {
     controller: "MapController as Map",
     templateUrl: "templates/app/map/Map.template.html"
@@ -685,6 +662,29 @@ AngularApp.controller("MapController", ["$scope", "$location", "MapObjectService
             self.center.lng = newVal.longitude;
         });
     
+}]);
+AngularApp.component("locationSearchComponent", {
+    controller: "LocationSearchController as LocationSearch",
+    templateUrl: "templates/app/location-search/LocationSearch.template.html",
+    bindings: {
+        coords: "="
+    }
+});
+AngularApp.controller("LocationSearchController", ["$scope", "LocationHelperService", function LocationSearchController($scope, LocationHelperService)
+{
+    var self = this;
+        
+    self.searchLocation = function()
+    {
+        if(!self.searchInput)
+            return;
+        
+        LocationHelperService.reverseGeocode(self.searchInput)
+            .then(function(coords)
+            {
+                self.coords = coords;
+            });
+    };
 }]);
 angular.module("AngularApp").run(["$templateCache", function($templateCache) {$templateCache.put('templates/app/home/Home.template.html','<info-panel>\r\n    <div class="row">\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Latitude</small>\r\n            <div>{{Home.current.coords.latitude | number:6}}</div>\r\n        </div>\r\n        <div class="col-xs-6">\r\n            <small class="text-muted">Longitude</small>\r\n            <div>{{Home.current.coords.longitude | number:6}}</div>\r\n        </div>\r\n    </div>\r\n</info-panel>\r\n\r\n<map-component></map-component>\r\n\r\n<!--\r\n<ui-gmap-google-map center="Home.mapOptions.center" zoom="Home.mapOptions.zoom" options="Home.mapOptions.options" control="Home.map">\r\n\r\n    &lt;!&ndash; Pokemon Markers &ndash;&gt;\r\n    <ui-gmap-markers models="Home.markers" events="Home.pokemonMarkerEvents" coords="\'coords\'" idKey="\'id\'" events="" options="\'options\'"></ui-gmap-markers>\r\n\r\n    &lt;!&ndash; Center Marker &ndash;&gt;\r\n    <ui-gmap-marker coords="Home.current.coords" idKey="\'GOOGLE_MAPS_CENTER_MARKER\'"></ui-gmap-marker>\r\n\r\n</ui-gmap-google-map>\r\n-->\r\n');
 $templateCache.put('templates/app/location-search/LocationSearch.template.html','<div class="navbar navbar-default navbar-fixed-top">\r\n    <div class="container-fluid clearfix">\r\n        <div class="col-lg-offset-1 col-lg-10 col-xs-12">\r\n            <div class="pull-left text-center clearfix">\r\n                <div class="navbar-brand">\r\n                    <img class="navbar-image pull-left" src="assets/images/logo-small.png" height="40">\r\n                    <div class="pull-left">\r\n                        <span class="visible-md visible-lg">\r\n                            Pok\xE9Scanner\r\n                        </span>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class="col-xs-10 col-md-8">\r\n                <form class="navbar-form" ng-submit="LocationSearch.searchLocation()" novalidate>\r\n                    <div class="input-group search-input-group">\r\n                        <input type="text" class="form-control input-lg" placeholder="Search for location... e.g. Times Square, NY" ng-model="LocationSearch.searchInput">\r\n\r\n                        <div class="input-group-btn">\r\n                            <button type="submit" class="btn-lg btn-default">\r\n                                <span class="fa fa-lg fa-search"></span>\r\n                            </button>\r\n                        </div>\r\n                    </div>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>');
