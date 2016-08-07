@@ -2,7 +2,9 @@
 
 Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for Pokémon GO.
 
-> This is still a work in progress. If you want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
+> Sorry guys. Looks like Niantic changed a lot on their server side, rendering all API calls to not work anymore. This project will be abandoned until further notice.
+> <br>
+> If you still want to contribute, please check out the [contribution guidelines](CONTRIBUTING.md).
 
 ---
 
