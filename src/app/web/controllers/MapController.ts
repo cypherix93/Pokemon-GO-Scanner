@@ -30,8 +30,8 @@ export class MapController
             success: true,
             data: {
                 center: {
-                    latitude,
-                    longitude
+                    lat: latitude,
+                    lng: longitude
                 },
                 markers
             }

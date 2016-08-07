@@ -3,7 +3,7 @@ AngularApp.config(function ($stateProvider)
     $stateProvider.state("home",
         {
             url: "/",
-            templateUrl: "views/home/index.html",
+            template: "<home-component></home-component>",
             onEnter: function($rootScope)
             {
                 $rootScope.PageName = "Home"

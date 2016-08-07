@@ -6,23 +6,22 @@ export abstract class MapObject
 {
     public id:string;
 
-    public coords:{
-        latitude:number,
-        longitude:number
-    };
+    public lat:number;
+    public lng:number;
 
     public type:string;
 
     constructor(latitude:number, longitude:number, type:MapObjectType)
     {
-        this.coords = {latitude, longitude};
+        this.lat = latitude;
+        this.lng = longitude;
 
         this.type = MapObjectType[type];
     }
 
     protected generateMapId(prefix?:string):string
     {
-        var stringToEncode = `${prefix || ""}LAT${this.coords.latitude}|LONG${this.coords.longitude}`;
+        var stringToEncode = `${prefix || ""}LAT${this.lat}|LONG${this.lng}`;
 
         this.id = new Buffer(stringToEncode).toString("base64");
 

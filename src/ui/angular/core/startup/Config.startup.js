@@ -5,6 +5,11 @@ AngularApp.config(function (toastrConfig)
     toastrConfig.positionClass = "toast-bottom-center";
     toastrConfig.preventOpenDuplicates = true;
 });
+AngularApp.config(function ($logProvider)
+{
+    $logProvider.debugEnabled(false);
+});
+/*
 
 (function()
 {
@@ -26,3 +31,4 @@ AngularApp.config(function (toastrConfig)
             });
     });
 })();
+*/
