@@ -40,20 +40,29 @@ export class PokeWorkerBase
 
     public async init():Promise<void>
     {
-        this.io = new PokeIO();
+        try
+        {
+            this.io = new PokeIO();
 
-        // Init the IO
-        await this.io.init(this.account, this.location);
+            // Init the IO
+            await this.io.init(this.account, this.location);
 
-        if (this.pingTimer)
-            clearInterval(this.pingTimer);
+            if (this.pingTimer)
+                clearInterval(this.pingTimer);
 
-        // On an interval, ping Niantic to make sure they don't drop our session
-        this.pingTimer = setInterval(() => this.ping(), this.pingIntervalTime);
+            // On an interval, ping Niantic to make sure they don't drop our session
+            this.pingTimer = setInterval(() => this.ping(), this.pingIntervalTime);
 
-        this.setIdle();
+            this.setIdle();
 
-        Logger.info(`Worker "${this.account.username}" initialized at ${new Date().toISOString()}`);
+            Logger.info(`Worker "${this.account.username}" initialized at ${new Date().toISOString()}`);
+        }
+        catch(err)
+        {
+            Logger.error(`Worker "${this.account.username}" failed to initialize at ${new Date().toISOString()}`);
+
+            await this.init();
+        }
     }
 
     protected async ping():Promise<void>

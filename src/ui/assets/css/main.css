@@ -6621,13 +6621,6 @@ textarea {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0; }
 
-home-component .angular-google-map-container {
-  position: absolute;
-  top: 75px;
-  left: 0;
-  right: 0;
-  bottom: 0; }
-
 .info-panel {
   position: absolute;
   top: 50px;
@@ -6650,35 +6643,58 @@ home-component .angular-google-map-container {
     .info-panel.shown .expand-arrow {
       left: -52px; }
 
-.gm-style-iw > div, .gm-style-iw > div > div {
-  overflow: visible !important; }
+.leaflet-popup-content-wrapper {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-shadow: #212121 0 2px 4px -2px;
+  border-radius: 4px;
+  border: #bbb solid 1px;
+  border-bottom: none; }
+  .leaflet-popup-content-wrapper .leaflet-popup-content {
+    margin: 10px 20px 15px; }
 
-.gm-style-iw .info-window {
-  padding-left: 24px;
-  margin: 0 -20px; }
-  .gm-style-iw .info-window .info-window-title {
-    margin: 4px; }
-  .gm-style-iw .info-window .label {
-    margin: 2px;
-    font-size: 12px; }
-  .gm-style-iw .info-window .info-window-label {
-    margin: 4px; }
-  .gm-style-iw .info-window .text-arena-mystic {
-    color: #2196F3; }
-  .gm-style-iw .info-window .text-arena-instinct {
-    color: #ff9800; }
-  .gm-style-iw .info-window .text-arena-valor {
-    color: #e51c23; }
-  .gm-style-iw .info-window .text-arena-default {
-    color: #bbb; }
-  .gm-style-iw .info-window .label-arena-mystic {
-    background: #2196F3; }
-  .gm-style-iw .info-window .label-arena-instinct {
-    background: #ff9800; }
-  .gm-style-iw .info-window .label-arena-valor {
-    background: #e51c23; }
-  .gm-style-iw .info-window .label-arena-default {
-    background: #bbb; }
+.leaflet-popup-tip {
+  box-shadow: #212121 0 0 2px; }
+
+.info-window .info-window-title {
+  margin: 4px; }
+
+.info-window .label {
+  margin: 2px;
+  font-size: 12px; }
+
+.info-window .info-window-label {
+  margin: 8px 0; }
+
+.info-window .text-arena-mystic {
+  color: #2196F3; }
+
+.info-window .text-arena-instinct {
+  color: #ff9800; }
+
+.info-window .text-arena-valor {
+  color: #e51c23; }
+
+.info-window .text-arena-default {
+  color: #bbb; }
+
+.info-window .label-arena-mystic {
+  background: #2196F3; }
+
+.info-window .label-arena-instinct {
+  background: #ff9800; }
+
+.info-window .label-arena-valor {
+  background: #e51c23; }
+
+.info-window .label-arena-default {
+  background: #bbb; }
+
+map-component .leaflet-container {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0; }
 
 .navbar {
   -webkit-box-shadow: #666 0 0 5px;
