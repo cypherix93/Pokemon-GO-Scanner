@@ -14,6 +14,8 @@ Application that scans nearby locations of Pokémon, Pokéstops, Gyms etc. for P
 - Web UI with Google Maps that can show nearby **Pokemon**, **Pokestops** and **Gyms** in a relatively large radius.
 - Search feature for quickly finding **Pokemon** / **Pokestops** / **Gyms** in a certain location.
 
+![](https://i.imgur.com/LNNgGUA.png)
+
 ### Roadmap (still WIP):
 
 - Filter map markers by type.
@@ -28,7 +30,7 @@ If you want to contribute, please check out the [contribution guidelines](CONTRI
 
 - [Armax's](https://github.com/Armax) project [Poké.io](https://github.com/Armax/Pokemon-GO-node-api), which is almost entirely the core of my project. I copied over most of the functionality to clean, organize, and port to Typescript for ease of extension.
 - [tejado](https://github.com/tejado) for the [Pokemon GO API library / demo](https://github.com/tejado/pgoapi).
-- [AHAAAAAAA](https://github.com/AHAAAAAAA/) for providing his [proof of conept](https://github.com/AHAAAAAAA/PokemonGo-Map/).
+- [AHAAAAAAA](https://github.com/AHAAAAAAA/) for providing his [proof of concept](https://github.com/AHAAAAAAA/PokemonGo-Map/).
 
 ### Disclaimer
 
